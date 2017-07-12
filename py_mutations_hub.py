@@ -158,7 +158,7 @@ def testTime():
 	print "Fetching all rows..."
 	all_rows = c.fetchmany(size=33)
 	
-	for curr in range(1):
+	for curr in range(2):
 		print all_rows[curr][0]
 		print "Got Em..."
 		print "Running PyPy test..."
@@ -168,7 +168,9 @@ def testTime():
 		print curr
 		if toTest == None:
 			tokenStream = tokenize.tokenize(StringIO.StringIO(all_rows[curr][0]).readline, handle_token)
-			#print all_tokens		
+			print "RAW"			
+			print len(all_tokens)
+		
 			one_hot_good = vocabularize_tokens(all_tokens)
 			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)		
 			source_code = str(all_rows[curr][0])
