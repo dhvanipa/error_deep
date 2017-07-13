@@ -1,3 +1,5 @@
+# Copyright 2017 Dhvani Patel
+
 import tokenize
 from check_pypy_syntax import checkPyPySyntax
 from compile_error import CompileError
@@ -36,22 +38,14 @@ def deleteMut(raw_text):
 	chosenColInd = randint(1,len(first_strip)+2)
 
 	first_col_strip = first_strip[:chosenColInd-1]
-	#print "F"
-	#print first_col_strip
 	
 	last_col_strip = first_strip[chosenColInd:]
-	#print "L"
-	#print last_col_strip
 
 	new_line = first_col_strip + last_col_strip
-	print "NEW"
-	print new_line
 
 
 	if chosenLineInd ==1 :
-		#first_text = ''
 		print "F"
-		#print first_text
 
 		last_text = raw_text[find_nth(raw_text, "\n", chosenLineInd)+1:]
 		print "L"
@@ -63,7 +57,6 @@ def deleteMut(raw_text):
 		print "F"
 		print first_text
 
-		#last_text = ''
 		final_code_text = first_text + "\n" + new_line
 	
 	else:
@@ -75,8 +68,6 @@ def deleteMut(raw_text):
 		print "L"
 		print last_text
 
-		#print '------------------------------------'
-		#print new_line
 		final_code_text = first_text + new_line.encode() + "\n" + last_text
 
 
@@ -84,9 +75,6 @@ def deleteMut(raw_text):
 	print '------------------------------------'
 	print final_code_text
 
-	
-
-	#print raw_text
 	print num_lines
 
 	toTest = checkPyPySyntax(final_code_text)
@@ -105,16 +93,3 @@ def deleteMut(raw_text):
 	
 	print "-----------FINISHED-------------------"
 
-
-	#print sum(1 for x in raw_tokens)
-	#lenGen = 0
-	#for token in raw_tokens:
-	#	print token
-	#	lenGen = lenGen + 1
-	#print lenGen
-
-	#chosenTokLocInd = randint(0,lenGen-1)
-#	print chosenTokLocInd
-
-#	edited_code = tokenize.untokenize(raw_tokens)
-	#print edited_code

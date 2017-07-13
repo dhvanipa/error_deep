@@ -1,3 +1,5 @@
+# Copyright 2017 Dhvani Patel
+
 import sqlite3
 from check_pypy_syntax import checkPyPySyntax
 from compile_error import CompileError

@@ -1,3 +1,5 @@
+# Copyright 2017 Dhvani Patel
+
 import json
 from pprint import pprint
 import tokenize
@@ -29,7 +31,6 @@ def insertTokMut(raw_tokens, raw_text):
 		pprint(data)
 		print "HI"
 
-	#print data["indexes_m"]
 	chosenInd = randint(0,86)
 	chosenToken = data["indexes_m"][chosenInd]
 	print chosenToken
@@ -37,7 +38,6 @@ def insertTokMut(raw_tokens, raw_text):
 	out_tokens_loc = []
 	raw_tokens_pass = []
 	orig = []
-	#print tokenize.tok_name.values()
 	for token in raw_tokens:
 		token_use = token		
 		orig.append(token_use)
@@ -72,12 +72,10 @@ def insertTokMut(raw_tokens, raw_text):
 
 	lenD = len(out_tokens_loc)
 
-	#indI = 0
 	for indI in range(toIter):
 		indLook = ((chosenTrueLineInd) * 2) + 1
 		if indI == indLook+1:
 			out_tokens_loc[indI] = ('1')
-		#indI = indI + 1
 
 	source_code = raw_text
 
@@ -93,8 +91,6 @@ def insertTokMut(raw_tokens, raw_text):
 	
 	temp = source_code[toAddBeforeInd:toAddBeforeInd+len(raw_tokens_pass[chosenLineInd][4])]
 	print temp
-	#print len(temp)
-	#print temp[len(temp)-1]
 	print "kobe"
 	print raw_tokens_pass[chosenLineInd][1]
 
@@ -167,7 +163,6 @@ def insertTokMut(raw_tokens, raw_text):
 		print INSERTION
 		print len(out_tokens_loc)
 		return new_text, NO_TOKEN, INSERTION, out_tokens_loc
-		#return new_text
 	
 	print "-----------FINISHED-------------------"
 	print chosenLineInd+1	
@@ -177,15 +172,3 @@ def insertTokMut(raw_tokens, raw_text):
 	print lenD
 	print chosenTrueLineInd
 
-	#print sum(1 for x in raw_tokens)
-	#lenGen = 0
-	#for token in raw_tokens:
-	#	print token
-	#	lenGen = lenGen + 1
-	#print lenGen
-
-	#chosenTokLocInd = randint(0,lenGen-1)
-#	print chosenTokLocInd
-
-#	edited_code = tokenize.untokenize(raw_tokens)
-	#print edited_code

@@ -1,3 +1,5 @@
+# Copyright 2017 Dhvani Patel
+
 import sqlite3
 from check_pypy_syntax import checkPyPySyntax
 from compile_error import CompileError
@@ -121,9 +123,7 @@ def vocabularize_tokens(all_tokens):
 
     all_tokens_iter = all_tokens[:]
     for Token in all_tokens_iter:
-	#print Token.type
         vocab_entry = open_closed_tokens(Token)
-        #print vocab_entry
 	Token.value = vocab_entry
         if Token.type in EXTRANEOUS_TOKENS:
 		all_tokens.remove(Token)
@@ -141,14 +141,12 @@ def handle_token(type, token, (srow, scol), (erow, ecol), line):
     else:
         val = repr(token)[1:len(repr(token))-1]
     send = Token(tokenize.tok_name[type], val, srow, scol, erow, ecol, line)
-    #print send
     all_tokens.append(send)
     print "%d,%d-%d,%d:\t%s\t%s" % \
         (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
 
 
 def testTime():
-	#curr = numInd
 	sqlite_file = "/home/dhvani/python-sources.sqlite3"
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
@@ -158,7 +156,7 @@ def testTime():
 	print "Fetching all rows..."
 	all_rows = c.fetchmany(size=33)
 	
-	for curr in range(2):
+	for curr in range(1):
 		print all_rows[curr][0]
 		print "Got Em..."
 		print "Running PyPy test..."

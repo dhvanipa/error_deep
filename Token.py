@@ -1,8 +1,6 @@
+# Copyright 2017 Dhvani Patel
 
 class Token():
-
-
-# __slots__ = 'start', 'end'
 
 	def __init__(self, type, value, srow, scol, erow, ecol, line):
 	        self.type = type

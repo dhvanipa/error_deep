@@ -1,3 +1,5 @@
+# Copyright 2017 Dhvani Patel
+
 import json
 from pprint import pprint
 import tokenize
@@ -29,7 +31,6 @@ def subTokMut(raw_tokens, raw_text):
 		pprint(data)
 		print "HI"
 
-	#print data["indexes_m"]
 	chosenInd = randint(0,86)
 	chosenToken = data["indexes_m"][chosenInd]
 	print chosenToken
@@ -37,7 +38,7 @@ def subTokMut(raw_tokens, raw_text):
 	raw_tokens_pass = []
 	out_tokens_loc = []
 	orig = []
-	#print tokenize.tok_name.values()
+
 	for token in raw_tokens:
 		token_use = token		
 		orig.append(token_use)
@@ -73,31 +74,23 @@ def subTokMut(raw_tokens, raw_text):
 
 	lenD = len(out_tokens_loc)
 
-	#indI = 0
 	for indI in range(toIter):
 		indLook = ((chosenTrueLineInd) * 2) + 1
 		if indI == indLook:
 			out_tokens_loc[indI] = ('1')
-		#indI = indI + 1
 
 	source_code = raw_text
 
 	send = Token(tokenize.tok_name[raw_tokens_pass[chosenLineInd][0]], raw_tokens_pass[chosenLineInd][1], raw_tokens_pass[chosenLineInd][2][0], raw_tokens_pass[chosenLineInd][2][1], raw_tokens_pass[chosenLineInd][3][0], raw_tokens_pass[chosenLineInd][3][1], raw_tokens_pass[chosenLineInd][4])
 
 	indexToRemove = source_code.index(raw_tokens_pass[chosenLineInd][4])
-	#print "HERE"
-	#print raw_tokens_pass[chosenLineInd][0]
-	#print chosenLineInd
-		
-
-
 
 	temp = source_code[indexToRemove:indexToRemove+len(raw_tokens_pass[chosenLineInd][4])+1]
 
 	change = temp.strip()
 	
 	check = change.find(raw_tokens_pass[chosenLineInd][1])
-	#store = change.index(raw_tokens_pass[chosenLineInd][1])
+
 	shotInd = temp.index(raw_tokens_pass[chosenLineInd][1])
 
 	change = temp.strip()
@@ -107,13 +100,8 @@ def subTokMut(raw_tokens, raw_text):
 
 	print "TEMP"
 	print temp
-	#print check
 
 	print shotInd
-	
-		
-
-	
 	
 	actual_target_ind = indexToRemove + shotInd
 
@@ -152,15 +140,11 @@ def subTokMut(raw_tokens, raw_text):
 		else:
 			new_text = before + chosenToken.encode() + after
 
-	
-	#test_ind = new_text.index(after)
-	#print test_ind
+
 	print actual_target_ind
 
 	print '-------------------------------'
 	print new_text
-
-	#raw_tokens_pass.remove(chosenLineInd)
 	
 
 	toTest = checkPyPySyntax(new_text)
@@ -184,18 +168,4 @@ def subTokMut(raw_tokens, raw_text):
 	print len(raw_tokens_pass)
 	print len(out_tokens_loc)
 	print lenD
-
-
-	#print sum(1 for x in raw_tokens)
-	#lenGen = 0
-	#for token in raw_tokens:
-	#	print token
-	#	lenGen = lenGen + 1
-	#print lenGen
-
-	#chosenTokLocInd = randint(0,lenGen-1)
-#	print chosenTokLocInd
-
-#	edited_code = tokenize.untokenize(raw_tokens)
-	#print edited_code
 
