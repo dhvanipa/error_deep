@@ -116,17 +116,34 @@ def open_closed_tokens(token):
 	
         return token.value
 	
-def vocabularize_tokens(all_tokens):
-    EXTRANEOUS_TOKENS = {
-            # Always occurs as the first token: internally indicates the file
-            # ecoding, but is irrelelvant once the stream is already tokenized
+def vocabularize_tokens(every_token, flag):
+    if flag == False:
+   	 EXTRANEOUS_TOKENS = {
+             # Always occurs as the first token: internally indicates the file
+             # ecoding, but is irrelelvant once the stream is already tokenized
             'ENCODING',
-
+	
             # Always occurs as the last token.
             'ENDMARKER',
 
             # Insignificant newline; not to be confused with NEWLINE
             'NL',
+	
+            # Discard comments
+            'COMMENT',
+
+            # Represents a tokenization error. This should never appear for
+            # syntatically correct files.
+            'ERRORTOKEN',
+        }
+    elif flag == True:
+        EXTRANEOUS_TOKENS = {
+             # Always occurs as the first token: internally indicates the file
+             # ecoding, but is irrelelvant once the stream is already tokenized
+            'ENCODING',
+	
+            # Always occurs as the last token.
+            'ENDMARKER',
 
             # Discard comments
             'COMMENT',
@@ -134,20 +151,20 @@ def vocabularize_tokens(all_tokens):
             # Represents a tokenization error. This should never appear for
             # syntatically correct files.
             'ERRORTOKEN',
-    }
+        }
     
 
 
-    all_tokens_iter = all_tokens[:]
+    all_tokens_iter = every_token[:]
     for Token in all_tokens_iter:
         vocab_entry = open_closed_tokens(Token)
 	Token.value = vocab_entry
         if Token.type in EXTRANEOUS_TOKENS:
-		all_tokens.remove(Token)
+		every_token.remove(Token)
    
-    for Token in all_tokens:
+    for Token in every_token:
 	print Token.value
-    return set_from_json(all_tokens)
+    return set_from_json(every_token)
  	
 	
 
@@ -175,6 +192,7 @@ def perform():
 	all_rows = c.fetchmany(size=33)
 	
 	for curr in range(1):
+		curr = 2
 		print all_rows[curr][0]
 		print "Got Em..."
 		print "Running PyPy test..."
@@ -190,8 +208,8 @@ def perform():
 			tokenStream = tokenize.tokenize(StringIO.StringIO(all_rows[curr][0]).readline, handle_token)
 			print "RAW"		
 			print len(all_tokens)
-			
-			one_hot_good = vocabularize_tokens(all_tokens)
+			allGood = all_tokens
+			one_hot_good = vocabularize_tokens(all_tokens, False)
 			one_hot_gOut = [0] * NUM_BITS_OUTPUT
 
 			print "DHVANI"
@@ -220,7 +238,7 @@ def perform():
 			new_tokens_ins = all_tokens
 			print len(new_tokens_ins)
 			print "CC"		
-			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins)
+			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
 			
 
 			# DELETE
@@ -240,7 +258,7 @@ def perform():
 			except (tokenize.TokenError, IndentationError) as e:
     				pass	
 			new_tokens_del = all_tokens
-			one_hot_bad_del = vocabularize_tokens(new_tokens_del)
+			one_hot_bad_del = vocabularize_tokens(new_tokens_del, True)
 
 		
 			# SUB
@@ -259,7 +277,7 @@ def perform():
 			except (tokenize.TokenError, IndentationError) as e:
     				pass	
 			new_tokens_sub = all_tokens
-			one_hot_bad_sub = vocabularize_tokens(new_tokens_sub)
+			one_hot_bad_sub = vocabularize_tokens(new_tokens_sub, True)
 
 			# MUTATIONS PER CHARACTER
 			# insertMut(source_code)
@@ -273,16 +291,27 @@ def perform():
 			print len(one_hot_bad_ins)
 			print len(one_hot_bad_del)
 			print len(one_hot_bad_sub)
-			
+			print len(source_code)
+			print len(new_i_text)
+			print len(new_d_text)
+			print len(new_s_text)
+		
 
+			if len(one_hot_bad_sub) != len(one_hot_good):
+				for token in new_tokens_sub:
+					print token.value
+				print "<3 <3 <3"
+				for token in allGood:
+					print token.value
+			else:
+				perform()
+				return
+				
 			#one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
-
-			#print len(one_hot_all)
-			#print one_hot_all[538]
 
 			print "SUCCESS"
 			ok = one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub
-	
+			
 		else:
 			print "Try again..."
 	

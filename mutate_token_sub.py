@@ -95,6 +95,7 @@ def subTokMut(raw_tokens, raw_text):
 
 	change = temp.strip()
 	check = temp.index(change)
+	print "WHAT"
 	print change
 	
 
@@ -125,7 +126,7 @@ def subTokMut(raw_tokens, raw_text):
 	if check == 0:
 		print "GOT EM"
 		if after[0] == ' ':
-			new_text = before + chosenToken.encode() + after[1:]
+			new_text = before + chosenToken.encode() + after
 		else:
 			new_text = before + chosenToken.encode() + after
 	else:	
@@ -138,6 +139,7 @@ def subTokMut(raw_tokens, raw_text):
 				space = ' ' * (check)
 			new_text = before + chosenToken.encode() + space + after
 		else:
+			print "WAS HERE"
 			new_text = before + chosenToken.encode() + after
 
 
