@@ -152,6 +152,7 @@ def subTokMut(raw_tokens, raw_text):
 	if toTest == None:
  		print "Try again..."	
 		subTokMut(raw_tokens_pass, raw_text)
+		return new_text, YES_TOKEN, SUBSTITUTION, out_tokens_loc, send
 	else:
 		print toTest[0]
 		print toTest[0].filename

@@ -1,0 +1,28 @@
+# Copyright 2017 Dhvani Patel
+
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+import numpy
+from Token import Token
+from py_mutations_hub import perform
+
+# BATCH = 60
+# So 15 of 4 of one window
+# One 4:
+# [Good, Insert, Delete, Sub]
+# WINDOW SIZE = 10
+
+def create_batches():
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = perform()
+	print "Finished..."
+
+	#return train_input, train_output
+
+def initData():
+	print "Start..."
+	create_batches()
+	#train_input, train_output = create_batches()
+
+
+if __name__ == '__main__':
+	initData()

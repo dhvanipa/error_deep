@@ -25,10 +25,11 @@ from mutate_token_sub import subTokMut
 # ONE HOT = 87
 
 BATCH_SIZE = 66
-EPOCHS = 14017
-all_tokens = []
-new_tokens = []
-indexed_tokens = []
+global all_tokens
+new_tokens_ins = []
+new_tokens_del = []
+new_tokens_sub = []
+global indexed_tokens
 data = None
 
 def one_hot(indexed_tokens):
@@ -46,6 +47,7 @@ def set_from_json(all_tokens):
 		#pprint(data)
 	for token in all_tokens:
 		toCompare = token.value
+		global indexed_tokens
 		indexed_tokens.append(data["indexes"].index(toCompare))
 	print indexed_tokens
 	return one_hot(indexed_tokens)
@@ -141,6 +143,7 @@ def handle_token(type, token, (srow, scol), (erow, ecol), line):
     else:
         val = repr(token)[1:len(repr(token))-1]
     send = Token(tokenize.tok_name[type], val, srow, scol, erow, ecol, line)
+    global all_tokens
     all_tokens.append(send)
     print "%d,%d-%d,%d:\t%s\t%s" % \
         (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
@@ -165,26 +168,81 @@ def perform():
 		print "CURRENT: "
 		print curr
 		if toTest == None:
+			global all_tokens
+			all_tokens = []
+			global indexed_tokens
+			indexed_tokens = []
 			tokenStream = tokenize.tokenize(StringIO.StringIO(all_rows[curr][0]).readline, handle_token)
-			print "RAW"			
+			print "RAW"		
 			print len(all_tokens)
-		
+			
 			one_hot_good = vocabularize_tokens(all_tokens)
+			print "DHVANI"
+			print len(one_hot_good)
+		
 			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)		
 			source_code = str(all_rows[curr][0])
 			
 			#MUTATIONS PER TOKEN
-			new_text, NO_TOKEN, INSERTION, out_tokens_loc = insertTokMut(raw_tokens, source_code)
+
+			# INSERT
+			global all_tokens
+			all_tokens = []
+			global indexed_tokens
+			indexed_tokens = []
+			print "RAW"		
+			print len(all_tokens)
+			new_i_text, NO_TOKEN, INSERTION, out_tokens_loc_i = insertTokMut(raw_tokens, source_code)
+			print "NEXT STEP...C"
+			#print len(new_i_text)
+			#print len(source_code)
+			try:
+				newTokenStream = tokenize.tokenize(StringIO.StringIO(new_i_text).readline, handle_token)
+			except tokenize.TokenError:
+    				pass
+			new_tokens_ins = all_tokens
+			print len(new_tokens_ins)
+			print "CC"		
+			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins)
+			
+
+			# DELETE
+			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)	
+			global all_tokens
+			all_tokens = []
+			global indexed_tokens
+			indexed_tokens = []
+			print type(raw_tokens)
+			print type(source_code)
+			new_d_text, YES_TOKEN, DELETION, out_tokens_loc_d, sendD = deleteTokMut(raw_tokens, source_code)
+			
 
 			print "NEXT STEP..."
 			try:
-				newTokenStream = tokenize.tokenize(StringIO.StringIO(new_text).readline, handle_token)
+				newTokenStream = tokenize.tokenize(StringIO.StringIO(new_d_text).readline, handle_token)
 			except tokenize.TokenError:
     				pass
-			one_hot_bad = vocabularize_tokens(new_tokens)
+			new_tokens_del = all_tokens
+			one_hot_bad_del = vocabularize_tokens(new_tokens_del)
+
+		
+			# SUB
+			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)	
+			global all_tokens
+			all_tokens = []
+			global indexed_tokens
+			indexed_tokens = []
+			print type(raw_tokens)
 			
-			#deleteTokMut(raw_tokens, source_code)
-			#subTokMut(raw_tokens, source_code)
+			new_s_text, YES_TOKEN, SUBSTITUTION, out_tokens_loc_s, sendS = subTokMut(raw_tokens, source_code)
+
+			print "NEXT STEP..."
+			try:
+				newTokenStream = tokenize.tokenize(StringIO.StringIO(new_s_text).readline, handle_token)
+			except (tokenize.TokenError, IndentationError) as e:
+    				pass	
+			new_tokens_sub = all_tokens
+			one_hot_bad_sub = vocabularize_tokens(new_tokens_sub)
 
 			# MUTATIONS PER CHARACTER
 			# insertMut(source_code)
@@ -195,15 +253,18 @@ def perform():
 			#print one_hot_bad[0]
 			
 			print len(one_hot_good)
-			print len(one_hot_bad)
+			print len(one_hot_bad_ins)
+			print len(one_hot_bad_del)
+			print len(one_hot_bad_sub)
+			
 
-			one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
+			#one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
 
 			#print len(one_hot_all)
 			#print one_hot_all[538]
 
 			print "SUCCESS"
-			return one_hot_all
+			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub
 	
 		else:
 			print "Try again..."
