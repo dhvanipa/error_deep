@@ -120,12 +120,12 @@ def insertTokMut(raw_tokens, raw_text):
 
 	if shotInd == 0:
 		if raw_tokens_pass[chosenLineInd][0] == 4:
-			new_text = before + chosenToken + after
+			new_text = before + chosenToken.encode() + after
 		else:
-			new_text = before + chosenToken + ' ' + after
+			new_text = before + chosenToken.encode() + ' ' + after
 	else:
 		if raw_tokens_pass[chosenLineInd][0] == 54:
-			new_text = before + chosenToken + after
+			new_text = before + chosenToken.encode() + after
 		
 		elif chosenInd == data["indexes_m"].index('\n'): 
 			print "shiz"
@@ -133,7 +133,7 @@ def insertTokMut(raw_tokens, raw_text):
 				space = ' ' * (check-1)
 			else:
 				space = ' ' * (check)
-			new_text = before + chosenToken + space + after
+			new_text = before + chosenToken.encode() + space + after
 		else:
 			new_text = before + ' ' + chosenToken.encode() + ' ' + after
 	print '------------------------------------'

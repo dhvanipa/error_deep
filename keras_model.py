@@ -61,7 +61,7 @@ def create_batches():
 			
 	print len(ohg_group)
 	print len(ohbi_group)
-	print len(ohbd_group[53])
+	print len(ohbd_group)
 	#print ohbd_group[53]
 	print len(ohbs_group)
 

@@ -23,14 +23,29 @@ from mutate_token_sub import subTokMut
 # Iterations: 15 418
 # Unused samples = 23 
 # ONE HOT = 87
+# OUT = 104 (2 + 2 + 3 + 10 + 87)
+# 10 = WINDOW SIZE
 
 BATCH_SIZE = 66
+NUM_BITS_OUTPUT = 104
 global all_tokens
 new_tokens_ins = []
 new_tokens_del = []
 new_tokens_sub = []
 global indexed_tokens
 data = None
+
+#Declaring Global Constants
+YES_TOKEN = 0b00
+NO_TOKEN = 0b01
+INSERTION = 0b001
+DELETION = 0b010
+SUBSTITUTION = 0b100
+YES_ERROR = 0b00
+NO_ERROR = 0b01
+
+START_TOKEN = '<s>'
+END_TOKEN = '</s>'
 
 def one_hot(indexed_tokens):
 	one_hot = []
@@ -177,6 +192,8 @@ def perform():
 			print len(all_tokens)
 			
 			one_hot_good = vocabularize_tokens(all_tokens)
+			one_hot_gOut = [0] * NUM_BITS_OUTPUT
+
 			print "DHVANI"
 			print len(one_hot_good)
 		
@@ -198,7 +215,7 @@ def perform():
 			#print len(source_code)
 			try:
 				newTokenStream = tokenize.tokenize(StringIO.StringIO(new_i_text).readline, handle_token)
-			except tokenize.TokenError:
+			except (tokenize.TokenError, IndentationError) as e:
     				pass
 			new_tokens_ins = all_tokens
 			print len(new_tokens_ins)
@@ -220,8 +237,8 @@ def perform():
 			print "NEXT STEP..."
 			try:
 				newTokenStream = tokenize.tokenize(StringIO.StringIO(new_d_text).readline, handle_token)
-			except tokenize.TokenError:
-    				pass
+			except (tokenize.TokenError, IndentationError) as e:
+    				pass	
 			new_tokens_del = all_tokens
 			one_hot_bad_del = vocabularize_tokens(new_tokens_del)
 
@@ -264,7 +281,7 @@ def perform():
 			#print one_hot_all[538]
 
 			print "SUCCESS"
-			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub
+			ok = one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub
 	
 		else:
 			print "Try again..."
