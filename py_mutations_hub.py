@@ -18,10 +18,10 @@ from mutate_token_delete import deleteTokMut
 from mutate_token_sub import subTokMut
 
 # NUM TOTAL: 462 563
-# ACTUAl: 462 561
-# ACTUAL: 925 122, BATCH = 66, GOOD = 33, BAD = 33 (I, D, S -> 11)
-# Iterations: 14 017
-# Unused samples = 2 
+# ACTUAl: 462 540
+# ACTUAL: 925 080, BATCH = 60, GOOD = 30, BAD = 30 (I, D, S -> 10)
+# Iterations: 15 418
+# Unused samples = 23 
 # ONE HOT = 87
 
 BATCH_SIZE = 66
@@ -146,7 +146,7 @@ def handle_token(type, token, (srow, scol), (erow, ecol), line):
         (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
 
 
-def testTime():
+def perform():
 	sqlite_file = "/home/dhvani/python-sources.sqlite3"
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
@@ -203,13 +203,11 @@ def testTime():
 			#print one_hot_all[538]
 
 			print "SUCCESS"
-
+			return one_hot_all
 	
 		else:
 			print "Try again..."
 	
-def perform():
-	testTime()
 
 if __name__ == '__main__':
     perform()
