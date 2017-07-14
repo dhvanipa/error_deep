@@ -26,7 +26,7 @@ import sys
 # ONE HOT = 87
 # OUT = 104 (2 + 2 + 3 + 10 + 87)
 # 10 = WINDOW SIZE
-
+WINDOW_SIZE = 10
 BATCH_SIZE = 66
 NUM_BITS_OUTPUT = 104
 global all_tokens
@@ -200,8 +200,8 @@ def perform():
 	print "Fetching all rows..."
 	all_rows = c.fetchmany(size=33)
 	
-	for curr in range(3):
-		#curr = 2
+	for curr in range(2):
+		curr = 2
 		print all_rows[curr][0]
 		print "Got Em..."
 		print "Running PyPy test..."
@@ -266,6 +266,21 @@ def perform():
 			print "NEXT STEP...C"
 
 			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
+			
+			one_hot_bad_ins_out = []
+			# INSERT OUT_PUT
+			for x in range(len(new_tokens_ins)+(WINDOW_SIZE-1)):
+				toAdd = [0] * NUM_BITS_OUTPUT
+				toAdd[0] = 1
+				one_hot_bad_ins_out.append(toAdd)
+			print len(one_hot_bad_ins_out)
+			#print one_hot_bad_ins_out[539]
+
+
+			# OUTPUT TO DO: 
+
+
+
 			
 
 			# DELETE
@@ -372,7 +387,7 @@ def perform():
 			#one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
 
 			print "SUCCESS"
-			ok = one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub
+			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub
 			
 		else:
 			print "Try again..."
