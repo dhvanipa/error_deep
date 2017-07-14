@@ -245,7 +245,7 @@ def perform():
 				if isinstance(new_i_text, str):
 					break
 					
-			new_tokens_ins = all_tokens
+			new_tokens_ins = all_tokens[:]
 	
 			if insTok.type == "NL":
 				insTok.type = "NEWLINE"
@@ -286,7 +286,7 @@ def perform():
 
 			print "NEXT STEP..."
 			
-			new_tokens_del = allGood
+			new_tokens_del = allGood[:]
 
 			vocab_entry = open_closed_tokens(send)
 			send.value = vocab_entry
@@ -308,20 +308,51 @@ def perform():
 		
 			# SUB
 			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)	
-			global all_tokens
-			all_tokens = []
+			#global all_tokens
+			#all_tokens = []
 			global indexed_tokens
 			indexed_tokens = []
 			print type(raw_tokens)
 			
-			new_s_text, YES_TOKEN, SUBSTITUTION, out_tokens_loc_s, sendS = subTokMut(raw_tokens, source_code)
+			new_s_text, YES_TOKEN, SUBSTITUTION, out_tokens_loc_s, sendS, insTokS = subTokMut(raw_tokens, source_code)
 
+			while isinstance(new_s_text, int):
+				new_s_text, YES_TOKEN, SUBSTITUTION, out_tokens_loc_s, sendS, insTokS = subTokMut(YES_TOKEN, SUBSTITUTION)
+				if isinstance(new_s_text, str):
+					break
+			
 			print "NEXT STEP..."
-			try:
-				newTokenStream = tokenize.tokenize(StringIO.StringIO(new_s_text).readline, handle_token)
-			except (tokenize.TokenError) as e:
-    				pass	
-			new_tokens_sub = all_tokens
+
+			# SUB DELETE
+
+			new_tokens_sub = allGood[:]
+
+			vocab_entry = open_closed_tokens(sendS)
+			sendS.value = vocab_entry
+			
+			bruhInd = -1
+			iterInd = 0
+			for a in allGood:
+				if a == sendS:
+					bruhInd = iterInd
+				iterInd = iterInd + 1
+			#print bruhInd
+			#print len(new_tokens_del)
+			del new_tokens_sub[bruhInd]	
+			
+			# SUB INSERT
+		
+			if insTokS.type == "NL":
+				insTokS.type = "NEWLINE"
+			if insTokS.type == "ENDMARKER":
+				insTokS.type = "INDENT"
+
+			print insTokS.type
+			print insTokS.value
+			print "LUNCH"
+
+			new_tokens_sub.insert(bruhInd, insTokS)
+
 			one_hot_bad_sub = vocabularize_tokens(new_tokens_sub, True)
 
 			# MUTATIONS PER CHARACTER
@@ -339,23 +370,21 @@ def perform():
 			print source_code
 			print len(new_i_text)
 			print len(new_d_text)
-			print new_i_text
+			print new_d_text
 
 			print len(new_tokens_del)
 			print len(allGood)
 		
 
-			if len(one_hot_bad_del) != len(one_hot_good)-1:
-				for token in new_tokens_ins:
-					#print token.type
-					print token.value
-				print "<3 <3 <3 GOOD:"
-				for token in allGood:
-					#print token.type
-					print token.value
-			else:
-				perform()
-				return
+	
+			for token in new_tokens_del:
+				#print token.type
+				print token.value
+			print "<3 <3 <3 GOOD:"
+			for token in allGood:
+				#print token.type
+				print token.value
+
 				
 			#one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
 

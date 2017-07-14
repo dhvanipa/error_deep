@@ -8,6 +8,7 @@ from compile_error import CompileError
 import token
 from Token import Token
 from random import randint
+import StringIO
 
 #Declaring Global Constants
 YES_TOKEN = 0b00
@@ -15,6 +16,20 @@ NO_TOKEN = 0b01
 INSERTION = 0b001
 DELETION = 0b010
 SUBSTITUTION = 0b100
+
+global new_token
+
+# Create list of tokens
+def handle_token(type, token, (srow, scol), (erow, ecol), line):
+    if repr(token)[:2] == 'u\'':
+	val = repr(token)[2:len(repr(token))-1]
+    else:
+        val = repr(token)[1:len(repr(token))-1]
+    send = Token(tokenize.tok_name[type], val, srow, scol, erow, ecol, line)
+    global new_token
+    new_token.append(send)
+    print "%d,%d-%d,%d:\t%s\t%s" % \
+        (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
 
 # Method for finding index of certain characters in a string, n being the n'th occurence of the character/string
 def find_nth(haystack, needle, n):
@@ -34,6 +49,17 @@ def subTokMut(raw_tokens, raw_text):
 	chosenInd = randint(0,84)
 	chosenToken = data["indexes_m"][chosenInd]
 	print chosenToken
+
+	global new_token
+	new_token = []
+	try:
+		toksG = tokenize.tokenize(StringIO.StringIO(chosenToken).readline, handle_token)
+	except tokenize.TokenError:
+		pass	
+	#print type(toksG)
+	print len(new_token)
+	insEdTok = new_token[0]
+	insTokS = insEdTok
 	
 	raw_tokens_pass = []
 	out_tokens_loc = []
@@ -153,8 +179,10 @@ def subTokMut(raw_tokens, raw_text):
 
 	if toTest == None:
  		print "Try again..."	
-		subTokMut(raw_tokens_pass, raw_text)
-		return new_text, YES_TOKEN, SUBSTITUTION, out_tokens_loc, send
+		#subTokMut(raw_tokens_pass, raw_text)
+		lenR = 2
+		lenK = 2
+		return lenR, raw_tokens_pass, raw_text, lenK, send, insTokS
 	else:
 		print toTest[0]
 		print toTest[0].filename
@@ -163,7 +191,7 @@ def subTokMut(raw_tokens, raw_text):
 		print toTest[0].functionname
 		print toTest[0].text
 		print toTest[0].errorname
-		return new_text, YES_TOKEN, SUBSTITUTION, out_tokens_loc, send
+		return new_text, YES_TOKEN, SUBSTITUTION, out_tokens_loc, send, insTokS
 	
 	print "-----------FINISHED-------------------"
 	print chosenLineInd+1
