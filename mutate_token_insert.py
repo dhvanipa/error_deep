@@ -30,8 +30,8 @@ def insertTokMut(raw_tokens, raw_text):
     		data = json.load(data_file)
 		pprint(data)
 		print "HI"
-
-	chosenInd = randint(0,86)
+	print len(data["indexes_m"])
+	chosenInd = randint(0,84)
 	chosenToken = data["indexes_m"][chosenInd]
 	print chosenToken
 	
@@ -122,7 +122,7 @@ def insertTokMut(raw_tokens, raw_text):
 		if raw_tokens_pass[chosenLineInd][0] == 4:
 			new_text = before + chosenToken.encode() + after
 		else:
-			new_text = before + chosenToken.encode() + ' ' + after
+			new_text = before + ' ' + chosenToken.encode() + ' ' + after
 	else:
 		if raw_tokens_pass[chosenLineInd][0] == 54:
 			new_text = before + chosenToken.encode() + after
@@ -145,9 +145,12 @@ def insertTokMut(raw_tokens, raw_text):
 	if toTest == None:
  		print "Try again..."	
 		print "-----------FINISHED-------------------"
-		insertTokMut(raw_tokens_pass, raw_text)
+		#insertTokMut(raw_tokens_pass, raw_text)
 		print "-----------FINISHED-------------------"
-		return new_text, NO_TOKEN, INSERTION, out_tokens_loc
+		print "shit man"
+		lenR = 2
+		lenK = 2
+		return lenR, raw_tokens_pass, raw_text, lenK
 	else:
 		print "-----------FINISHED-------------------"
 		print toTest[0]

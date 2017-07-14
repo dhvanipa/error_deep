@@ -31,7 +31,7 @@ def subTokMut(raw_tokens, raw_text):
 		pprint(data)
 		print "HI"
 
-	chosenInd = randint(0,86)
+	chosenInd = randint(0,84)
 	chosenToken = data["indexes_m"][chosenInd]
 	print chosenToken
 	

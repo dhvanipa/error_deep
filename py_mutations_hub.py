@@ -55,13 +55,16 @@ def one_hot(indexed_tokens):
 	return one_hot
 	
 
-def set_from_json(all_tokens):
+def set_from_json(all_tokens, flag):
 	print "OMG"
 	with open('vocabulary.json') as data_file:    
     		data = json.load(data_file)
 		#pprint(data)
 	for token in all_tokens:
 		toCompare = token.value
+		print token.type
+		#print "Broke..."
+		#print token.line
 		global indexed_tokens
 		indexed_tokens.append(data["indexes"].index(toCompare))
 	print indexed_tokens
@@ -161,10 +164,15 @@ def vocabularize_tokens(every_token, flag):
 	Token.value = vocab_entry
         if Token.type in EXTRANEOUS_TOKENS:
 		every_token.remove(Token)
+	if flag == True:
+		if Token.value == "\\n":
+			every_token.remove(Token)
+		if Token.type == "NL":
+			print "Gotch u"
    
     for Token in every_token:
 	print Token.value
-    return set_from_json(every_token)
+    return set_from_json(every_token, flag)
  	
 	
 
@@ -227,7 +235,18 @@ def perform():
 			indexed_tokens = []
 			print "RAW"		
 			print len(all_tokens)
-			new_i_text, NO_TOKEN, INSERTION, out_tokens_loc_i = insertTokMut(raw_tokens, source_code)
+			
+			new_i_text, NO_TOKEN, INSERTION, out_tokens_loc = insertTokMut(raw_tokens, source_code)
+			#lenIns = int(lenR)
+			#print lenIns
+			while isinstance(new_i_text, int):
+				new_i_text, NO_TOKEN, INSERTION, out_tokens_loc = insertTokMut(NO_TOKEN, INSERTION)
+				#lenIns = len(get)
+				#print lenIns
+				if isinstance(new_i_text, str):
+					break
+					
+	
 			print "NEXT STEP...C"
 			#print len(new_i_text)
 			#print len(source_code)
@@ -274,7 +293,7 @@ def perform():
 			print "NEXT STEP..."
 			try:
 				newTokenStream = tokenize.tokenize(StringIO.StringIO(new_s_text).readline, handle_token)
-			except (tokenize.TokenError, IndentationError) as e:
+			except (tokenize.TokenError) as e:
     				pass	
 			new_tokens_sub = all_tokens
 			one_hot_bad_sub = vocabularize_tokens(new_tokens_sub, True)
@@ -291,17 +310,19 @@ def perform():
 			print len(one_hot_bad_ins)
 			print len(one_hot_bad_del)
 			print len(one_hot_bad_sub)
-			print len(source_code)
+			print source_code
 			print len(new_i_text)
 			print len(new_d_text)
-			print len(new_s_text)
+			print new_i_text
 		
 
-			if len(one_hot_bad_sub) != len(one_hot_good):
-				for token in new_tokens_sub:
+			if len(new_tokens_ins) != len(allGood)+1:
+				for token in new_tokens_ins:
+					#print token.type
 					print token.value
-				print "<3 <3 <3"
+				print "<3 <3 <3 GOOD:"
 				for token in allGood:
+					#print token.type
 					print token.value
 			else:
 				perform()
