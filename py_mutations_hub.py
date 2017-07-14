@@ -200,8 +200,8 @@ def perform():
 	print "Fetching all rows..."
 	all_rows = c.fetchmany(size=33)
 	
-	for curr in range(1):
-		curr = 2
+	for curr in range(3):
+		#curr = 2
 		print all_rows[curr][0]
 		print "Got Em..."
 		print "Running PyPy test..."
@@ -215,7 +215,7 @@ def perform():
 			global indexed_tokens
 			indexed_tokens = []
 			tokenStream = tokenize.tokenize(StringIO.StringIO(all_rows[curr][0]).readline, handle_token)
-			print "RAW"		
+			print "RAW"
 			print len(all_tokens)
 			allGood = all_tokens[:]
 			one_hot_good = vocabularize_tokens(all_tokens, False)
@@ -367,24 +367,7 @@ def perform():
 			print len(one_hot_bad_ins)
 			print len(one_hot_bad_del)
 			print len(one_hot_bad_sub)
-			print source_code
-			print len(new_i_text)
-			print len(new_d_text)
-			print new_d_text
-
-			print len(new_tokens_del)
-			print len(allGood)
 		
-
-	
-			for token in new_tokens_del:
-				#print token.type
-				print token.value
-			print "<3 <3 <3 GOOD:"
-			for token in allGood:
-				#print token.type
-				print token.value
-
 				
 			#one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
 
