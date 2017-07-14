@@ -16,6 +16,7 @@ from mutate_deletion import deleteMut
 from mutate_token_insert import insertTokMut
 from mutate_token_delete import deleteTokMut
 from mutate_token_sub import subTokMut
+import sys
 
 # NUM TOTAL: 462 563
 # ACTUAl: 462 540
@@ -216,12 +217,13 @@ def perform():
 			tokenStream = tokenize.tokenize(StringIO.StringIO(all_rows[curr][0]).readline, handle_token)
 			print "RAW"		
 			print len(all_tokens)
-			allGood = all_tokens
+			allGood = all_tokens[:]
 			one_hot_good = vocabularize_tokens(all_tokens, False)
 			one_hot_gOut = [0] * NUM_BITS_OUTPUT
 
 			print "DHVANI"
 			print len(one_hot_good)
+			print len(allGood)
 		
 			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)		
 			source_code = str(all_rows[curr][0])
@@ -229,54 +231,78 @@ def perform():
 			#MUTATIONS PER TOKEN
 
 			# INSERT
-			global all_tokens
-			all_tokens = []
+			#global all_tokens
+			#all_tokens = []
 			global indexed_tokens
 			indexed_tokens = []
 			print "RAW"		
 			print len(all_tokens)
 			
-			new_i_text, NO_TOKEN, INSERTION, out_tokens_loc = insertTokMut(raw_tokens, source_code)
-			#lenIns = int(lenR)
-			#print lenIns
+			new_i_text, NO_TOKEN, INSERTION, out_tokens_loc, chosenTrueLineInd, insTok = insertTokMut(raw_tokens, source_code)
+
 			while isinstance(new_i_text, int):
-				new_i_text, NO_TOKEN, INSERTION, out_tokens_loc = insertTokMut(NO_TOKEN, INSERTION)
-				#lenIns = len(get)
-				#print lenIns
+				new_i_text, NO_TOKEN, INSERTION, out_tokens_loc, chosenTrueLineInd, insTok = insertTokMut(NO_TOKEN, INSERTION)
 				if isinstance(new_i_text, str):
 					break
 					
-	
-			print "NEXT STEP...C"
-			#print len(new_i_text)
-			#print len(source_code)
-			try:
-				newTokenStream = tokenize.tokenize(StringIO.StringIO(new_i_text).readline, handle_token)
-			except (tokenize.TokenError, IndentationError) as e:
-    				pass
 			new_tokens_ins = all_tokens
-			print len(new_tokens_ins)
-			print "CC"		
+	
+			if insTok.type == "NL":
+				insTok.type = "NEWLINE"
+
+			vocab_entry = open_closed_tokens(chosenTrueLineInd)
+			chosenTrueLineInd.value = vocab_entry
+			print vocab_entry
+
+			bruhInd = -1
+			iterInd = 0
+			for a in allGood:
+				if a == chosenTrueLineInd:
+					bruhInd = iterInd
+				iterInd = iterInd + 1
+			print bruhInd + 1
+			new_tokens_ins.insert(bruhInd+1, insTok)
+		
+			print "NEXT STEP...C"
+
 			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
 			
 
 			# DELETE
 			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)	
-			global all_tokens
-			all_tokens = []
+			#global all_tokens
+			#all_tokens = []
 			global indexed_tokens
 			indexed_tokens = []
 			print type(raw_tokens)
 			print type(source_code)
-			new_d_text, YES_TOKEN, DELETION, out_tokens_loc_d, sendD = deleteTokMut(raw_tokens, source_code)
+			new_d_text, YES_TOKEN, DELETION, out_tokens_loc_d, send = deleteTokMut(raw_tokens, source_code)
+
+			while isinstance(new_d_text, int):
+				new_d_text, YES_TOKEN, DELETION, out_tokens_loc, send = deleteTokMut(YES_TOKEN, DELETION)
+				if isinstance(new_d_text, str):
+					break
 			
 
 			print "NEXT STEP..."
-			try:
-				newTokenStream = tokenize.tokenize(StringIO.StringIO(new_d_text).readline, handle_token)
-			except (tokenize.TokenError, IndentationError) as e:
-    				pass	
-			new_tokens_del = all_tokens
+			
+			new_tokens_del = allGood
+
+			vocab_entry = open_closed_tokens(send)
+			send.value = vocab_entry
+			
+			bruhInd = -1
+			iterInd = 0
+			for a in allGood:
+				if a == send:
+					bruhInd = iterInd
+				iterInd = iterInd + 1
+			print bruhInd
+			print len(new_tokens_del)
+			del new_tokens_del[bruhInd]		
+			print len(new_tokens_del)
+			print "DEL ROR"
+
 			one_hot_bad_del = vocabularize_tokens(new_tokens_del, True)
 
 		
@@ -314,9 +340,12 @@ def perform():
 			print len(new_i_text)
 			print len(new_d_text)
 			print new_i_text
+
+			print len(new_tokens_del)
+			print len(allGood)
 		
 
-			if len(new_tokens_ins) != len(allGood)+1:
+			if len(one_hot_bad_del) != len(one_hot_good)-1:
 				for token in new_tokens_ins:
 					#print token.type
 					print token.value

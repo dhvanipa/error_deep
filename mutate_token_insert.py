@@ -8,6 +8,7 @@ from compile_error import CompileError
 import token
 from Token import Token
 from random import randint
+import StringIO
 
 #Declaring Global Constants
 YES_TOKEN = 0b00
@@ -16,6 +17,8 @@ INSERTION = 0b001
 DELETION = 0b010
 SUBSTITUTION = 0b100
 
+global new_token
+
 # Method for finding index of certain characters in a string, n being the n'th occurence of the character/string
 def find_nth(haystack, needle, n):
     start = haystack.find(needle.encode())
@@ -23,6 +26,19 @@ def find_nth(haystack, needle, n):
         start = haystack.find(needle, start+len(needle))
         n -= 1
     return start
+
+# Create list of tokens
+def handle_token(type, token, (srow, scol), (erow, ecol), line):
+    if repr(token)[:2] == 'u\'':
+	val = repr(token)[2:len(repr(token))-1]
+    else:
+        val = repr(token)[1:len(repr(token))-1]
+    send = Token(tokenize.tok_name[type], val, srow, scol, erow, ecol, line)
+    global new_token
+    new_token.append(send)
+    print "%d,%d-%d,%d:\t%s\t%s" % \
+        (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
+
 
 def insertTokMut(raw_tokens, raw_text):
 
@@ -34,6 +50,19 @@ def insertTokMut(raw_tokens, raw_text):
 	chosenInd = randint(0,84)
 	chosenToken = data["indexes_m"][chosenInd]
 	print chosenToken
+
+	print tokenize.tok_name
+	global new_token
+	new_token = []
+	try:
+		toksG = tokenize.tokenize(StringIO.StringIO(chosenToken).readline, handle_token)
+	except tokenize.TokenError:
+		pass	
+	#print type(toksG)
+	print len(new_token)
+	insEdTok = new_token[0]
+	insTok = insEdTok
+	#insTok = Token(
 	
 	out_tokens_loc = []
 	raw_tokens_pass = []
@@ -56,6 +85,14 @@ def insertTokMut(raw_tokens, raw_text):
 	num_encode = len(orig)	
 
 	chosenLineInd = randint(0, num_lines-1) #num_lines-1
+	#chosen = raw_tokens_pass[chosenLineInd]
+
+
+	chosen = Token(tokenize.tok_name[raw_tokens_pass[chosenLineInd][0]], raw_tokens_pass[chosenLineInd][1], raw_tokens_pass[chosenLineInd][2][0], raw_tokens_pass[chosenLineInd][2][1], raw_tokens_pass[chosenLineInd][3][0], raw_tokens_pass[chosenLineInd][3][1], raw_tokens_pass[chosenLineInd][4])
+	
+	#print NAH
+	print "NAH"
+
 	chosenTrueLineInd = -1
 	indI = 0
 	for x in orig:
@@ -150,7 +187,7 @@ def insertTokMut(raw_tokens, raw_text):
 		print "shit man"
 		lenR = 2
 		lenK = 2
-		return lenR, raw_tokens_pass, raw_text, lenK
+		return lenR, raw_tokens_pass, raw_text, lenK, chosen, insTok
 	else:
 		print "-----------FINISHED-------------------"
 		print toTest[0]
@@ -165,7 +202,7 @@ def insertTokMut(raw_tokens, raw_text):
 		print NO_TOKEN
 		print INSERTION
 		print len(out_tokens_loc)
-		return new_text, NO_TOKEN, INSERTION, out_tokens_loc
+		return new_text, NO_TOKEN, INSERTION, out_tokens_loc, chosen, insTok
 	
 	print "-----------FINISHED-------------------"
 	print chosenLineInd+1	

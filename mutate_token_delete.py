@@ -126,8 +126,10 @@ def deleteTokMut(raw_tokens, raw_text):
 
 	if toTest == None:
  		print "Try again..."	
-		deleteTokMut(raw_tokens_pass, raw_text)
-		return new_text, YES_TOKEN, DELETION, out_tokens_loc, send
+		#deleteTokMut(raw_tokens_pass, raw_text)
+		lenR = 2
+		lenK = 2
+		return lenR, raw_tokens_pass, raw_text, lenK, send
 	else:
 		print toTest[0]
 		print toTest[0].filename
