@@ -143,8 +143,7 @@ class feedData():
 def create_batches():
 	print "Creating batches..."
 	
-	firstTenGG = getGoodTen()
-	firstTenBG = getBadTen()
+	
 	
 	inputTenG = []
 	outputTenB = []
@@ -215,7 +214,27 @@ def initData():
 	print "Start..."
 	create_batches()
 	model = Sequential()
-	# Fit the model
+	model.add(Dense(64, activation='relu', input_dim=20))
+	model.add(Dropout(0.5))
+	model.add(Dense(64, activation='relu'))
+	model.add(Dropout(0.5))
+	model.add(Dense(10, activation='softmax'))
+	
+
+	# For a binary classification problem
+	model.compile(optimizer='rmsprop',
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+
+	firstTenGG = getGoodTen()
+	firstTenBG = getBadTen()
+
+	model.fit_generator(
+               	 zip(firstTenGG, firstTenBG),
+                steps_per_epoch=5,
+                epochs=4,      
+                verbose=1,	
+            )
 	#model.fit(iter(train_input), iter(train_output), epochs=150, batch_size=10)
 	#train_input, train_output = create_batches()
 

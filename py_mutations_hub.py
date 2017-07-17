@@ -228,7 +228,7 @@ def perform(curr):
 	
 	#for curr in range(2):
 	if True:
-		curr = curr
+		
 		#curr = 2
 		print all_rows[curr][0]
 		print "Got Em..."
@@ -536,6 +536,8 @@ def perform(curr):
 			print len(one_hot_bad_ins_out)
 			print len(one_hot_bad_del_out)
 			print len(one_hot_bad_sub_out)
+
+			print curr
 		
 				
 			#one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
