@@ -10,7 +10,7 @@ from Token import Token
 from random import randint
 
 #Declaring Global Constants
-YES_TOKEN = 0b00
+YES_TOKEN = 0b10
 NO_TOKEN = 0b01
 INSERTION = 0b001
 DELETION = 0b010

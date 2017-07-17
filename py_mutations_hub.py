@@ -37,7 +37,7 @@ global indexed_tokens
 data = None
 
 #Declaring Global Constants
-YES_TOKEN = 0b00
+YES_TOKEN = 0b10
 NO_TOKEN = 0b01
 INSERTION = 0b001
 DELETION = 0b010
@@ -268,35 +268,42 @@ def perform():
 			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
 			
 			one_hot_bad_ins_out = []
-			trueErrorInd = (bruhInd+1)+(WINDOW_SIZE-1) 
+			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1) 
 			# INSERT OUT_PUT
-			iterNum = len(new_tokens_ins)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
-			print iterNum
+			iterNum = len(allGood)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
+			#print "divide"
+			#print trueErrorInd
+			#print iterNum
 			for x in range(iterNum):
 				#if x <= trueErrorInd <= (x+trueErrorInd):
 				if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
 					# DIFF - ACTUAL ERROR
+					#print x
 					toAdd = []
-					toAdd = [1] * NUM_BITS_OUTPUT
+					toAdd = [0] * NUM_BITS_OUTPUT
+					toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
+					toAdd[1] = 0
+					if NO_TOKEN != None:
+						toAdd[2] = 0
+						toAdd[3] = 1
+					if INSERTION != None:
+						toAdd[4] = 0
+						toAdd[5] = 0
+						toAdd[6] = 1
+					toAdd[7+trueErrorInd-x] = 1
 					one_hot_bad_ins_out.append(toAdd)
 				else:
 					toAdd = []
 					toAdd = [0] * NUM_BITS_OUTPUT
-					toAdd[0] = 1
+					toAdd[0] = 0
+					toAdd[1] = 1 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
 					one_hot_bad_ins_out.append(toAdd)
-			print "Morning"	
-			print len(new_tokens_ins)
-			print len(one_hot_bad_ins_out)
-			print one_hot_bad_ins_out[trueErrorInd]
-			sys.exit()
+			#print "Morning"	
+			#print len(new_tokens_ins)
+			#print len(one_hot_bad_ins_out)
+			#print one_hot_bad_ins_out[trueErrorInd]
 
 
-			# OUTPUT TO DO: 
-
-
-
-
-			
 
 			# DELETE
 			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)	
@@ -334,6 +341,57 @@ def perform():
 			print "DEL ROR"
 
 			one_hot_bad_del = vocabularize_tokens(new_tokens_del, True)
+			
+			one_hot_bad_del_out = []
+			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1) 
+			# DELETE OUT_PUT
+			iterNum = len(allGood)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
+			print "divide"
+			print trueErrorInd
+			print iterNum
+			for x in range(iterNum):
+				#if x <= trueErrorInd <= (x+trueErrorInd):
+				if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
+					# DIFF - ACTUAL ERROR
+					print x
+					toAdd = []
+					toAdd = [0] * NUM_BITS_OUTPUT
+					toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
+					toAdd[1] = 0
+					if YES_TOKEN != None:
+						toAdd[2] = 1
+						toAdd[3] = 0
+					if DELETION != None:
+						toAdd[4] = 0
+						toAdd[5] = 1
+						toAdd[6] = 0
+					toAdd[7+trueErrorInd-x] = 1
+					one_hot_bad_del_out.append(toAdd)
+				else:
+					toAdd = []
+					toAdd = [0] * NUM_BITS_OUTPUT
+					toAdd[0] = 0
+					toAdd[1] = 1 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
+					one_hot_bad_del_out.append(toAdd)
+			print "Morning"	
+			print len(allGood)
+			print len(one_hot_bad_del_out)
+			print one_hot_bad_del_out[trueErrorInd]
+			sys.exit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		
 			# SUB
