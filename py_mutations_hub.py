@@ -53,6 +53,13 @@ def one_hot(indexed_tokens):
 	nb_classes = 87
 	one_hot_targets = np.eye(nb_classes)[indexed_tokens]
 	one_hot = one_hot_targets.tolist()
+	print "fort"
+	#bruhTemp = one_hot[:]
+	for x in range(len(one_hot)):
+		#one_hot[x].astype(int)
+		[int(i) for i in one_hot[x]]
+	#one_hot.astype(int)
+	print type(one_hot[0][0])
 	return one_hot
 	
 

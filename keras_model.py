@@ -16,8 +16,14 @@ from itertools import izip_longest
 # [Good, Insert, Delete, Sub]
 WINDOW_SIZE = 10
 
+# DEFINED:
 
-def firstTen(goodArr, insArr, delArr, subArr):
+# FIXED INPUT BITS = 87 (ONE TOKEN)
+# FIXED OUTPUT BITS = 102 (2+2+3+10+85)
+# WINDOW = 10, SO BATCH = 40 INPUT, 40 OUTPUT
+
+
+def getTen(goodArr, insArr, delArr, subArr):
 	windowInd = 0
 	while windowInd < int(len(insArr)/10):
 		toPass = []
@@ -36,7 +42,7 @@ def firstTen(goodArr, insArr, delArr, subArr):
 		#print len(toPass)
 		yield toPass
 		windowInd += 1
-
+'''
 def chunker(seq, size):
     return (seq[pos:pos + size] for pos in xrange(0, len(seq), size))
 
@@ -54,13 +60,13 @@ class feedData():
     		batch_y = self.y[idx*self.batch_size:(idx+1)*self.batch_size]
     		return np.array([batch_x]), np.array(batch_y)
 
-
+'''
 def create_batches():
 	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform()
 	print "Finished..."
 	
-	firstTenGG = firstTen(one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub)
-	firstTenBG = firstTen(one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out)
+	firstTenGG = getTen(one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub)
+	firstTenBG = getTen(one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out)
 	
 	inputTenG = []
 	outputTenB = []
