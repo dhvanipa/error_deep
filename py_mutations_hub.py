@@ -216,7 +216,7 @@ def handle_token(type, token, (srow, scol), (erow, ecol), line):
         (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
 
 
-def perform():
+def perform(curr):
 	sqlite_file = "/home/dhvani/python-sources.sqlite3"
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
@@ -226,8 +226,10 @@ def perform():
 	print "Fetching all rows..."
 	all_rows = c.fetchmany(size=33)
 	
-	for curr in range(2):
-		curr = 2
+	#for curr in range(2):
+	if True:
+		curr = curr
+		#curr = 2
 		print all_rows[curr][0]
 		print "Got Em..."
 		print "Running PyPy test..."
@@ -546,6 +548,6 @@ def perform():
 	
 
 if __name__ == '__main__':
-    perform()
+    perform(2)
 
 

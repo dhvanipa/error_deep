@@ -23,25 +23,104 @@ WINDOW_SIZE = 10
 # WINDOW = 10, SO BATCH = 40 INPUT, 40 OUTPUT
 
 
-def getTen(goodArr, insArr, delArr, subArr):
+def getGoodTen():
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(2)
 	windowInd = 0
-	while windowInd < int(len(insArr)/10):
-		toPass = []
-		for x in range(10):
-			y = x + windowInd
-			toPass.append(goodArr[y])	
-		for x in range(10):
-			y = x + windowInd
-			toPass.append(insArr[y])
-		for x in range(10):
-			y = x + windowInd
-			toPass.append(delArr[y])
-		for x in range(10):
-			y = x + windowInd
-			toPass.append(subArr[y])
-		#print len(toPass)
-		yield toPass
-		windowInd += 1
+	fileInd = 2
+	while fileInd <= 2: # 462540
+	#while windowInd < int(len(insArr)/10):
+		if windowInd < int(len(one_hot_bad_ins)/10):		
+			toPass = []
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_good[y])	
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_ins[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_del[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_sub[y])
+			#print len(toPass)
+			yield toPass
+			windowInd += 1
+		else:
+			print "NEXT FILE"
+		
+			old_one_hot_good = one_hot_good[:]
+			old_one_hot_bad_ins = one_hot_bad_ins[:]
+			old_one_hot_bad_del = one_hot_bad_del[:]
+			old_one_hot_bad_sub = one_hot_bad_sub[:]
+
+			numGoodLeft = len(one_hot_good) % 10
+			numBadInsLeft = len(one_hot_bad_ins) % 10
+			numBadDelLeft = len(one_hot_bad_del) % 10
+			numBadSubLeft = len(one_hot_bad_sub) % 10
+
+			fileInd += 1
+			windowInd = 0
+			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(fileInd)
+			
+			for p in range(numGoodLeft):
+				one_hot_good.insert(p, old_one_hot_good[len(old_one_hot_good)-numGoodLeft+p])
+			for p in range(numBadInsLeft):
+				one_hot_bad_ins.insert(p, old_one_hot_bad_ins[len(old_one_hot_bad_ins)-numBadInsLeft+p])
+			for p in range(numBadDelLeft):
+				one_hot_bad_del.insert(p, old_one_hot_bad_del[len(old_one_hot_bad_del)-numBadDelLeft+p])
+			for p in range(numBadSubLeft):
+				one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
+
+def getBadTen():
+	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(2)
+	windowInd = 0
+	fileInd = 2
+	while fileInd <= 2: # 462540
+	#while windowInd < int(len(insArr)/10):
+		if windowInd < int(len(one_hot_bad_ins_out)/10):		
+			toPass = []
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_good_out[y])	
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_ins_out[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_del_out[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_sub_out[y])
+			#print len(toPass)
+			yield toPass
+			windowInd += 1
+		else:
+			print "NEXT FILE"
+
+			old_one_hot_good_out = one_hot_good_out[:]
+			old_one_hot_bad_ins_out = one_hot_bad_ins_out[:]
+			old_one_hot_bad_del_out = one_hot_bad_del_out[:]
+			old_one_hot_bad_sub_out = one_hot_bad_sub_out[:]
+
+			numGoodOutLeft = len(one_hot_good_out) % 10
+			numBadInsOutLeft = len(one_hot_bad_ins_out) % 10
+			numBadDelOutLeft = len(one_hot_bad_del_out) % 10
+			numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
+
+			fileInd += 1
+			windowInd = 0
+			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(fileInd)
+
+			for p in range(numGoodOutLeft):
+				one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
+			for p in range(numBadInsOutLeft):
+				one_hot_bad_ins_out.insert(p, old_one_hot_bad_ins_out[len(old_one_hot_bad_ins_out)-numBadInsOutLeft+p])
+			for p in range(numBadDelOutLeft):
+				one_hot_bad_del_out.insert(p, old_one_hot_bad_del_out[len(old_one_hot_bad_del_out)-numBadDelOutLeft+p])
+			for p in range(numBadSubOutLeft):
+				one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
+			
 '''
 def chunker(seq, size):
     return (seq[pos:pos + size] for pos in xrange(0, len(seq), size))
@@ -62,11 +141,10 @@ class feedData():
 
 '''
 def create_batches():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform()
-	print "Finished..."
+	print "Creating batches..."
 	
-	firstTenGG = getTen(one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub)
-	firstTenBG = getTen(one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out)
+	firstTenGG = getGoodTen()
+	firstTenBG = getBadTen()
 	
 	inputTenG = []
 	outputTenB = []
@@ -74,14 +152,22 @@ def create_batches():
 		inputTenG.append(wow)
 	for woh in firstTenBG:
 		outputTenB.append(woh)
+
+	
+	print "Finished..."
+
 	print len(inputTenG)
 	print len(outputTenB)
+
+	print "Constants"
 
 	print len(inputTenG[0][0])
 	print len(inputTenG[0])
 
 	print len(outputTenB[0][0])
 	print len(outputTenB[0])
+
+	print "Terminate"
 
 
 	'''
