@@ -35,7 +35,7 @@ class feedData():
 
 
 def create_batches():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = perform()
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform()
 	print "Finished..."
 	
 	ohg_g = chunker(one_hot_good, 10)

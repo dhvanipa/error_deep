@@ -50,7 +50,7 @@ END_TOKEN = '</s>'
 
 def one_hot(indexed_tokens):
 	one_hot = []
-	nb_classes = 85
+	nb_classes = 87
 	one_hot_targets = np.eye(nb_classes)[indexed_tokens]
 	one_hot = one_hot_targets.tolist()
 	return one_hot
@@ -68,6 +68,10 @@ def set_from_json(all_tokens, flag):
 		#print token.line
 		global indexed_tokens
 		indexed_tokens.append(data["indexes"].index(toCompare))
+	for r in range(9):
+		indexed_tokens.insert(r, data["indexes"].index(START_TOKEN))
+		indexed_tokens.append(data["indexes"].index(END_TOKEN))
+		
 	print indexed_tokens
 	return one_hot(indexed_tokens)
 
@@ -232,13 +236,23 @@ def perform():
 			tokenStream = tokenize.tokenize(StringIO.StringIO(all_rows[curr][0]).readline, handle_token)
 			print "RAW"
 			print len(all_tokens)
-			allGood = all_tokens[:]
+			allGood = []
+			global all_tokens
+			allGood = list(all_tokens)
 			one_hot_good = vocabularize_tokens(all_tokens, False)
-			one_hot_gOut = [0] * NUM_BITS_OUTPUT
+			one_hot_good_out = []
+			for x in range(len(all_tokens)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)):
+				toAdd = []
+				toAdd = [0] * NUM_BITS_OUTPUT
+				toAdd[0] = 0
+				toAdd[1] = 1 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
+				one_hot_good_out.append(toAdd)
+			
 
 			print "DHVANI"
 			print len(one_hot_good)
 			print len(allGood)
+			print len(all_tokens)
 		
 			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)		
 			source_code = str(all_rows[curr][0])
@@ -285,7 +299,7 @@ def perform():
 			one_hot_bad_ins_out = []
 			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1) 
 			# INSERT OUT_PUT
-			iterNum = len(allGood)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
+			iterNum = len(new_tokens_ins)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
 			#print "divide"
 			#print trueErrorInd
 			#print iterNum
@@ -362,7 +376,7 @@ def perform():
 			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1)
  
 			# DELETE OUT_PUT
-			iterNum = len(allGood)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
+			iterNum = len(new_tokens_del)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
 			#print "divide"
 			#print len(send)
 			#print trueErrorInd
@@ -452,7 +466,7 @@ def perform():
 			one_hot_bad_sub_out = []
 			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1) 
 			# SUB OUT_PUT
-			iterNum = len(allGood)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
+			iterNum = len(new_tokens_sub)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
 			print "divide"
 			#print len(send)
 			print trueErrorInd
@@ -487,6 +501,7 @@ def perform():
 					one_hot_bad_sub_out.append(toAdd)
 			print "Morning"	
 			print len(allGood)
+			print len(all_tokens)
 			print len(one_hot_bad_sub_out)
 			print one_hot_bad_sub_out[trueErrorInd]
 	
@@ -499,11 +514,16 @@ def perform():
 			#print one_hot_good[0]
 			#print one_hot_bad[0]
 			
+			print "----------INPUT-------------"
+
 			print len(one_hot_good)
 			print len(one_hot_bad_ins)
 			print len(one_hot_bad_del)
 			print len(one_hot_bad_sub)
 
+			print "----------OUTPUT-------------"
+
+			print len(one_hot_good_out)
 			print len(one_hot_bad_ins_out)
 			print len(one_hot_bad_del_out)
 			print len(one_hot_bad_sub_out)
@@ -512,7 +532,7 @@ def perform():
 			#one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
 
 			print "SUCCESS"
-			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out
+			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out
 			
 		else:
 			print "Try again..."
