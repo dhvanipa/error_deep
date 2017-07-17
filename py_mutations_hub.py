@@ -268,16 +268,31 @@ def perform():
 			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
 			
 			one_hot_bad_ins_out = []
+			trueErrorInd = (bruhInd+1)+(WINDOW_SIZE-1) 
 			# INSERT OUT_PUT
-			for x in range(len(new_tokens_ins)+(WINDOW_SIZE-1)):
-				toAdd = [0] * NUM_BITS_OUTPUT
-				toAdd[0] = 1
-				one_hot_bad_ins_out.append(toAdd)
+			iterNum = len(new_tokens_ins)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
+			print iterNum
+			for x in range(iterNum):
+				#if x <= trueErrorInd <= (x+trueErrorInd):
+				if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
+					# DIFF - ACTUAL ERROR
+					toAdd = []
+					toAdd = [1] * NUM_BITS_OUTPUT
+					one_hot_bad_ins_out.append(toAdd)
+				else:
+					toAdd = []
+					toAdd = [0] * NUM_BITS_OUTPUT
+					toAdd[0] = 1
+					one_hot_bad_ins_out.append(toAdd)
+			print "Morning"	
+			print len(new_tokens_ins)
 			print len(one_hot_bad_ins_out)
-			#print one_hot_bad_ins_out[539]
+			print one_hot_bad_ins_out[trueErrorInd]
+			sys.exit()
 
 
 			# OUTPUT TO DO: 
+
 
 
 
