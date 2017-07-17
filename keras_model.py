@@ -14,7 +14,28 @@ from itertools import izip_longest
 # So 15 of 4 of one window
 # One 4:
 # [Good, Insert, Delete, Sub]
-# WINDOW SIZE = 10
+WINDOW_SIZE = 10
+
+
+def firstTen(goodArr, insArr, delArr, subArr):
+	windowInd = 0
+	while windowInd < int(len(insArr)/10):
+		toPass = []
+		for x in range(10):
+			y = x + windowInd
+			toPass.append(goodArr[y])	
+		for x in range(10):
+			y = x + windowInd
+			toPass.append(insArr[y])
+		for x in range(10):
+			y = x + windowInd
+			toPass.append(delArr[y])
+		for x in range(10):
+			y = x + windowInd
+			toPass.append(subArr[y])
+		#print len(toPass)
+		yield toPass
+		windowInd += 1
 
 def chunker(seq, size):
     return (seq[pos:pos + size] for pos in xrange(0, len(seq), size))
@@ -38,6 +59,26 @@ def create_batches():
 	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform()
 	print "Finished..."
 	
+	firstTenGG = firstTen(one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub)
+	firstTenBG = firstTen(one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out)
+	
+	inputTenG = []
+	outputTenB = []
+	for wow in firstTenGG:
+		inputTenG.append(wow)
+	for woh in firstTenBG:
+		outputTenB.append(woh)
+	print len(inputTenG)
+	print len(outputTenB)
+
+	print len(inputTenG[0][0])
+	print len(inputTenG[0])
+
+	print len(outputTenB[0][0])
+	print len(outputTenB[0])
+
+
+	'''
 	ohg_g = chunker(one_hot_good, 10)
 	ohbi_g = chunker(one_hot_bad_ins, 10)
 	ohbd_g = chunker(one_hot_bad_del, 10)
@@ -73,7 +114,7 @@ def create_batches():
 	temp = np.insert(subA, np.arange(len(delA)), delA)
 	temp2 = np.insert(temp, np.arange(len(insA)), insA)
 	train_input = np.insert(temp2, np.arange(len(goodA)), goodA)
-	
+	'''
 	# feedData(train_input	
 
 	#return train_input, train_output
