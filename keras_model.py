@@ -9,6 +9,8 @@ from skimage.io import imread
 from skimage.transform import resize
 import numpy as np
 from itertools import izip_longest
+from itertools import izip
+
 
 # BATCH = 60
 # So 15 of 4 of one window
@@ -23,11 +25,11 @@ WINDOW_SIZE = 10
 # WINDOW = 10, SO BATCH = 40 INPUT, 40 OUTPUT
 
 
-def getGoodTen():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(2)
+def getInputTen():
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(0)
 	windowInd = 0
-	fileInd = 2
-	while fileInd <= 2: # 462540
+	fileInd = 0
+	while fileInd <= 10: # 462540
 	#while windowInd < int(len(insArr)/10):
 		if windowInd < int(len(one_hot_bad_ins)/10):		
 			toPass = []
@@ -44,7 +46,12 @@ def getGoodTen():
 				y = x + windowInd
 				toPass.append(one_hot_bad_sub[y])
 			#print len(toPass)
-			yield toPass
+			a = numpy.array(toPass)
+			b = a[None, :, :]
+			#print b.shape
+			yield b
+			#print numpy.array(toPass).shape
+			#print "mine too"
 			windowInd += 1
 		else:
 			print "NEXT FILE"
@@ -72,11 +79,11 @@ def getGoodTen():
 			for p in range(numBadSubLeft):
 				one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
 
-def getBadTen():
-	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(2)
+def getOutputTen():
+	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(0)
 	windowInd = 0
-	fileInd = 2
-	while fileInd <= 2: # 462540
+	fileInd = 0
+	while fileInd <= 10: # 462540
 	#while windowInd < int(len(insArr)/10):
 		if windowInd < int(len(one_hot_bad_ins_out)/10):		
 			toPass = []
@@ -93,7 +100,11 @@ def getBadTen():
 				y = x + windowInd
 				toPass.append(one_hot_bad_sub_out[y])
 			#print len(toPass)
-			yield toPass
+			a = numpy.array(toPass)
+			b = a[None, :, :]
+			yield b
+			#print numpy.array(toPass).shape
+			#print "mine"
 			windowInd += 1
 		else:
 			print "NEXT FILE"
@@ -120,105 +131,232 @@ def getBadTen():
 				one_hot_bad_del_out.insert(p, old_one_hot_bad_del_out[len(old_one_hot_bad_del_out)-numBadDelOutLeft+p])
 			for p in range(numBadSubOutLeft):
 				one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
+
+
+def getInputValTen():
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(11)
+	windowInd = 0
+	fileInd = 11
+	while fileInd <= 20: # 462540
+	#while windowInd < int(len(insArr)/10):
+		if windowInd < int(len(one_hot_bad_ins)/10):		
+			toPass = []
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_good[y])	
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_ins[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_del[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_sub[y])
+			#print len(toPass)
+			a = numpy.array(toPass)
+			b = a[None, :, :]
+			#print b.shape
+			yield b
+			#print numpy.array(toPass).shape
+			#print "mine too"
+			windowInd += 1
+		else:
+			print "NEXT FILE"
+		
+			old_one_hot_good = one_hot_good[:]
+			old_one_hot_bad_ins = one_hot_bad_ins[:]
+			old_one_hot_bad_del = one_hot_bad_del[:]
+			old_one_hot_bad_sub = one_hot_bad_sub[:]
+
+			numGoodLeft = len(one_hot_good) % 10
+			numBadInsLeft = len(one_hot_bad_ins) % 10
+			numBadDelLeft = len(one_hot_bad_del) % 10
+			numBadSubLeft = len(one_hot_bad_sub) % 10
+
+			fileInd += 1
+			windowInd = 0
+			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(fileInd)
 			
-'''
-def chunker(seq, size):
-    return (seq[pos:pos + size] for pos in xrange(0, len(seq), size))
+			for p in range(numGoodLeft):
+				one_hot_good.insert(p, old_one_hot_good[len(old_one_hot_good)-numGoodLeft+p])
+			for p in range(numBadInsLeft):
+				one_hot_bad_ins.insert(p, old_one_hot_bad_ins[len(old_one_hot_bad_ins)-numBadInsLeft+p])
+			for p in range(numBadDelLeft):
+				one_hot_bad_del.insert(p, old_one_hot_bad_del[len(old_one_hot_bad_del)-numBadDelLeft+p])
+			for p in range(numBadSubLeft):
+				one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
 
-class feedData():
+def getOutputValTen():
+	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(11)
+	windowInd = 0
+	fileInd = 11
+	while fileInd <= 20: # 462540
+	#while windowInd < int(len(insArr)/10):
+		if windowInd < int(len(one_hot_bad_ins_out)/10):		
+			toPass = []
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_good_out[y])	
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_ins_out[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_del_out[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_sub_out[y])
+			#print len(toPass)
+			a = numpy.array(toPass)
+			b = a[None, :, :]
+			yield b
+			#print numpy.array(toPass).shape
+			#print "mine"
+			windowInd += 1
+		else:
+			print "NEXT FILE"
 
-	def __init__(self, x_set, y_set, batch_size):
-    		self.X,self.y = x_set,y_set
-    		self.batch_size = batch_size
+			old_one_hot_good_out = one_hot_good_out[:]
+			old_one_hot_bad_ins_out = one_hot_bad_ins_out[:]
+			old_one_hot_bad_del_out = one_hot_bad_del_out[:]
+			old_one_hot_bad_sub_out = one_hot_bad_sub_out[:]
 
-	def __len__(self):
-    		return len(self.X) // self.batch_size
+			numGoodOutLeft = len(one_hot_good_out) % 10
+			numBadInsOutLeft = len(one_hot_bad_ins_out) % 10
+			numBadDelOutLeft = len(one_hot_bad_del_out) % 10
+			numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
 
-	def __getitem__(self,idx):
-    		batch_x = self.X[idx*self.batch_size:(idx+1)*self.batch_size]
-    		batch_y = self.y[idx*self.batch_size:(idx+1)*self.batch_size]
-    		return np.array([batch_x]), np.array(batch_y)
+			fileInd += 1
+			windowInd = 0
+			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(fileInd)
 
-'''
-def create_batches():
-	print "Creating batches..."
-	
-	
-	
-	inputTenG = []
-	outputTenB = []
-	for wow in firstTenGG:
-		inputTenG.append(wow)
-	for woh in firstTenBG:
-		outputTenB.append(woh)
+			for p in range(numGoodOutLeft):
+				one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
+			for p in range(numBadInsOutLeft):
+				one_hot_bad_ins_out.insert(p, old_one_hot_bad_ins_out[len(old_one_hot_bad_ins_out)-numBadInsOutLeft+p])
+			for p in range(numBadDelOutLeft):
+				one_hot_bad_del_out.insert(p, old_one_hot_bad_del_out[len(old_one_hot_bad_del_out)-numBadDelOutLeft+p])
+			for p in range(numBadSubOutLeft):
+				one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
 
-	
-	print "Finished..."
+def getInputTestTen():
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(21)
+	windowInd = 0
+	fileInd = 21
+	while fileInd <= 30: # 462540
+	#while windowInd < int(len(insArr)/10):
+		if windowInd < int(len(one_hot_bad_ins)/10):		
+			toPass = []
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_good[y])	
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_ins[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_del[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_sub[y])
+			#print len(toPass)
+			a = numpy.array(toPass)
+			b = a[None, :, :]
+			#print b.shape
+			yield b
+			#print numpy.array(toPass).shape
+			#print "mine too"
+			windowInd += 1
+		else:
+			print "NEXT FILE"
+		
+			old_one_hot_good = one_hot_good[:]
+			old_one_hot_bad_ins = one_hot_bad_ins[:]
+			old_one_hot_bad_del = one_hot_bad_del[:]
+			old_one_hot_bad_sub = one_hot_bad_sub[:]
 
-	print len(inputTenG)
-	print len(outputTenB)
+			numGoodLeft = len(one_hot_good) % 10
+			numBadInsLeft = len(one_hot_bad_ins) % 10
+			numBadDelLeft = len(one_hot_bad_del) % 10
+			numBadSubLeft = len(one_hot_bad_sub) % 10
 
-	print "Constants"
-
-	print len(inputTenG[0][0])
-	print len(inputTenG[0])
-
-	print len(outputTenB[0][0])
-	print len(outputTenB[0])
-
-	print "Terminate"
-
-
-	'''
-	ohg_g = chunker(one_hot_good, 10)
-	ohbi_g = chunker(one_hot_bad_ins, 10)
-	ohbd_g = chunker(one_hot_bad_del, 10)
-	ohbs_g = chunker(one_hot_bad_sub, 10)
-	
-	ohg_group = []
-	for rad in ohg_g:
-		ohg_group.append(rad)
-
-	ohbi_group = []
-	for rad in ohbi_g:
-		ohbi_group.append(rad)
-
-	ohbd_group = []
-	for rad in ohbd_g:
-		ohbd_group.append(rad)
-
-	ohbs_group = []
-	for rad in ohbs_g:
-		ohbs_group.append(rad)
+			fileInd += 1
+			windowInd = 0
+			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(fileInd)
 			
-	print len(ohg_group)
-	print len(ohbi_group)
-	print len(ohbd_group)
-	#print ohbd_group[53]
-	print len(ohbs_group)
+			for p in range(numGoodLeft):
+				one_hot_good.insert(p, old_one_hot_good[len(old_one_hot_good)-numGoodLeft+p])
+			for p in range(numBadInsLeft):
+				one_hot_bad_ins.insert(p, old_one_hot_bad_ins[len(old_one_hot_bad_ins)-numBadInsLeft+p])
+			for p in range(numBadDelLeft):
+				one_hot_bad_del.insert(p, old_one_hot_bad_del[len(old_one_hot_bad_del)-numBadDelLeft+p])
+			for p in range(numBadSubLeft):
+				one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
 
-	goodA = np.array(ohg_group)
-	insA = np.array(ohbi_group)
-	delA = np.array(ohbd_group)
-	subA = np.array(ohbs_group)
-			
-	temp = np.insert(subA, np.arange(len(delA)), delA)
-	temp2 = np.insert(temp, np.arange(len(insA)), insA)
-	train_input = np.insert(temp2, np.arange(len(goodA)), goodA)
-	'''
-	# feedData(train_input	
+def getOutputTestTen():
+	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(21)
+	windowInd = 0
+	fileInd = 21
+	while fileInd <= 30: # 462540
+	#while windowInd < int(len(insArr)/10):
+		if windowInd < int(len(one_hot_bad_ins_out)/10):		
+			toPass = []
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_good_out[y])	
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_ins_out[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_del_out[y])
+			for x in range(10):
+				y = x + windowInd
+				toPass.append(one_hot_bad_sub_out[y])
+			#print len(toPass)
+			a = numpy.array(toPass)
+			b = a[None, :, :]
+			yield b
+			#print numpy.array(toPass).shape
+			#print "mine"
+			windowInd += 1
+		else:
+			print "NEXT FILE"
 
-	#return train_input, train_output
+			old_one_hot_good_out = one_hot_good_out[:]
+			old_one_hot_bad_ins_out = one_hot_bad_ins_out[:]
+			old_one_hot_bad_del_out = one_hot_bad_del_out[:]
+			old_one_hot_bad_sub_out = one_hot_bad_sub_out[:]
 
+			numGoodOutLeft = len(one_hot_good_out) % 10
+			numBadInsOutLeft = len(one_hot_bad_ins_out) % 10
+			numBadDelOutLeft = len(one_hot_bad_del_out) % 10
+			numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
+
+			fileInd += 1
+			windowInd = 0
+			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(fileInd)
+
+			for p in range(numGoodOutLeft):
+				one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
+			for p in range(numBadInsOutLeft):
+				one_hot_bad_ins_out.insert(p, old_one_hot_bad_ins_out[len(old_one_hot_bad_ins_out)-numBadInsOutLeft+p])
+			for p in range(numBadDelOutLeft):
+				one_hot_bad_del_out.insert(p, old_one_hot_bad_del_out[len(old_one_hot_bad_del_out)-numBadDelOutLeft+p])
+			for p in range(numBadSubOutLeft):
+				one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
+
+# TODO: Make the alone integers constants
 def initData():
 	print "Start..."
-	create_batches()
+	
 	model = Sequential()
-	model.add(Dense(64, activation='relu', input_dim=20))
+	model.add(Dense(102, activation='relu', input_shape=(40,87)))
 	model.add(Dropout(0.5))
-	model.add(Dense(64, activation='relu'))
+	model.add(Dense(102, activation='relu'))
 	model.add(Dropout(0.5))
-	model.add(Dense(10, activation='softmax'))
+	model.add(Dense(102, activation='softmax'))
 	
 
 	# For a binary classification problem
@@ -226,18 +364,58 @@ def initData():
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-	firstTenGG = getGoodTen()
-	firstTenBG = getBadTen()
+	#zipped = iter()
+	#print type(zipped)
 
 	model.fit_generator(
-               	 zip(firstTenGG, firstTenBG),
+               	izip(getInputTen(), getOutputTen()),
                 steps_per_epoch=5,
-                epochs=4,      
-                verbose=1,	
+		validation_data=izip(getInputValTen(), getOutputValTen()),
+		validation_steps=5,
+                epochs=10,      
+                verbose=2,	
             )
-	#model.fit(iter(train_input), iter(train_output), epochs=150, batch_size=10)
-	#train_input, train_output = create_batches()
+	
+	
+	x_test = []
+	steps = 0
+	g = getInputTestTen()
+	for t in g:
+		if steps > 39: 
+			break
+		steps += 1	
+		print type(t)	
+		x_test.append(t)
 
+	y_test = []
+	steps = 0
+	for t in getOutputTestTen():
+		if steps > 39: 
+			break	
+		steps += 1			
+		y_test.append(t[0][5])
 
+	print "MODEL FIT"
+	print len(x_test)
+	print x_test[0][0]
+	print len(y_test)
+	
+	a = numpy.array(x_test)
+	print a.shape
+	#b = a[None, :, :]
+
+	c = numpy.array(y_test)
+	#	d = c[None, :, :]
+	
+	scores = model.evaluate(b, d, batch_size=10)
+	print "SCORE"
+	cvscores = []
+	#print score
+	print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+	cvscores.append(scores[1] * 100)
+	print("%.2f%% (+/- %.2f%%)" % (numpy.mean(cvscores), numpy.std(cvscores)))
+	
+	print "TERMINATED"
+	
 if __name__ == '__main__':
 	initData()

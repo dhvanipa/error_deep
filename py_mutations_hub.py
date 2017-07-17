@@ -225,7 +225,7 @@ def perform(curr):
 	print "Executed SELECT..."
 	print "Fetching all rows..."
 	all_rows = c.fetchmany(size=33)
-	
+	conn.close() # Close the connection to SQL
 	#for curr in range(2):
 	if True:
 		
