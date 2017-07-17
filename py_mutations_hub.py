@@ -28,7 +28,7 @@ import sys
 # 10 = WINDOW SIZE
 WINDOW_SIZE = 10
 BATCH_SIZE = 66
-NUM_BITS_OUTPUT = 104
+NUM_BITS_OUTPUT = 102
 global all_tokens
 new_tokens_ins = []
 new_tokens_del = []
@@ -50,7 +50,7 @@ END_TOKEN = '</s>'
 
 def one_hot(indexed_tokens):
 	one_hot = []
-	nb_classes = 87
+	nb_classes = 85
 	one_hot_targets = np.eye(nb_classes)[indexed_tokens]
 	one_hot = one_hot_targets.tolist()
 	return one_hot
@@ -70,6 +70,21 @@ def set_from_json(all_tokens, flag):
 		indexed_tokens.append(data["indexes"].index(toCompare))
 	print indexed_tokens
 	return one_hot(indexed_tokens)
+
+def set_from_json_nonarr(token, flag):
+	print "OMG"
+	with open('vocabulary.json') as data_file:    
+    		data = json.load(data_file)
+		#pprint(data)
+	print len(data["indexes"])
+	print "dhadha"
+	toCompare = token.value
+	print token.type
+	#print "Broke..."
+	#print token.line
+	ind_token_nonarr = data["indexes"].index(toCompare)
+	print indexed_tokens
+	return ind_token_nonarr
 
 def open_closed_tokens(token):
     """
@@ -327,6 +342,7 @@ def perform():
 
 			vocab_entry = open_closed_tokens(send)
 			send.value = vocab_entry
+	
 			
 			bruhInd = -1
 			iterInd = 0
@@ -343,17 +359,22 @@ def perform():
 			one_hot_bad_del = vocabularize_tokens(new_tokens_del, True)
 			
 			one_hot_bad_del_out = []
-			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1) 
+			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1)
+ 
 			# DELETE OUT_PUT
 			iterNum = len(allGood)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
-			print "divide"
-			print trueErrorInd
-			print iterNum
+			#print "divide"
+			#print len(send)
+			#print trueErrorInd
+			#print iterNum
+			oneH_ind_deleted = set_from_json_nonarr(send, True)
+			#print oneH_ind_deleted
+			#print "rad"
 			for x in range(iterNum):
 				#if x <= trueErrorInd <= (x+trueErrorInd):
 				if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
 					# DIFF - ACTUAL ERROR
-					print x
+					#print x
 					toAdd = []
 					toAdd = [0] * NUM_BITS_OUTPUT
 					toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
@@ -366,6 +387,7 @@ def perform():
 						toAdd[5] = 1
 						toAdd[6] = 0
 					toAdd[7+trueErrorInd-x] = 1
+					toAdd[17+oneH_ind_deleted] = 1
 					one_hot_bad_del_out.append(toAdd)
 				else:
 					toAdd = []
@@ -373,26 +395,10 @@ def perform():
 					toAdd[0] = 0
 					toAdd[1] = 1 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
 					one_hot_bad_del_out.append(toAdd)
-			print "Morning"	
-			print len(allGood)
-			print len(one_hot_bad_del_out)
-			print one_hot_bad_del_out[trueErrorInd]
-			sys.exit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+			#print "Morning"	
+			#print len(allGood)
+			#print len(one_hot_bad_del_out)
+			#print one_hot_bad_del_out[trueErrorInd]
 		
 			# SUB
 			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)	
@@ -443,6 +449,48 @@ def perform():
 
 			one_hot_bad_sub = vocabularize_tokens(new_tokens_sub, True)
 
+			one_hot_bad_sub_out = []
+			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1) 
+			# SUB OUT_PUT
+			iterNum = len(allGood)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
+			print "divide"
+			#print len(send)
+			print trueErrorInd
+			print iterNum
+			oneH_sub_switch = set_from_json_nonarr(sendS, True)
+			print oneH_sub_switch
+			print "rad"
+			for x in range(iterNum):
+				#if x <= trueErrorInd <= (x+trueErrorInd):
+				if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
+					# DIFF - ACTUAL ERROR
+					print x
+					toAdd = []
+					toAdd = [0] * NUM_BITS_OUTPUT
+					toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
+					toAdd[1] = 0
+					if YES_TOKEN != None:
+						toAdd[2] = 1
+						toAdd[3] = 0
+					if SUBSTITUTION != None:
+						toAdd[4] = 1
+						toAdd[5] = 0
+						toAdd[6] = 0
+					toAdd[7+trueErrorInd-x] = 1
+					toAdd[17+oneH_sub_switch] = 1
+					one_hot_bad_sub_out.append(toAdd)
+				else:
+					toAdd = []
+					toAdd = [0] * NUM_BITS_OUTPUT
+					toAdd[0] = 0
+					toAdd[1] = 1 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
+					one_hot_bad_sub_out.append(toAdd)
+			print "Morning"	
+			print len(allGood)
+			print len(one_hot_bad_sub_out)
+			print one_hot_bad_sub_out[trueErrorInd]
+	
+
 			# MUTATIONS PER CHARACTER
 			# insertMut(source_code)
 			#deleteMut(source_code])
@@ -455,12 +503,16 @@ def perform():
 			print len(one_hot_bad_ins)
 			print len(one_hot_bad_del)
 			print len(one_hot_bad_sub)
+
+			print len(one_hot_bad_ins_out)
+			print len(one_hot_bad_del_out)
+			print len(one_hot_bad_sub_out)
 		
 				
 			#one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
 
 			print "SUCCESS"
-			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub
+			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out
 			
 		else:
 			print "Try again..."
