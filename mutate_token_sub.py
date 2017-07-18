@@ -82,7 +82,7 @@ def subTokMut(raw_tokens, raw_text):
 	num_lines = len(raw_tokens_pass)
 	num_encode = len(orig)
 
-	chosenLineInd = randint(0,3) # num_lines-1
+	chosenLineInd = randint(0,num_lines-1) # num_lines-1
 	chosenTrueLineInd = -1
 	indI = 0
 	for x in orig:

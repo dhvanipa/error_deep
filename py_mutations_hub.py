@@ -23,8 +23,8 @@ import sys
 # ACTUAL: 925 080, BATCH = 60, GOOD = 30, BAD = 30 (I, D, S -> 10)
 # Iterations: 15 418
 # Unused samples = 23 
-# ONE HOT = 87
-# OUT = 104 (2 + 2 + 3 + 10 + 87)
+# ONE HOT = 88
+# OUT = 105 (2 + 2 + 3 + 10 + 88)
 # 10 = WINDOW SIZE
 WINDOW_SIZE = 10
 BATCH_SIZE = 66
@@ -50,7 +50,7 @@ END_TOKEN = '</s>'
 
 def one_hot(indexed_tokens):
 	one_hot = []
-	nb_classes = 87
+	nb_classes = 88
 	one_hot_targets = np.eye(nb_classes)[indexed_tokens]
 	one_hot = one_hot_targets.tolist()
 	#print "fort"
@@ -68,7 +68,19 @@ def set_from_json(all_tokens, flag):
 	with open('vocabulary.json') as data_file:    
     		data = json.load(data_file)
 		#pprint(data)
+	#print len(data["indexes"])
+	#print "DHADHA"
+
+	tempT = all_tokens[:]
+	for token in tempT:
+		if len(token.value) > 0:
+			if token.value[0] == '#':
+				all_tokens.remove(token)
+				print "no way"
+
 	for token in all_tokens:
+		if token.value == "\\r\\n":
+			token.value = "NEWLINE"
 		toCompare = token.value
 		#print token.type
 		#print "Broke..."
@@ -184,10 +196,11 @@ def vocabularize_tokens(every_token, flag):
         }
     
 
-
+    
     all_tokens_iter = every_token[:]
     for Token in all_tokens_iter:
-        vocab_entry = open_closed_tokens(Token)
+
+       	vocab_entry = open_closed_tokens(Token)
 	Token.value = vocab_entry
         if Token.type in EXTRANEOUS_TOKENS:
 		every_token.remove(Token)
@@ -224,7 +237,7 @@ def perform(curr):
 	c.execute("SELECT source FROM source_file INNER JOIN eligible_source ON source_file.hash = eligible_source.hash")
 	#print "Executed SELECT..."
 	#print "Fetching all rows..."
-	all_rows = c.fetchmany(size=33)
+	all_rows = c.fetchmany(size=2000)
 	conn.close() # Close the connection to SQL
 	#for curr in range(2):
 	if True:
@@ -304,8 +317,6 @@ def perform(curr):
 			new_tokens_ins.insert(bruhInd+1, insTok)
 		
 			#print "NEXT STEP...C"
-
-			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
 			
 			one_hot_bad_ins_out = []
 			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1) 
@@ -377,7 +388,7 @@ def perform(curr):
 				iterInd = iterInd + 1
 			#print bruhInd
 			#print len(new_tokens_del)
-			del new_tokens_del[bruhInd]		
+			del new_tokens_del[bruhInd]	
 			#print len(new_tokens_del)
 			#print "DEL ROR"
 
@@ -525,19 +536,19 @@ def perform(curr):
 			#print one_hot_good[0]
 			#print one_hot_bad[0]
 			
-			#print "----------INPUT-------------"
+			print "----------INPUT-------------"
 
-			#print len(one_hot_good)
-			#print len(one_hot_bad_ins)
-			#print len(one_hot_bad_del)
-			#print len(one_hot_bad_sub)
+			print len(one_hot_good)
+			print len(one_hot_bad_ins)
+			print len(one_hot_bad_del)
+			print len(one_hot_bad_sub)
 
-			#print "----------OUTPUT-------------"
+			print "----------OUTPUT-------------"
 
-			#print len(one_hot_good_out)
-			#print len(one_hot_bad_ins_out)
-			#print len(one_hot_bad_del_out)
-			#print len(one_hot_bad_sub_out)
+			print len(one_hot_good_out)
+			print len(one_hot_bad_ins_out)
+			print len(one_hot_bad_del_out)
+			print len(one_hot_bad_sub_out)
 
 			#print curr
 		
