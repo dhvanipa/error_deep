@@ -3,7 +3,7 @@
 import json
 from pprint import pprint
 import tokenize
-from check_pypy_syntax import checkPyPySyntax
+from check_pypy_syntax import checkPyPySyntaxIns
 from compile_error import CompileError
 import token
 from Token import Token
@@ -36,22 +36,22 @@ def handle_token(type, token, (srow, scol), (erow, ecol), line):
     send = Token(tokenize.tok_name[type], val, srow, scol, erow, ecol, line)
     global new_token
     new_token.append(send)
-    print "%d,%d-%d,%d:\t%s\t%s" % \
-        (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
+    #print "%d,%d-%d,%d:\t%s\t%s" % \
+    #    (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
 
 
 def insertTokMut(raw_tokens, raw_text):
 
 	with open('vocabulary_mutate.json') as data_file:    
     		data = json.load(data_file)
-		pprint(data)
-		print "HI"
-	print len(data["indexes_m"])
+		#pprint(data)
+		#print "HI"
+	#print len(data["indexes_m"])
 	chosenInd = randint(0,84)
 	chosenToken = data["indexes_m"][chosenInd]
-	print chosenToken
+	#print chosenToken
 
-	print tokenize.tok_name
+	#print tokenize.tok_name
 	global new_token
 	new_token = []
 	try:
@@ -59,7 +59,7 @@ def insertTokMut(raw_tokens, raw_text):
 	except tokenize.TokenError:
 		pass	
 	#print type(toksG)
-	print len(new_token)
+	#print len(new_token)
 	insEdTok = new_token[0]
 	insTok = insEdTok
 	#insTok = Token(
@@ -75,9 +75,9 @@ def insertTokMut(raw_tokens, raw_text):
 				if token[0] != 4:
 					if token[0] != 0:
 						raw_tokens_pass.append(token_use)
-						print token
+						#print token
 
-	print "OKAY"
+	#print "OKAY"
 	
 	
 	
@@ -91,17 +91,17 @@ def insertTokMut(raw_tokens, raw_text):
 	chosen = Token(tokenize.tok_name[raw_tokens_pass[chosenLineInd][0]], raw_tokens_pass[chosenLineInd][1], raw_tokens_pass[chosenLineInd][2][0], raw_tokens_pass[chosenLineInd][2][1], raw_tokens_pass[chosenLineInd][3][0], raw_tokens_pass[chosenLineInd][3][1], raw_tokens_pass[chosenLineInd][4])
 	
 	#print NAH
-	print "NAH"
+	#print "NAH"
 
 	chosenTrueLineInd = -1
 	indI = 0
 	for x in orig:
 		if raw_tokens_pass[chosenLineInd] == x:
-			print "<3"
+			#print "<3"
 			chosenTrueLineInd = indI
 			break
 		indI = indI + 1
-	print chosenTrueLineInd
+	#print chosenTrueLineInd
 
 	toIter = num_encode + (num_encode+1)
 	for _ in range(toIter):
@@ -116,29 +116,29 @@ def insertTokMut(raw_tokens, raw_text):
 
 	source_code = raw_text
 
-	print len(source_code)
+	#print len(source_code)
 
-	print raw_tokens_pass[chosenLineInd][0]
+	#print raw_tokens_pass[chosenLineInd][0]
 
 
-	print raw_tokens_pass[chosenLineInd][4]
-	print raw_text
+	#print raw_tokens_pass[chosenLineInd][4]
+	#print raw_text
 	toAddBeforeInd = source_code.index(raw_tokens_pass[chosenLineInd][4])
 
 	
 	temp = source_code[toAddBeforeInd:toAddBeforeInd+len(raw_tokens_pass[chosenLineInd][4])]
-	print temp
-	print "kobe"
-	print raw_tokens_pass[chosenLineInd][1]
+	#print temp
+	#print "kobe"
+	#print raw_tokens_pass[chosenLineInd][1]
 
 	shotInd = temp.index(raw_tokens_pass[chosenLineInd][1])
 
 	change = temp.strip()
 	check = temp.index(change)	
-	print check
+	#print check
 
-	print len(temp)
-	print shotInd
+	#print len(temp)
+	#print shotInd
 
 	if shotInd+1 == len(temp):
 		shotInd = shotInd-1
@@ -147,13 +147,13 @@ def insertTokMut(raw_tokens, raw_text):
 
 
 	before = source_code[:actual_target_ind+len(raw_tokens_pass[chosenLineInd][1])]
-	print "B"
-	print before
+	#print "B"
+	#print before
 	
 	after = source_code[actual_target_ind+len(raw_tokens_pass[chosenLineInd][1]):]
-	print "A"
-	print after	
-	print raw_tokens_pass[chosenLineInd][0]
+	#print "A"
+	#print after	
+	#print raw_tokens_pass[chosenLineInd][0]
 
 	if shotInd == 0:
 		if raw_tokens_pass[chosenLineInd][0] == 4:
@@ -165,7 +165,7 @@ def insertTokMut(raw_tokens, raw_text):
 			new_text = before + chosenToken.encode() + after
 		
 		elif chosenInd == data["indexes_m"].index('\n'): 
-			print "shiz"
+			#print "shiz"
 			if after[0] == ' ':
 				space = ' ' * (check-1)
 			else:
@@ -173,42 +173,42 @@ def insertTokMut(raw_tokens, raw_text):
 			new_text = before + chosenToken.encode() + space + after
 		else:
 			new_text = before + ' ' + chosenToken.encode() + ' ' + after
-	print '------------------------------------'
-	print new_text
+	#print '------------------------------------'
+	#print new_text
 	
 
-	toTest = checkPyPySyntax(new_text)
+	toTest = checkPyPySyntaxIns(new_text)
 
 	if toTest == None:
- 		print "Try again..."	
-		print "-----------FINISHED-------------------"
+ 		#print "Try again..."	
+		#print "-----------FINISHED-------------------"
 		#insertTokMut(raw_tokens_pass, raw_text)
-		print "-----------FINISHED-------------------"
-		print "shit man"
+		#print "-----------FINISHED-------------------"
+		#print "shit man"
 		lenR = 2
 		lenK = 2
 		return lenR, raw_tokens_pass, raw_text, lenK, chosen, insTok
 	else:
-		print "-----------FINISHED-------------------"
-		print toTest[0]
-		print toTest[0].filename
-		print toTest[0].line
-		print toTest[0].column
-		print toTest[0].functionname
-		print toTest[0].text
-		print toTest[0].errorname
-		print type(out_tokens_loc)
-		print len(new_text)
-		print NO_TOKEN
-		print INSERTION
-		print len(out_tokens_loc)
+		#print "-----------FINISHED-------------------"
+		#print toTest[0]
+		#print toTest[0].filename
+		#print toTest[0].line
+		#print toTest[0].column
+		#print toTest[0].functionname
+		#print toTest[0].text
+		#print toTest[0].errorname
+		#print type(out_tokens_loc)
+		#print len(new_text)
+		#print NO_TOKEN
+		#print INSERTION
+		#print len(out_tokens_loc)
 		return new_text, NO_TOKEN, INSERTION, out_tokens_loc, chosen, insTok
 	
-	print "-----------FINISHED-------------------"
-	print chosenLineInd+1	
-	print out_tokens_loc
-	print len(raw_tokens_pass)
-	print len(out_tokens_loc)
-	print lenD
-	print chosenTrueLineInd
+	#print "-----------FINISHED-------------------"
+	#print chosenLineInd+1	
+	#print out_tokens_loc
+	#print len(raw_tokens_pass)
+	#print len(out_tokens_loc)
+	#print lenD
+	#print chosenTrueLineInd
 

@@ -53,24 +53,24 @@ def one_hot(indexed_tokens):
 	nb_classes = 87
 	one_hot_targets = np.eye(nb_classes)[indexed_tokens]
 	one_hot = one_hot_targets.tolist()
-	print "fort"
+	#print "fort"
 	#bruhTemp = one_hot[:]
 	for x in range(len(one_hot)):
 		#one_hot[x].astype(int)
 		[int(i) for i in one_hot[x]]
 	#one_hot.astype(int)
-	print type(one_hot[0][0])
+	#print type(one_hot[0][0])
 	return one_hot
 	
 
 def set_from_json(all_tokens, flag):
-	print "OMG"
+	#print "OMG"
 	with open('vocabulary.json') as data_file:    
     		data = json.load(data_file)
 		#pprint(data)
 	for token in all_tokens:
 		toCompare = token.value
-		print token.type
+		#print token.type
 		#print "Broke..."
 		#print token.line
 		global indexed_tokens
@@ -79,22 +79,22 @@ def set_from_json(all_tokens, flag):
 		indexed_tokens.insert(r, data["indexes"].index(START_TOKEN))
 		indexed_tokens.append(data["indexes"].index(END_TOKEN))
 		
-	print indexed_tokens
+	#print indexed_tokens
 	return one_hot(indexed_tokens)
 
 def set_from_json_nonarr(token, flag):
-	print "OMG"
+	#print "OMG"
 	with open('vocabulary.json') as data_file:    
     		data = json.load(data_file)
 		#pprint(data)
-	print len(data["indexes"])
-	print "dhadha"
+	#print len(data["indexes"])
+	#print "dhadha"
 	toCompare = token.value
-	print token.type
+	#print token.type
 	#print "Broke..."
 	#print token.line
 	ind_token_nonarr = data["indexes"].index(toCompare)
-	print indexed_tokens
+	#print indexed_tokens
 	return ind_token_nonarr
 
 def open_closed_tokens(token):
@@ -194,11 +194,11 @@ def vocabularize_tokens(every_token, flag):
 	if flag == True:
 		if Token.value == "\\n":
 			every_token.remove(Token)
-		if Token.type == "NL":
-			print "Gotch u"
+			#if Token.type == "NL":
+			#print "Gotch u"
    
-    for Token in every_token:
-	print Token.value
+    #for Token in every_token:
+    #print Token.value
     return set_from_json(every_token, flag)
  	
 	
@@ -212,39 +212,41 @@ def handle_token(type, token, (srow, scol), (erow, ecol), line):
     send = Token(tokenize.tok_name[type], val, srow, scol, erow, ecol, line)
     global all_tokens
     all_tokens.append(send)
-    print "%d,%d-%d,%d:\t%s\t%s" % \
-        (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
+    #print "%d,%d-%d,%d:\t%s\t%s" % \
+    #    (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
 
 
 def perform(curr):
 	sqlite_file = "/home/dhvani/python-sources.sqlite3"
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
-	print "Success Connection to database..."
+	#print "Success Connection to database..."
 	c.execute("SELECT source FROM source_file INNER JOIN eligible_source ON source_file.hash = eligible_source.hash")
-	print "Executed SELECT..."
-	print "Fetching all rows..."
+	#print "Executed SELECT..."
+	#print "Fetching all rows..."
 	all_rows = c.fetchmany(size=33)
 	conn.close() # Close the connection to SQL
 	#for curr in range(2):
 	if True:
 		
-		#curr = 2
-		print all_rows[curr][0]
-		print "Got Em..."
-		print "Running PyPy test..."
+		#curr = 13
+		#print all_rows[curr][0]
+		#print "Got Em..."
+		#print "Running PyPy test..."
+		#print curr
 		toTest = checkPyPySyntax(all_rows[curr][0])
-		print "DONE"
-		print "CURRENT: "
-		print curr
+		#print "DONE"
+		#print "CURRENT: "
+		#	print curr
 		if toTest == None:
+			#print "here"
 			global all_tokens
 			all_tokens = []
 			global indexed_tokens
 			indexed_tokens = []
 			tokenStream = tokenize.tokenize(StringIO.StringIO(all_rows[curr][0]).readline, handle_token)
-			print "RAW"
-			print len(all_tokens)
+			#print "RAW"
+			#print len(all_tokens)
 			allGood = []
 			global all_tokens
 			allGood = list(all_tokens)
@@ -258,10 +260,10 @@ def perform(curr):
 				one_hot_good_out.append(toAdd)
 			
 
-			print "DHVANI"
-			print len(one_hot_good)
-			print len(allGood)
-			print len(all_tokens)
+			#print "DHVANI"
+			#print len(one_hot_good)
+			#print len(allGood)
+			#print len(all_tokens)
 		
 			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)		
 			source_code = str(all_rows[curr][0])
@@ -273,8 +275,8 @@ def perform(curr):
 			#all_tokens = []
 			global indexed_tokens
 			indexed_tokens = []
-			print "RAW"		
-			print len(all_tokens)
+			#print "RAW"		
+			#print len(all_tokens)
 			
 			new_i_text, NO_TOKEN, INSERTION, out_tokens_loc, chosenTrueLineInd, insTok = insertTokMut(raw_tokens, source_code)
 
@@ -290,7 +292,7 @@ def perform(curr):
 
 			vocab_entry = open_closed_tokens(chosenTrueLineInd)
 			chosenTrueLineInd.value = vocab_entry
-			print vocab_entry
+			#print vocab_entry
 
 			bruhInd = -1
 			iterInd = 0
@@ -298,10 +300,10 @@ def perform(curr):
 				if a == chosenTrueLineInd:
 					bruhInd = iterInd
 				iterInd = iterInd + 1
-			print bruhInd + 1
+			#print bruhInd + 1
 			new_tokens_ins.insert(bruhInd+1, insTok)
 		
-			print "NEXT STEP...C"
+			#print "NEXT STEP...C"
 
 			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
 			
@@ -349,8 +351,8 @@ def perform(curr):
 			#all_tokens = []
 			global indexed_tokens
 			indexed_tokens = []
-			print type(raw_tokens)
-			print type(source_code)
+			#print type(raw_tokens)
+			#print type(source_code)
 			new_d_text, YES_TOKEN, DELETION, out_tokens_loc_d, send = deleteTokMut(raw_tokens, source_code)
 
 			while isinstance(new_d_text, int):
@@ -359,7 +361,7 @@ def perform(curr):
 					break
 			
 
-			print "NEXT STEP..."
+			#print "NEXT STEP..."
 			
 			new_tokens_del = allGood[:]
 
@@ -373,11 +375,11 @@ def perform(curr):
 				if a == send:
 					bruhInd = iterInd
 				iterInd = iterInd + 1
-			print bruhInd
-			print len(new_tokens_del)
+			#print bruhInd
+			#print len(new_tokens_del)
 			del new_tokens_del[bruhInd]		
-			print len(new_tokens_del)
-			print "DEL ROR"
+			#print len(new_tokens_del)
+			#print "DEL ROR"
 
 			one_hot_bad_del = vocabularize_tokens(new_tokens_del, True)
 			
@@ -429,7 +431,7 @@ def perform(curr):
 			#all_tokens = []
 			global indexed_tokens
 			indexed_tokens = []
-			print type(raw_tokens)
+			#print type(raw_tokens)
 			
 			new_s_text, YES_TOKEN, SUBSTITUTION, out_tokens_loc_s, sendS, insTokS = subTokMut(raw_tokens, source_code)
 
@@ -438,7 +440,7 @@ def perform(curr):
 				if isinstance(new_s_text, str):
 					break
 			
-			print "NEXT STEP..."
+			#print "NEXT STEP..."
 
 			# SUB DELETE
 
@@ -464,9 +466,9 @@ def perform(curr):
 			if insTokS.type == "ENDMARKER":
 				insTokS.type = "INDENT"
 
-			print insTokS.type
-			print insTokS.value
-			print "LUNCH"
+			#print insTokS.type
+			#print insTokS.value
+			#print "LUNCH"
 
 			new_tokens_sub.insert(bruhInd, insTokS)
 
@@ -476,18 +478,18 @@ def perform(curr):
 			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1) 
 			# SUB OUT_PUT
 			iterNum = len(new_tokens_sub)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
-			print "divide"
+			#print "divide"
 			#print len(send)
-			print trueErrorInd
-			print iterNum
+			#print trueErrorInd
+			#print iterNum
 			oneH_sub_switch = set_from_json_nonarr(sendS, True)
-			print oneH_sub_switch
-			print "rad"
+			#print oneH_sub_switch
+			#print "rad"
 			for x in range(iterNum):
 				#if x <= trueErrorInd <= (x+trueErrorInd):
 				if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
 					# DIFF - ACTUAL ERROR
-					print x
+					#print x
 					toAdd = []
 					toAdd = [0] * NUM_BITS_OUTPUT
 					toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
@@ -508,11 +510,11 @@ def perform(curr):
 					toAdd[0] = 0
 					toAdd[1] = 1 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
 					one_hot_bad_sub_out.append(toAdd)
-			print "Morning"	
-			print len(allGood)
-			print len(all_tokens)
-			print len(one_hot_bad_sub_out)
-			print one_hot_bad_sub_out[trueErrorInd]
+			#print "Morning"	
+			#print len(allGood)
+			#print len(all_tokens)
+			#print len(one_hot_bad_sub_out)
+			#print one_hot_bad_sub_out[trueErrorInd]
 	
 
 			# MUTATIONS PER CHARACTER
@@ -523,30 +525,31 @@ def perform(curr):
 			#print one_hot_good[0]
 			#print one_hot_bad[0]
 			
-			print "----------INPUT-------------"
+			#print "----------INPUT-------------"
 
-			print len(one_hot_good)
-			print len(one_hot_bad_ins)
-			print len(one_hot_bad_del)
-			print len(one_hot_bad_sub)
+			#print len(one_hot_good)
+			#print len(one_hot_bad_ins)
+			#print len(one_hot_bad_del)
+			#print len(one_hot_bad_sub)
 
-			print "----------OUTPUT-------------"
+			#print "----------OUTPUT-------------"
 
-			print len(one_hot_good_out)
-			print len(one_hot_bad_ins_out)
-			print len(one_hot_bad_del_out)
-			print len(one_hot_bad_sub_out)
+			#print len(one_hot_good_out)
+			#print len(one_hot_bad_ins_out)
+			#print len(one_hot_bad_del_out)
+			#print len(one_hot_bad_sub_out)
 
-			print curr
+			#print curr
 		
 				
 			#one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
 
-			print "SUCCESS"
+			#print "SUCCESS"
 			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out
 			
 		else:
-			print "Try again..."
+			#print "Try again..."
+			return None, None, None, None, None, None, None, None
 	
 
 if __name__ == '__main__':

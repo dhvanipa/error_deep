@@ -4,6 +4,7 @@ import json
 from pprint import pprint
 import tokenize
 from check_pypy_syntax import checkPyPySyntax
+from check_pypy_syntax import checkPyPySyntaxDel
 from compile_error import CompileError
 import token
 from Token import Token
@@ -41,7 +42,7 @@ def deleteTokMut(raw_tokens, raw_text):
 							raw_tokens_pass.append(token_use)
 							#print token
 
-	print "OKAY"
+	#print "OKAY"
 	
 	num_lines = len(raw_tokens_pass)
 	num_encode = len(orig)
@@ -51,11 +52,11 @@ def deleteTokMut(raw_tokens, raw_text):
 	indI = 0
 	for x in orig:
 		if raw_tokens_pass[chosenLineInd] == x:
-			print "<3"
+			#print "<3"
 			chosenTrueLineInd = indI
 			break
 		indI = indI + 1
-	print chosenTrueLineInd
+	#print chosenTrueLineInd
 
 
 	toIter = num_encode + (num_encode+1)
@@ -82,62 +83,62 @@ def deleteTokMut(raw_tokens, raw_text):
 	check = change.find(raw_tokens_pass[chosenLineInd][1])
 
 	shotInd = temp.index(raw_tokens_pass[chosenLineInd][1])
-	print change
+	#print change
 	
-	print "TEMP"
-	print temp
+	#print "TEMP"
+	#print temp
 
-	print shotInd
+	#print shotInd
 	
 	actual_target_ind = indexToRemove + shotInd
 
-	print raw_tokens_pass[chosenLineInd][1]
+	#print raw_tokens_pass[chosenLineInd][1]
 	
-	print len(raw_tokens_pass[chosenLineInd][1])
-	print len(change)
+	#print len(raw_tokens_pass[chosenLineInd][1])
+	#print len(change)
 
 	if check == 0 and len(raw_tokens_pass[chosenLineInd][1]) == len(change):
 		before = source_code[:indexToRemove]
 	else:
 		before = source_code[:actual_target_ind]
-	print "B"
-	print before
+	#print "B"
+	#print before
 	
 	
 	after = source_code[actual_target_ind+len(raw_tokens_pass[chosenLineInd][1]):]
-	print "A"
-	print after	
+	#print "A"
+	#print after	
 
 	if check == 0:
-		print "GOT EM"
+		#print "GOT EM"
 		new_text = before + after[1:]
 	else:	
 		new_text = before + after
 
-	print actual_target_ind
+	#print actual_target_ind
 
-	print '-------------------------------'
-	print new_text
+	#print '-------------------------------'
+	#print new_text
 	
 
-	toTest = checkPyPySyntax(new_text)
+	toTest = checkPyPySyntaxDel(new_text)
 
 	if toTest == None:
- 		print "Try again..."	
+ 		#print "Try again..."	
 		#deleteTokMut(raw_tokens_pass, raw_text)
 		lenR = 2
 		lenK = 2
 		return lenR, raw_tokens_pass, raw_text, lenK, send
 	else:
-		print toTest[0]
-		print toTest[0].filename
-		print toTest[0].line
-		print toTest[0].column
-		print toTest[0].functionname
-		print toTest[0].text
-		print toTest[0].errorname
-		print "-----------FINISHED-------------------"
-		print chosenLineInd+1
-		print out_tokens_loc
+		#print toTest[0]
+		#print toTest[0].filename
+		#print toTest[0].line
+		#print toTest[0].column
+		#print toTest[0].functionname
+		#print toTest[0].text
+		#print toTest[0].errorname
+		#print "-----------FINISHED-------------------"
+		#print chosenLineInd+1
+		#print out_tokens_loc
 		return new_text, YES_TOKEN, DELETION, out_tokens_loc, send
 
