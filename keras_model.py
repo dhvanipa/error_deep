@@ -4,6 +4,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Input, Embedding, LSTM
 from keras.models import Model
 from keras import optimizers
+from keras.callbacks import ModelCheckpoint, CSVLogger, EarlyStopping
 
 import numpy
 from Token import Token
@@ -71,7 +72,7 @@ def getInputTen():
 			print len(toPassFour)
 			toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			a = numpy.array(toPass)
+			a = toPass.astype(int)
 			#print b.shape
 			yield a
 			#print numpy.array(toPass).shape
@@ -139,7 +140,7 @@ def getOutputTen():
 			#print len(toPass)
 			toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			a = numpy.array(toPass)
+			a = toPass.astype(int)
 			#print b.shape
 			yield a
 			#print numpy.array(toPass).shape
@@ -207,7 +208,7 @@ def getInputValTen():
 			#print len(toPass)
 			toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			a = numpy.array(toPass)
+			a = toPass.astype(int)
 			#print b.shape
 			yield a
 			#print numpy.array(toPass).shape
@@ -274,7 +275,7 @@ def getOutputValTen():
 			#print len(toPass)
 			toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			a = numpy.array(toPass)
+			a = toPass.astype(int)
 			#print b.shape
 			yield a
 			#print numpy.array(toPass).shape
@@ -311,32 +312,48 @@ def getOutputValTen():
 				one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
 
 def getInputTestTen():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(0)
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(101)
 	windowInd = 0
-	fileInd = 0
-	while fileInd <= 10: # 462540
+	fileInd = 101
+	while fileInd <= 102: # 462540
 	#while windowInd < int(len(insArr)/10):
-		if windowInd < int(len(one_hot_bad_ins)/10):		
+		sizes = [len(one_hot_good), len(one_hot_bad_ins),len(one_hot_bad_del),len(one_hot_bad_sub)]
+		minSize = min(float(siz) for siz in sizes) # min of a generator
+		print "file"
+		print fileInd
+		if windowInd < int((minSize / 10)):	
+			print len(one_hot_good)
+			print len(one_hot_bad_ins)
+			print len(one_hot_bad_del)
+			print len(one_hot_bad_sub)	
 			toPassOne = []
 			for x in range(10):
 				y = x + windowInd
-				toPassOne.append(one_hot_good[y])
+				if y < len(one_hot_good):
+					toPassOne.append(one_hot_good[y])
 			toPassTwo = []	
 			for x in range(10):
 				y = x + windowInd
-				toPassTwo.append(one_hot_bad_ins[y])
+				if y < len(one_hot_bad_ins):
+					toPassTwo.append(one_hot_bad_ins[y])
 			toPassThree = []	
 			for x in range(10):
 				y = x + windowInd
-				toPassThree.append(one_hot_bad_del[y])
+				if y < len(one_hot_bad_del):				
+					toPassThree.append(one_hot_bad_del[y])
 			toPassFour = []
 			for x in range(10):
 				y = x + windowInd
-				toPassFour.append(one_hot_bad_sub[y])
+				if y < len(one_hot_bad_sub):	
+					toPassFour.append(one_hot_bad_sub[y])
 			#print len(toPass)
+			print len(toPassOne)
+			print len(toPassTwo)
+			print len(toPassThree)
+			print len(toPassFour)
 			toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			a = numpy.array(toPass)
+			a = toPass.astype(int)
 			#print b.shape
 			yield a
 			#print numpy.array(toPass).shape
@@ -361,6 +378,7 @@ def getInputTestTen():
 			while(one_hot_good == None):
 				fileInd+=1
 				one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(fileInd)
+	
 			
 			for p in range(numGoodLeft):
 				one_hot_good.insert(p, old_one_hot_good[len(old_one_hot_good)-numGoodLeft+p])
@@ -372,32 +390,38 @@ def getInputTestTen():
 				one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
 
 def getOutputTestTen():
-	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(0)
+	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(10)
 	windowInd = 0
-	fileInd = 0
-	while fileInd <= 10: # 462540
+	fileInd = 10
+	while fileInd <= 11: # 462540
 	#while windowInd < int(len(insArr)/10):
-		if windowInd < int(len(one_hot_bad_ins_out)/10):		
+		sizes = [len(one_hot_good_out), len(one_hot_bad_ins_out),len(one_hot_bad_del_out),len(one_hot_bad_sub_out)]
+		minSize = min(float(siz) for siz in sizes) # min of a generator
+		if windowInd < int(minSize/10):		
 			toPassOne = []
 			for x in range(10):
 				y = x + windowInd
-				toPassOne.append(one_hot_good_out[y])
+				if y < len(one_hot_good_out):
+					toPassOne.append(one_hot_good_out[y])
 			toPassTwo = []	
 			for x in range(10):
 				y = x + windowInd
-				toPassTwo.append(one_hot_bad_ins_out[y])
+				if y < len(one_hot_bad_ins_out):
+					toPassTwo.append(one_hot_bad_ins_out[y])
 			toPassThree = []	
 			for x in range(10):
 				y = x + windowInd
-				toPassThree.append(one_hot_bad_del_out[y])
+				if y < len(one_hot_bad_del_out):
+					toPassThree.append(one_hot_bad_del_out[y])
 			toPassFour = []
 			for x in range(10):
 				y = x + windowInd
-				toPassFour.append(one_hot_bad_sub_out[y])
+				if y < len(one_hot_bad_sub_out):
+					toPassFour.append(one_hot_bad_sub_out[y])
 			#print len(toPass)
 			toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			a = numpy.array(toPass)
+			a = toPass.astype(int)
 			#print b.shape
 			yield a
 			#print numpy.array(toPass).shape
@@ -419,7 +443,6 @@ def getOutputTestTen():
 			fileInd += 1
 			windowInd = 0
 			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(fileInd)
-		
 			while(one_hot_good_out == None):
 				fileInd+=1
 				_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(fileInd)
@@ -433,6 +456,17 @@ def getOutputTestTen():
 			for p in range(numBadSubOutLeft):
 				one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
 
+
+@property
+def log_path(self):
+	return self.base_dir / "{self.name}.csv"
+
+@property
+def weight_path_pattern(self):
+	return self.base_dir / (
+            self.name + '-{epoch:02d}-{val_loss:.4f}.hdf5'
+        )
+
 # TODO: Make the alone integers constants
 def initData():
 	print "Start..."
@@ -445,7 +479,7 @@ def initData():
 	model.add(Dropout(0.5))
 	model.add(Dense(102, activation='relu'))
 	model.add(Dropout(0.5))
-	model.add(Dense(102, activation='sigmoid'))
+	model.add(Dense(102, activation='softmax'))
 	
 
 	# For a binary classification problem
@@ -466,12 +500,23 @@ def initData():
 		validation_data=izip(getInputValTen(), getOutputValTen()),
 		validation_steps=15,
                 epochs=2000,      
+		callbacks=[
+                    ModelCheckpoint(
+                        str(weight_path_pattern),
+                        save_best_only=False,
+                        save_weights_only=False,
+                        mode='auto'
+                    ),
+                    CSVLogger(str(log_path), append=True),
+                    EarlyStopping(patience=3, mode='auto')
+                ],
                 verbose=2	
             )
 
 	# list all data in history
 	print(history.history.keys())
 	print len(history.history.keys())
+	
 	# summarize history for accuracy
 	plt.plot(history.history['acc'])
 	plt.plot(history.history['val_acc'])
@@ -490,41 +535,22 @@ def initData():
 	plt.show()
 	
 	
-	x_test = []
-	steps = 0
-	g = getInputTestTen()
-	for t in g:
-		if steps > 5: 
-			break
-		steps += 1	
-		#print type(t)	
-		x_test = t
-
-	y_test = []
-	steps = 0
-	for t in getOutputTestTen():
-		if steps > 5: 
-			break	
-		steps += 1			
-		y_test = t
 
 	print "MODEL FIT"	
-	print len(x_test)
-	print x_test[0][0]
-	print len(y_Generatortest)
 	
-	a = numpy.array(x_test)
-	n = numpy
-	print a.shape
-	#b = a[None, :, :]
+	        
+	scores = model.evaluate_generator(izip(getInputTestTen(), getOutputTestTen()), steps=10)
 
-	c = numpy.array(y_test)
-	print c.shape
-	#d = c[None, :, :]
-	
-	#scores = evaluate_generator(izip(getInputTestTen(), getOutputTestTen()), steps=40, workers=2)
+	outPredict = model.predict_generator(getInputTestTen(), steps=10, verbose=1)	
 
-	scores = model.evaluate(a, c, batch_size=10)
+	print "PREDICT"
+	print len(outPredict)
+	print outPredict.shape
+	#outPredict = outPredict.astype(int)
+	for x in outPredict:
+		print x[0][0]
+
+	#scores = model.evaluate(a, c, batch_size=10)
 	print "SCORE"
 	cvscores = []
 	print scores

@@ -307,6 +307,8 @@ def perform(curr):
 			chosenTrueLineInd.value = vocab_entry
 			#print vocab_entry
 
+			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
+
 			bruhInd = -1
 			iterInd = 0
 			for a in allGood:
@@ -354,7 +356,7 @@ def perform(curr):
 			#print len(one_hot_bad_ins_out)
 			#print one_hot_bad_ins_out[trueErrorInd]
 
-
+			
 
 			# DELETE
 			raw_tokens = tokenize.generate_tokens(StringIO.StringIO(all_rows[curr][0]).readline)	
@@ -403,6 +405,9 @@ def perform(curr):
 			#print len(send)
 			#print trueErrorInd
 			#print iterNum
+			print "delete"
+			print send.type
+			print send.value
 			oneH_ind_deleted = set_from_json_nonarr(send, True)
 			#print oneH_ind_deleted
 			#print "rad"
@@ -493,6 +498,9 @@ def perform(curr):
 			#print len(send)
 			#print trueErrorInd
 			#print iterNum
+			print "sub"
+			print sendS.type
+			print sendS.value
 			oneH_sub_switch = set_from_json_nonarr(sendS, True)
 			#print oneH_sub_switch
 			#print "rad"

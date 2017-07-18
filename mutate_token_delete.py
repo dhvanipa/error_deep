@@ -38,9 +38,10 @@ def deleteTokMut(raw_tokens, raw_text):
 			if token[0] != 6:
 				if token[0] != 4:
 					if token[0] != 54:
-						if token[0] != 0:
-							raw_tokens_pass.append(token_use)
-							#print token
+						if token[0] != 53:
+							if token[0] != 0:
+								raw_tokens_pass.append(token_use)
+								#print token
 
 	#print "OKAY"
 	
