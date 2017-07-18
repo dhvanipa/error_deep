@@ -479,7 +479,7 @@ def initData():
 	model.add(Dropout(0.5))
 	model.add(Dense(102, activation='relu'))
 	model.add(Dropout(0.5))
-	model.add(Dense(102, activation='softmax'))
+	model.add(Dense(102, activation='sigmoid'))
 	
 
 	# For a binary classification problem
