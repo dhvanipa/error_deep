@@ -76,7 +76,7 @@ def set_from_json(all_tokens, flag):
 		if len(token.value) > 0:
 			if token.value[0] == '#':
 				all_tokens.remove(token)
-				print "no way"
+				#print "no way"
 
 	for token in all_tokens:
 		if token.value == "\\r\\n":
@@ -237,7 +237,7 @@ def perform(curr):
 	c.execute("SELECT source FROM source_file INNER JOIN eligible_source ON source_file.hash = eligible_source.hash")
 	#print "Executed SELECT..."
 	#print "Fetching all rows..."
-	all_rows = c.fetchmany(size=2000)
+	all_rows = c.fetchmany(size=2100)
 	conn.close() # Close the connection to SQL
 	#for curr in range(2):
 	if True:
@@ -284,6 +284,7 @@ def perform(curr):
 			#MUTATIONS PER TOKEN
 
 			# INSERT
+
 			#global all_tokens
 			#all_tokens = []
 			global indexed_tokens
@@ -299,6 +300,7 @@ def perform(curr):
 					break
 					
 			new_tokens_ins = all_tokens[:]
+			print len(new_tokens_ins)
 	
 			if insTok.type == "NL":
 				insTok.type = "NEWLINE"
@@ -307,22 +309,41 @@ def perform(curr):
 			chosenTrueLineInd.value = vocab_entry
 			#print vocab_entry
 
-			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
+		
 
 			bruhInd = -1
 			iterInd = 0
-			for a in allGood:
+			print len(all_tokens)
+			for a in all_tokens:
 				if a == chosenTrueLineInd:
 					bruhInd = iterInd
 				iterInd = iterInd + 1
 			#print bruhInd + 1
 			new_tokens_ins.insert(bruhInd+1, insTok)
+			print "START DEBUG"
+			print insTok.value
+			print len(new_tokens_ins)
+			print new_tokens_ins[bruhInd+1].value
+			
+			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
+			print one_hot_bad_ins[bruhInd+1+WINDOW_SIZE-1]
+			print "DONE DEBUG"
 		
+			#print len(new_tokens_ins)
+			#print len(one_hot_bad_ins)
+			
+			#if(bruhInd+1 < len(new_tokens_ins)):
+				
+				
+
 			#print "NEXT STEP...C"
+			passInsErrorInd = (bruhInd+1)+(WINDOW_SIZE-1) 
 			
 			one_hot_bad_ins_out = []
-			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1) 
+			trueErrorInd = (bruhInd+1)+(WINDOW_SIZE-1) 
+		
 			# INSERT OUT_PUT
+
 			iterNum = len(new_tokens_ins)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
 			#print "divide"
 			#print trueErrorInd
@@ -405,9 +426,9 @@ def perform(curr):
 			#print len(send)
 			#print trueErrorInd
 			#print iterNum
-			print "delete"
-			print send.type
-			print send.value
+			#print "delete"
+			#print send.type
+			#print send.value
 			oneH_ind_deleted = set_from_json_nonarr(send, True)
 			#print oneH_ind_deleted
 			#print "rad"
@@ -498,9 +519,9 @@ def perform(curr):
 			#print len(send)
 			#print trueErrorInd
 			#print iterNum
-			print "sub"
-			print sendS.type
-			print sendS.value
+			#print "sub"
+			#print sendS.type
+			#print sendS.value
 			oneH_sub_switch = set_from_json_nonarr(sendS, True)
 			#print oneH_sub_switch
 			#print "rad"
@@ -564,7 +585,7 @@ def perform(curr):
 			#one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
 
 			#print "SUCCESS"
-			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out
+			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out,passInsErrorInd
 			
 		else:
 			#print "Try again..."

@@ -31,7 +31,7 @@ WINDOW_SIZE = 10
 
 
 def getInputTen():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(0)
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(0)
 	windowInd = 0
 	fileInd = 0
 	batchInd = 1
@@ -40,19 +40,20 @@ def getInputTen():
 	#while windowInd < int(len(insArr)/10):
 		sizes = [len(one_hot_good), len(one_hot_bad_ins),len(one_hot_bad_del),len(one_hot_bad_sub)]
 		minSize = min(float(siz) for siz in sizes) # min of a generator
-		print "file"
-		print fileInd
-		print minSize
-		print windowInd
-		print int((int(minSize) / 10))
+		#print "file"
+		#print fileInd
+		#print minSize
+		#print windowInd
+		#print int((int(minSize) / 10))
 		while windowInd < int((int(minSize) / 10)):
-			print windowInd
-			print "WINDOW"	
+			#print windowInd
+			#print "WINDOW"	
 			batchInd = 1
-			print len(one_hot_good)
-			print len(one_hot_bad_ins)
-			print len(one_hot_bad_del)
-			print len(one_hot_bad_sub)	
+			
+			#print len(one_hot_good)
+			#print len(one_hot_bad_ins)
+			#print len(one_hot_bad_del)
+			#print len(one_hot_bad_sub)	
 			toPassOne = []
 			for x in range(10):
 				y = x + windowInd
@@ -73,19 +74,22 @@ def getInputTen():
 				y = x + windowInd
 				if y < len(one_hot_bad_sub):	
 					toPassFour.append(one_hot_bad_sub[y])
+			#print "TEST"
+			#print numpy.array(toPassOne).astype(int)[0]
 			#print len(toPass)
-			print len(toPassOne)
-			print len(toPassTwo)
-			print len(toPassThree)
-			print len(toPassFour)
+			#print len(toPassOne)
+			#print len(toPassTwo)
+			#print len(toPassThree)
+			#print len(toPassFour)
+			
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
 			#toPass = []
 			
 			while(batchInd % 5 != 0):
 				toPass = []
-				print "BATCH IND"
-				print batchInd
+				#print "BATCH IND"
+				#print batchInd
 				if(batchInd == 1):
 					toPass = toPassOne[:]
 				elif(batchInd == 2):
@@ -95,7 +99,7 @@ def getInputTen():
 				elif(batchInd == 4):
 					toPass = toPassFour[:]
 				a = numpy.array(toPass).astype(int)
-				print a.shape
+				#print a.shape
 				#count+=1
 				#print "COUNT"
 				#print count
@@ -103,11 +107,11 @@ def getInputTen():
 				yield a
 				batchInd += 1
 			#print numpy.array(toPass).shape
-			print "mine too"
+			#print "mine too"
 			windowInd += 1
 		#else:
-		print "NEXT FILE"
-		print "DONE BRO"
+		#print "NEXT FILE"
+		#print "DONE BRO"
 		old_one_hot_good = one_hot_good[:]
 		old_one_hot_bad_ins = one_hot_bad_ins[:]
 		old_one_hot_bad_del = one_hot_bad_del[:]
@@ -120,10 +124,10 @@ def getInputTen():
 
 		fileInd += 1
 		windowInd = 0
-		one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(fileInd)
+		one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
 		while(one_hot_good == None):
 			fileInd+=1
-			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(fileInd)
+			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
 	
 			
 		for p in range(numGoodLeft):
@@ -136,7 +140,7 @@ def getInputTen():
 			one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
 
 def getOutputTen():
-	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(0)
+	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
 	windowInd = 0
 	fileInd = 0
 	batchInd = 1
@@ -166,13 +170,15 @@ def getOutputTen():
 				y = x + windowInd
 				if y < len(one_hot_bad_sub_out):
 					toPassFour.append(one_hot_bad_sub_out[y])
+			#print "TEST OUT"
+			#print toPassOne[0]
 			#print len(toPass)
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
 			while(batchInd % 5 != 0):
 				toPass = []
-				print "BATCH IND"
-				print batchInd
+				#print "BATCH IND"
+				#print batchInd
 				if(batchInd == 1):
 					toPass = toPassOne[:]
 				elif(batchInd == 2):
@@ -182,7 +188,7 @@ def getOutputTen():
 				elif(batchInd == 4):
 					toPass = toPassFour[:]
 				a = numpy.array(toPass).astype(int)
-				print a.shape
+				#print a.shape
 				#count+=1
 				#print "COUNT"
 				#print count
@@ -205,10 +211,10 @@ def getOutputTen():
 
 		fileInd += 1
 		windowInd = 0
-		_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(fileInd)
+		_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 		while(one_hot_good_out == None):
 			fileInd+=1
-			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(fileInd)
+			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 
 		for p in range(numGoodOutLeft):
 			one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
@@ -221,7 +227,7 @@ def getOutputTen():
 
 
 def getInputValTen():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(1001)
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(1001)
 	windowInd = 0
 	fileInd = 1001
 	batchInd = 1
@@ -230,19 +236,19 @@ def getInputValTen():
 	#while windowInd < int(len(insArr)/10):
 		sizes = [len(one_hot_good), len(one_hot_bad_ins),len(one_hot_bad_del),len(one_hot_bad_sub)]
 		minSize = min(float(siz) for siz in sizes) # min of a generator
-		print "file"
-		print fileInd
-		print minSize
-		print windowInd
-		print int((int(minSize) / 10))
+		#print "file"
+		#print fileInd
+		#print minSize
+		#print windowInd
+		#print int((int(minSize) / 10))
 		while windowInd < int((int(minSize) / 10)):
-			print windowInd
-			print "WINDOW"	
+			#print windowInd
+			#print "WINDOW"	
 			batchInd = 1
-			print len(one_hot_good)
-			print len(one_hot_bad_ins)
-			print len(one_hot_bad_del)
-			print len(one_hot_bad_sub)	
+			#print len(one_hot_good)
+			#print len(one_hot_bad_ins)
+			#print len(one_hot_bad_del)
+			#print len(one_hot_bad_sub)	
 			toPassOne = []
 			for x in range(10):
 				y = x + windowInd
@@ -264,18 +270,18 @@ def getInputValTen():
 				if y < len(one_hot_bad_sub):	
 					toPassFour.append(one_hot_bad_sub[y])
 			#print len(toPass)
-			print len(toPassOne)
-			print len(toPassTwo)
-			print len(toPassThree)
-			print len(toPassFour)
+			#print len(toPassOne)
+			#print len(toPassTwo)
+			#print len(toPassThree)
+			#print len(toPassFour)
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
 			#toPass = []
 			
 			while(batchInd % 5 != 0):
 				toPass = []
-				print "BATCH IND"
-				print batchInd
+				#print "BATCH IND"
+				#print batchInd
 				if(batchInd == 1):
 					toPass = toPassOne[:]
 				elif(batchInd == 2):
@@ -285,7 +291,7 @@ def getInputValTen():
 				elif(batchInd == 4):
 					toPass = toPassFour[:]
 				a = numpy.array(toPass).astype(int)
-				print a.shape
+				#print a.shape
 				#count+=1
 				#print "COUNT"
 				#print count
@@ -293,11 +299,11 @@ def getInputValTen():
 				yield a
 				batchInd += 1
 			#print numpy.array(toPass).shape
-			print "mine too"
+			#print "mine too"
 			windowInd += 1
 		#else:
-		print "NEXT FILE"
-		print "DONE BRO"
+		#print "NEXT FILE"
+		#print "DONE BRO"
 		old_one_hot_good = one_hot_good[:]
 		old_one_hot_bad_ins = one_hot_bad_ins[:]
 		old_one_hot_bad_del = one_hot_bad_del[:]
@@ -310,10 +316,10 @@ def getInputValTen():
 
 		fileInd += 1
 		windowInd = 0
-		one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(fileInd)
+		one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
 		while(one_hot_good == None):
 			fileInd+=1
-			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(fileInd)
+			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
 	
 			
 		for p in range(numGoodLeft):
@@ -326,7 +332,7 @@ def getInputValTen():
 			one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
 
 def getOutputValTen():
-	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(1001)
+	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(1001)
 	windowInd = 0
 	fileInd = 1001
 	batchInd = 1
@@ -361,8 +367,8 @@ def getOutputValTen():
 			#print toPass.shape
 			while(batchInd % 5 != 0):
 				toPass = []
-				print "BATCH IND"
-				print batchInd
+				#print "BATCH IND"
+				#print batchInd
 				if(batchInd == 1):
 					toPass = toPassOne[:]
 				elif(batchInd == 2):
@@ -372,7 +378,7 @@ def getOutputValTen():
 				elif(batchInd == 4):
 					toPass = toPassFour[:]
 				a = numpy.array(toPass).astype(int)
-				print a.shape
+				#print a.shape
 				#count+=1
 				#print "COUNT"
 				#print count
@@ -395,10 +401,10 @@ def getOutputValTen():
 
 		fileInd += 1
 		windowInd = 0
-		_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(fileInd)
+		_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 		while(one_hot_good_out == None):
 			fileInd+=1
-			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = perform(fileInd)
+			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 
 		for p in range(numGoodOutLeft):
 			one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
@@ -410,60 +416,43 @@ def getOutputValTen():
 			one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
 
 def getInputTestTen():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _ = perform(2)
-	windowInd = 0
-	fileInd = 2
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, passInsErrorInd = perform(4)
+	fileInd = 4
 	batchInd = 1
-	#while fileInd <= 2: # 462540
+
 	if True:
-	#while windowInd < int(len(insArr)/10):
-		sizes = [len(one_hot_good), len(one_hot_bad_ins),len(one_hot_bad_del),len(one_hot_bad_sub)]
-		minSize = min(float(siz) for siz in sizes) # min of a generator
-		print "file"
-		print fileInd
-		if windowInd < int((minSize / 10)):	
-			print len(one_hot_good)
-			print len(one_hot_bad_ins)
-			print len(one_hot_bad_del)
-			print len(one_hot_bad_sub)	
+		if True:	
+			print passInsErrorInd
+			print "ERROR IND"
 			toPassOne = []
 			for x in range(10):
-				y = x + windowInd
+				y = x
 				if y < len(one_hot_good):
 					toPassOne.append(one_hot_good[y])
 			toPassTwo = []	
 			for x in range(10):
-				y = x + windowInd
+				y = passInsErrorInd - x
 				if y < len(one_hot_bad_ins):
 					toPassTwo.append(one_hot_bad_ins[y])
 			toPassThree = []	
 			for x in range(10):
-				y = x + windowInd
+				y = x
 				if y < len(one_hot_bad_del):				
 					toPassThree.append(one_hot_bad_del[y])
 			toPassFour = []
 			for x in range(10):
-				y = x + windowInd
+				y = x
 				if y < len(one_hot_bad_sub):	
 					toPassFour.append(one_hot_bad_sub[y])
+			
 			#print len(toPass)
-			print len(toPassOne)
-			print len(toPassTwo)
-			print len(toPassThree)
-			print len(toPassFour)
+			#print len(toPassOne)
+			#print len(toPassTwo)
+			#print len(toPassThree)
+			#print len(toPassFour)
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			toPass = []
-			if(batchInd == 1):
-				toPass = toPassOne[:]
-			elif(batchInd == 2):
-				toPass = toPassTwo[:]
-			elif(batchInd == 3):
-				toPass = toPassThree[:]
-			elif(batchInd == 4):
-				toPass = toPassFour[:]
-			if(batchInd % 4 == 0):
-				batchInd = 1
+			toPass = toPassOne[:]
 			a = numpy.array(toPass).astype(int)
 			#print b.shape
 			return a
@@ -613,18 +602,20 @@ def initData():
         #      metrics=['accuracy'])
 
 	opt = optimizers.SGD(lr=0.0001)
+	#opt = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
 	#opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
 	model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
+	#model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 	#zipped = iter()
 	#print type(zipped)
 
 	history = model.fit_generator(
                	izip(getInputTen(), getOutputTen()),
-                steps_per_epoch=40,
+                steps_per_epoch=16,
 		validation_data=izip(getInputValTen(), getOutputValTen()),
-		validation_steps=40,
-                epochs=1000,    
+		validation_steps=16,
+                epochs=200,    
                 verbose=2	
             )
 	'''
@@ -659,6 +650,10 @@ def initData():
 	        
 	#scores = model.evaluate_generator(izip(getInputTestTen(), getOutputTestTen()), steps=10)
 	genIn = getInputTestTen()
+	print type(genIn)
+	print len(genIn)
+	print genIn[0]
+	
 	input_testT = []
 	for x in genIn:
 		input_testT.append(x)
@@ -671,14 +666,51 @@ def initData():
 	print a.shape
 
 	#outPredict = model.predict_generator(getInputTestTen(), steps=10, verbose=1)	
-	outPredict = model.predict(a, batch_size=4, verbose=1)
+	outPredict = model.predict(genIn, batch_size=4, verbose=1)
 
 	print "PREDICT"
 	print len(outPredict)
 	print outPredict.shape
-	#outPredict = outPredict.astype(int)
+	print len(outPredict[0])
+	print outPredict[0]
+	rounded = np.around(outPredict[0])
+	print rounded
+	#rounded = outPredict[0]
+	#temp = rounded[:]
+	#for x in temp:
+	#a = numpy.array(rounded).astype(int)
+	sums = []
+	inds = []
+	sum = 0.0
+	radInd = 0
 	for x in outPredict:
-		print x[0]
+		print x
+		sum = 0.0
+		for y in x:
+			sum = sum + y
+		sums.append(sum)
+
+
+	
+	for x in range(9):
+		inds.append(list(outPredict[x]).index(max(outPredict[x])))
+	print max(outPredict[0])
+	print list(outPredict[0]).index(max(outPredict[0]))
+	print "MAX"
+	for b in inds:
+		print b
+
+	print "SUM"
+	for x in sums:
+		print x
+
+	sys.exit()		
+	#outPredict = outPredict.astype(int)
+	ind = 0
+	for x in outPredict:
+		rounded.append([round(x[ind]) for x in outPredict])
+		ind += 1
+	print rounded
 
 	#scores = model.evaluate(a, c, batch_size=10)
 	print "SCORE"
