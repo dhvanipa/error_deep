@@ -35,7 +35,7 @@ def getInputTen():
 	windowInd = 0
 	fileInd = 0
 	batchInd = 1
-	count = 0
+	#count = 0
 	while fileInd <= 1000: # 462540
 	#while windowInd < int(len(insArr)/10):
 		sizes = [len(one_hot_good), len(one_hot_bad_ins),len(one_hot_bad_del),len(one_hot_bad_sub)]
@@ -96,9 +96,9 @@ def getInputTen():
 					toPass = toPassFour[:]
 				a = numpy.array(toPass).astype(int)
 				print a.shape
-				count+=1
-				print "COUNT"
-				print count
+				#count+=1
+				#print "COUNT"
+				#print count
 				#print b.shape
 				yield a
 				batchInd += 1
@@ -225,7 +225,7 @@ def getInputValTen():
 	windowInd = 0
 	fileInd = 1001
 	batchInd = 1
-	count = 0
+	#count = 0
 	while fileInd <= 2000: # 462540
 	#while windowInd < int(len(insArr)/10):
 		sizes = [len(one_hot_good), len(one_hot_bad_ins),len(one_hot_bad_del),len(one_hot_bad_sub)]
@@ -286,9 +286,9 @@ def getInputValTen():
 					toPass = toPassFour[:]
 				a = numpy.array(toPass).astype(int)
 				print a.shape
-				count+=1
-				print "COUNT"
-				print count
+				#count+=1
+				#print "COUNT"
+				#print count
 				#print b.shape
 				yield a
 				batchInd += 1
@@ -612,7 +612,7 @@ def initData():
         #      loss='binary_crossentropy',
         #      metrics=['accuracy'])
 
-	opt = optimizers.SGD(lr=0.001)
+	opt = optimizers.SGD(lr=0.0001)
 	#opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
 	model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
 
@@ -621,23 +621,13 @@ def initData():
 
 	history = model.fit_generator(
                	izip(getInputTen(), getOutputTen()),
-                steps_per_epoch=12,
+                steps_per_epoch=40,
 		validation_data=izip(getInputValTen(), getOutputValTen()),
-		validation_steps=12,
-                epochs=200,   
+		validation_steps=40,
+                epochs=1000,    
                 verbose=2	
             )
 	'''
-	callbacks=[
-                    ModelCheckpoint(
-                        str(weight_path_pattern),
-                        save_best_only=False,
-                        save_weights_only=False,
-                        mode='auto'
-                    ),
-                    CSVLogger(str(log_path), append=True),
-                    EarlyStopping(patience=3, mode='auto')
-                ],  
 	'''
 
 	# list all data in history
