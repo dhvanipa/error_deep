@@ -544,19 +544,19 @@ def perform(curr):
 			#print one_hot_good[0]
 			#print one_hot_bad[0]
 			
-			print "----------INPUT-------------"
+			#print "----------INPUT-------------"
 
-			print len(one_hot_good)
-			print len(one_hot_bad_ins)
-			print len(one_hot_bad_del)
-			print len(one_hot_bad_sub)
+			#print len(one_hot_good)
+			#print len(one_hot_bad_ins)
+			#print len(one_hot_bad_del)
+			#print len(one_hot_bad_sub)
 
-			print "----------OUTPUT-------------"
+			#print "----------OUTPUT-------------"
 
-			print len(one_hot_good_out)
-			print len(one_hot_bad_ins_out)
-			print len(one_hot_bad_del_out)
-			print len(one_hot_bad_sub_out)
+			#print len(one_hot_good_out)
+			#print len(one_hot_bad_ins_out)
+			#print len(one_hot_bad_del_out)
+			#print len(one_hot_bad_sub_out)
 
 			#print curr
 		

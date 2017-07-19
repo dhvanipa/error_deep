@@ -3,7 +3,7 @@
 import json
 from pprint import pprint
 import tokenize
-from check_pypy_syntax import checkPyPySyntaxSub
+from check_pypy_syntax import checkPyPySyntax
 from compile_error import CompileError
 import token
 from Token import Token
@@ -178,7 +178,7 @@ def subTokMut(raw_tokens, raw_text):
 	#print new_text
 	
 
-	toTest = checkPyPySyntaxSub(new_text)
+	toTest = checkPyPySyntax(new_text)
 
 	if toTest == None:
  		#print "Try again..."	
