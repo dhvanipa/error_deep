@@ -95,9 +95,9 @@ def getInputTen():
 				elif(batchInd == 2):
 					toPass = toPassTwo[:]
 				elif(batchInd == 3):
-					toPass = toPassThree[:]
+					toPass = toPassOne[:]
 				elif(batchInd == 4):
-					toPass = toPassFour[:]
+					toPass = toPassTwo[:]
 				a = numpy.array(toPass).astype(int)
 				#print a.shape
 				#count+=1
@@ -125,7 +125,7 @@ def getInputTen():
 		fileInd += 1
 		windowInd = 0
 		one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
-		while(one_hot_good == None):
+		while(one_hot_good == 1):
 			fileInd+=1
 			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
 	
@@ -192,14 +192,8 @@ def getOutputTen():
 						three = 1
 						bruhTwo.append(three)
 					else:
-						zero = 1
-						bruhTwo.append(zero)
-						one = 0
-						bruhTwo.append(one)
-						two = 0
-						bruhTwo.append(two)
-						three = 0
-						bruhTwo.append(three)
+						print "GET OUT OF HERE"
+						print type(radha)
 					toPassTwo.append(bruhTwo)
 			toPassThree = []
 			for x in range(10):
@@ -273,9 +267,9 @@ def getOutputTen():
 				elif(batchInd == 2):
 					toPass = toPassTwo[:]
 				elif(batchInd == 3):
-					toPass = toPassThree[:]
+					toPass = toPassOne[:]
 				elif(batchInd == 4):
-					toPass = toPassFour[:]
+					toPass = toPassTwo[:]
 				#print len(toPass)
 				#print toPassOne[1]
 				a = numpy.array(toPass)
@@ -304,7 +298,7 @@ def getOutputTen():
 		fileInd += 1
 		windowInd = 0
 		_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
-		while(one_hot_good_out == None):
+		while(one_hot_good_out == 1):
 			fileInd+=1
 			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 
@@ -337,6 +331,7 @@ def getInputValTen():
 			#print windowInd
 			#print "WINDOW"	
 			batchInd = 1
+			
 			#print len(one_hot_good)
 			#print len(one_hot_bad_ins)
 			#print len(one_hot_bad_del)
@@ -361,11 +356,14 @@ def getInputValTen():
 				y = x + windowInd
 				if y < len(one_hot_bad_sub):	
 					toPassFour.append(one_hot_bad_sub[y])
+			#print "TEST"
+			#print numpy.array(toPassOne).astype(int)[0]
 			#print len(toPass)
 			#print len(toPassOne)
 			#print len(toPassTwo)
 			#print len(toPassThree)
 			#print len(toPassFour)
+			
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
 			#toPass = []
@@ -379,9 +377,9 @@ def getInputValTen():
 				elif(batchInd == 2):
 					toPass = toPassTwo[:]
 				elif(batchInd == 3):
-					toPass = toPassThree[:]
+					toPass = toPassOne[:]
 				elif(batchInd == 4):
-					toPass = toPassFour[:]
+					toPass = toPassTwo[:]
 				a = numpy.array(toPass).astype(int)
 				#print a.shape
 				#count+=1
@@ -409,7 +407,7 @@ def getInputValTen():
 		fileInd += 1
 		windowInd = 0
 		one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
-		while(one_hot_good == None):
+		while(one_hot_good == 1):
 			fileInd+=1
 			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
 	
@@ -476,14 +474,8 @@ def getOutputValTen():
 						three = 1
 						bruhTwo.append(three)
 					else:
-						zero = 1
-						bruhTwo.append(zero)
-						one = 0
-						bruhTwo.append(one)
-						two = 0
-						bruhTwo.append(two)
-						three = 0
-						bruhTwo.append(three)
+						print "GET OUT OF HERE"
+						print type(radha)
 					toPassTwo.append(bruhTwo)
 			toPassThree = []
 			for x in range(10):
@@ -557,9 +549,9 @@ def getOutputValTen():
 				elif(batchInd == 2):
 					toPass = toPassTwo[:]
 				elif(batchInd == 3):
-					toPass = toPassThree[:]
+					toPass = toPassOne[:]
 				elif(batchInd == 4):
-					toPass = toPassFour[:]
+					toPass = toPassTwo[:]
 				#print len(toPass)
 				#print toPassOne[1]
 				a = numpy.array(toPass)
@@ -588,7 +580,7 @@ def getOutputValTen():
 		fileInd += 1
 		windowInd = 0
 		_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
-		while(one_hot_good_out == None):
+		while(one_hot_good_out == 1):
 			fileInd+=1
 			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 
@@ -603,8 +595,8 @@ def getOutputValTen():
 
 
 def getInputTestTen():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, passInsErrorInd = perform(4)
-	fileInd = 4
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, passInsErrorInd = perform(2077)
+	fileInd = 2077
 	batchInd = 1
 
 	if True:
@@ -640,7 +632,7 @@ def getInputTestTen():
 			#print len(toPassFour)
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			toPass = toPassTwo[:]
+			toPass = toPassOne[:]
 			a = numpy.array(toPass).astype(int)
 			#print b.shape
 			return a
@@ -789,7 +781,7 @@ def initData():
         #      loss='binary_crossentropy',
         #      metrics=['accuracy'])
 
-	opt = optimizers.SGD(lr=0.001)
+	opt = optimizers.SGD(lr=0.001, momentum=0.005)
 	#opt = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
 	#opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
 	model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])

@@ -13,7 +13,7 @@ import json
 import numpy as np
 from mutate_insert import insertMut
 from mutate_deletion import deleteMut
-from mutate_token_insert import insertTokMut
+from mutate_token_insert import insertTokMutS
 from mutate_token_delete import deleteTokMut
 from mutate_token_sub import subTokMut
 import sys
@@ -214,7 +214,54 @@ def vocabularize_tokens(every_token, flag):
     #print Token.value
     return set_from_json(every_token, flag)
  	
+def getRid(every_token, flag):
+    if flag == False:
+   	 EXTRANEOUS_TOKENS = {
+             # Always occurs as the first token: internally indicates the file
+             # ecoding, but is irrelelvant once the stream is already tokenized
+            'ENCODING',
 	
+            # Always occurs as the last token.
+            'ENDMARKER',
+
+            # Insignificant newline; not to be confused with NEWLINE
+            'NL',
+	
+            # Discard comments
+            'COMMENT',
+
+            # Represents a tokenization error. This should never appear for
+            # syntatically correct files.
+            'ERRORTOKEN',
+        }
+    elif flag == True:
+        EXTRANEOUS_TOKENS = {
+             # Always occurs as the first token: internally indicates the file
+             # ecoding, but is irrelelvant once the stream is already tokenized
+            'ENCODING',
+	
+            # Always occurs as the last token.
+            'ENDMARKER',
+
+            # Discard comments
+            'COMMENT',
+
+            # Represents a tokenization error. This should never appear for
+            # syntatically correct files.
+            'ERRORTOKEN',
+        }
+
+    all_tokens_iter = every_token[:]
+    for Token in all_tokens_iter:
+	#print tokenize.tok_name[Token[0]]
+        if tokenize.tok_name[Token[0]] in EXTRANEOUS_TOKENS:
+		every_token.remove(Token)
+	if flag == True:
+		if Token[1] == "\\n":
+			every_token.remove(Token)
+			#if Token.type == "NL":
+			#print "Gotch u"
+    return every_token
 
 # Create list of tokens
 def handle_token(type, token, (srow, scol), (erow, ecol), line):
@@ -262,7 +309,10 @@ def perform(curr):
 			#print len(all_tokens)
 			allGood = []
 			global all_tokens
-			allGood = list(all_tokens)
+			allGood = all_tokens[:]
+			print "come on"
+			print len(all_tokens)
+			print len(allGood)
 			one_hot_good = vocabularize_tokens(all_tokens, False)
 			one_hot_good_out = []
 			for x in range(len(all_tokens)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)):
@@ -291,42 +341,62 @@ def perform(curr):
 			indexed_tokens = []
 			#print "RAW"		
 			#print len(all_tokens)
-			
-			new_i_text, NO_TOKEN, INSERTION, out_tokens_loc, chosenTrueLineInd, insTok = insertTokMut(raw_tokens, source_code)
+			#passToks = all_tokens[:]
+			#print len(passToks)
+			#print "come
+			global all_tokens
+			print "dhadha"
+			print len(all_tokens)
+			print len(allGood)
+			passBall = allGood[:]
+			new_i_text, NO_TOKEN, INSERTION, out_tokens_loc, chosenTrueLineInds, insToks = insertTokMutS(raw_tokens, passBall, source_code)
 
 			while isinstance(new_i_text, int):
-				new_i_text, NO_TOKEN, INSERTION, out_tokens_loc, chosenTrueLineInd, insTok = insertTokMut(NO_TOKEN, INSERTION)
+				new_i_text, NO_TOKEN, INSERTION, out_tokens_loc, chosenTrueLineInds, insToks = insertTokMutS(NO_TOKEN, out_tokens_loc, INSERTION)
 				if isinstance(new_i_text, str):
 					break
 					
-			new_tokens_ins = all_tokens[:]
+			new_tokens_ins = allGood[:]
+			print "BOL BOL BOL"			
 			print len(new_tokens_ins)
-	
-			if insTok.type == "NL":
-				insTok.type = "NEWLINE"
-
-			vocab_entry = open_closed_tokens(chosenTrueLineInd)
-			chosenTrueLineInd.value = vocab_entry
-			#print vocab_entry
-
-		
-
-			bruhInd = -1
-			iterInd = 0
-			print len(all_tokens)
-			for a in all_tokens:
-				if a == chosenTrueLineInd:
-					bruhInd = iterInd
-				iterInd = iterInd + 1
-			#print bruhInd + 1
-			new_tokens_ins.insert(bruhInd+1, insTok)
+			temp = insToks[:]
+			for insTok in temp:
+				if insTok.type == "NL":
+					insToks[insToks.index(insTok)].type = "NEWLINE"
+			
+			temp2 = chosenTrueLineInds[:]
+			for chosenTrueLineInd in temp2:
+				vocab_entry = open_closed_tokens(chosenTrueLineInd)
+				chosenTrueLineInds[chosenTrueLineInds.index(chosenTrueLineInd)].value = vocab_entry
+				#print vocab_entry
+			print "OK ------------------------------"
+			print len(new_tokens_ins)
+			#print len(chosenTrueLineInds)
+			#print len(all_tokens)
+			for wow in range(len(chosenTrueLineInds)):
+				bruhInd = -1
+				iterInd = 0
+				chosenTrueLineInd = chosenTrueLineInds[wow]
+				insTok = insToks[wow]
+				#print len(all_tokens)
+				for a in allGood:
+					if a == chosenTrueLineInd:
+						bruhInd = iterInd
+					iterInd = iterInd + 1
+				#print bruhInd + 1
+				#print bruhInd
+				#print "gotchu"
+				if bruhInd != -1:
+					#print bruhInd
+					#print "gotchu"
+					new_tokens_ins.insert(bruhInd+1, insTok)
 			print "START DEBUG"
 			print insTok.value
 			print len(new_tokens_ins)
 			print new_tokens_ins[bruhInd+1].value
 			
 			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
-			print one_hot_bad_ins[bruhInd+1+WINDOW_SIZE-1]
+			#print one_hot_bad_ins[bruhInd+1+WINDOW_SIZE-1]
 			print "DONE DEBUG"
 		
 			#print len(new_tokens_ins)
@@ -350,7 +420,8 @@ def perform(curr):
 			#print iterNum
 			for x in range(iterNum):
 				#if x <= trueErrorInd <= (x+trueErrorInd):
-				if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
+				#if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
+				if True:
 					# DIFF - ACTUAL ERROR
 					#print x
 					toAdd = []
@@ -364,13 +435,13 @@ def perform(curr):
 						toAdd[4] = 0
 						toAdd[5] = 0
 						toAdd[6] = 1
-					toAdd[7+trueErrorInd-x] = 1
+					toAdd[7] = 1
 					one_hot_bad_ins_out.append(toAdd)
 				else:
 					toAdd = []
 					toAdd = [0] * NUM_BITS_OUTPUT
-					toAdd[0] = 0
-					toAdd[1] = 1 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
+					toAdd[0] = 1
+					toAdd[1] = 0 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
 					one_hot_bad_ins_out.append(toAdd)
 			#print "Morning"	
 			#print len(new_tokens_ins)
@@ -534,13 +605,13 @@ def perform(curr):
 					toAdd = [0] * NUM_BITS_OUTPUT
 					toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
 					toAdd[1] = 0
-					if YES_TOKEN != None:
-						toAdd[2] = 1
-						toAdd[3] = 0
-					if SUBSTITUTION != None:
-						toAdd[4] = 1
-						toAdd[5] = 0
-						toAdd[6] = 0
+					
+					toAdd[2] = 1
+					toAdd[3] = 0
+					
+					toAdd[4] = 1
+					toAdd[5] = 0
+					toAdd[6] = 0
 					toAdd[7+trueErrorInd-x] = 1
 					toAdd[17+oneH_sub_switch] = 1
 					one_hot_bad_sub_out.append(toAdd)
@@ -589,10 +660,17 @@ def perform(curr):
 			
 		else:
 			#print "Try again..."
-			return None, None, None, None, None, None, None, None
+			print curr
+			#print all_rows[curr][0]
+			return 1, None, None, None, 1, None, None, None. None
 	
 
 if __name__ == '__main__':
-    perform(2)
+    perform(77)
+    sys.exit()
+    for x in range(3):
+	  # 36, 80, 124, 126, 177
+	  if x != 36 and x != 80 and x != 124 and x != 126 and x != 177:
+  		  perform(x)
 
 
