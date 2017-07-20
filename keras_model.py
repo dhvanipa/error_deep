@@ -154,22 +154,111 @@ def getOutputTen():
 			for x in range(10):
 				y = x + windowInd
 				if y < len(one_hot_good_out):
-					toPassOne.append(one_hot_good_out[y])
-			toPassTwo = []	
+					err = one_hot_good_out[y][0]
+					clasF = one_hot_good_out[y][4]
+					clasF = one_hot_good_out[y][5]	
+					clasF = one_hot_good_out[y][6]
+					bruhOne = []
+					if(err == 0):
+						zero = 1
+						bruhOne.append(zero)
+						one = 0
+						bruhOne.append(one)
+						two = 0
+						bruhOne.append(two)
+						three = 0
+						bruhOne.append(three)
+					else:
+						print "not here"
+					toPassOne.append(bruhOne)
+					print bruhOne
+					
+			toPassTwo = []
 			for x in range(10):
 				y = x + windowInd
 				if y < len(one_hot_bad_ins_out):
-					toPassTwo.append(one_hot_bad_ins_out[y])
-			toPassThree = []	
+					err = one_hot_bad_ins_out[y][0]
+					clasF = one_hot_bad_ins_out[y][4]
+					clasF = one_hot_bad_ins_out[y][5]	
+					clasF = one_hot_bad_ins_out[y][6]
+					bruhTwo = []
+					if(err == 1):
+						zero = 0
+						bruhTwo.append(zero)
+						one = 0
+						bruhTwo.append(one)
+						two = 0
+						bruhTwo.append(two)
+						three = 1
+						bruhTwo.append(three)
+					else:
+						zero = 1
+						bruhTwo.append(zero)
+						one = 0
+						bruhTwo.append(one)
+						two = 0
+						bruhTwo.append(two)
+						three = 0
+						bruhTwo.append(three)
+					toPassTwo.append(bruhTwo)
+			toPassThree = []
 			for x in range(10):
 				y = x + windowInd
 				if y < len(one_hot_bad_del_out):
-					toPassThree.append(one_hot_bad_del_out[y])
+					#toPassThree.append(one_hot_bad_del_out[y])
+					err = one_hot_bad_del_out[y][0]
+					clasF = one_hot_bad_del_out[y][4]
+					clasF = one_hot_bad_del_out[y][5]	
+					clasF = one_hot_bad_del_out[y][6]
+					bruhThree = []
+					if(err == 1):
+						zero = 0
+						bruhThree.append(zero)
+						one = 0
+						bruhThree.append(one)
+						two = 1
+						bruhThree.append(two)
+						three = 0
+						bruhThree.append(three)
+					else:
+						zero = 1
+						bruhThree.append(zero)
+						one = 0
+						bruhThree.append(one)
+						two = 0
+						bruhThree.append(two)
+						three = 0
+						bruhThree.append(three)
+					toPassThree.append(bruhThree)
 			toPassFour = []
 			for x in range(10):
 				y = x + windowInd
 				if y < len(one_hot_bad_sub_out):
-					toPassFour.append(one_hot_bad_sub_out[y])
+					#toPassFour.append(one_hot_bad_sub_out[y])
+					err = one_hot_bad_sub_out[y][0]
+					clasF = one_hot_bad_sub_out[y][4]
+					clasF = one_hot_bad_sub_out[y][5]	
+					clasF = one_hot_bad_sub_out[y][6]
+					bruhFour = []
+					if(err == 1):
+						zero = 0
+						bruhFour.append(zero)
+						one = 1
+						bruhFour.append(one)
+						two = 0
+						bruhFour.append(two)
+						three = 0
+						bruhFour.append(three)
+					else:
+						zero = 1
+						bruhFour.append(zero)
+						one = 0
+						bruhFour.append(one)
+						two = 0
+						bruhFour.append(two)
+						three = 0
+						bruhFour.append(three)
+					toPassFour.append(bruhFour)
 			#print "TEST OUT"
 			#print toPassOne[0]
 			#print len(toPass)
@@ -187,8 +276,11 @@ def getOutputTen():
 					toPass = toPassThree[:]
 				elif(batchInd == 4):
 					toPass = toPassFour[:]
-				a = numpy.array(toPass).astype(int)
-				#print a.shape
+				#print len(toPass)
+				#print toPassOne[1]
+				a = numpy.array(toPass)
+				#a = b[None, :]
+				print a.shape
 				#count+=1
 				#print "COUNT"
 				#print count
@@ -199,15 +291,15 @@ def getOutputTen():
 
 		#print "NEXT FILE"
 
-		old_one_hot_good_out = one_hot_good_out[:]
-		old_one_hot_bad_ins_out = one_hot_bad_ins_out[:]
-		old_one_hot_bad_del_out = one_hot_bad_del_out[:]
-		old_one_hot_bad_sub_out = one_hot_bad_sub_out[:]
+		#old_one_hot_good_out = one_hot_good_out[:]
+		#old_one_hot_bad_ins_out = one_hot_bad_ins_out[:]
+		#old_one_hot_bad_del_out = one_hot_bad_del_out[:]
+		#old_one_hot_bad_sub_out = one_hot_bad_sub_out[:]
 
-		numGoodOutLeft = len(one_hot_good_out) % 10
-		numBadInsOutLeft = len(one_hot_bad_ins_out) % 10
-		numBadDelOutLeft = len(one_hot_bad_del_out) % 10
-		numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
+		#numGoodOutLeft = len(one_hot_good_out) % 10
+		#numBadInsOutLeft = len(one_hot_bad_ins_out) % 10
+		#numBadDelOutLeft = len(one_hot_bad_del_out) % 10
+		#numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
 
 		fileInd += 1
 		windowInd = 0
@@ -216,14 +308,14 @@ def getOutputTen():
 			fileInd+=1
 			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 
-		for p in range(numGoodOutLeft):
-			one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
-		for p in range(numBadInsOutLeft):
-			one_hot_bad_ins_out.insert(p, old_one_hot_bad_ins_out[len(old_one_hot_bad_ins_out)-numBadInsOutLeft+p])
-		for p in range(numBadDelOutLeft):
-			one_hot_bad_del_out.insert(p, old_one_hot_bad_del_out[len(old_one_hot_bad_del_out)-numBadDelOutLeft+p])
-		for p in range(numBadSubOutLeft):
-			one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
+		#for p in range(numGoodOutLeft):
+		#	one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
+		#for p in range(numBadInsOutLeft):
+		#	one_hot_bad_ins_out.insert(p, old_one_hot_bad_ins_out[len(old_one_hot_bad_ins_out)-numBadInsOutLeft+p])
+		#for p in range(numBadDelOutLeft):
+		#	one_hot_bad_del_out.insert(p, old_one_hot_bad_del_out[len(old_one_hot_bad_del_out)-numBadDelOutLeft+p])
+		#for p in range(numBadSubOutLeft):
+		#	one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
 
 
 def getInputValTen():
@@ -346,22 +438,113 @@ def getOutputValTen():
 			for x in range(10):
 				y = x + windowInd
 				if y < len(one_hot_good_out):
-					toPassOne.append(one_hot_good_out[y])
-			toPassTwo = []	
+					err = one_hot_good_out[y][0]
+					clasF = one_hot_good_out[y][4]
+					clasF = one_hot_good_out[y][5]	
+					clasF = one_hot_good_out[y][6]
+					bruhOne = []
+					if(err == 0):
+						zero = 1
+						bruhOne.append(zero)
+						one = 0
+						bruhOne.append(one)
+						two = 0
+						bruhOne.append(two)
+						three = 0
+						bruhOne.append(three)
+					else:
+						print "not here"
+					toPassOne.append(bruhOne)
+					print bruhOne
+					
+			toPassTwo = []
 			for x in range(10):
 				y = x + windowInd
 				if y < len(one_hot_bad_ins_out):
-					toPassTwo.append(one_hot_bad_ins_out[y])
-			toPassThree = []	
+					err = one_hot_bad_ins_out[y][0]
+					clasF = one_hot_bad_ins_out[y][4]
+					clasF = one_hot_bad_ins_out[y][5]	
+					clasF = one_hot_bad_ins_out[y][6]
+					bruhTwo = []
+					if(err == 1):
+						zero = 0
+						bruhTwo.append(zero)
+						one = 0
+						bruhTwo.append(one)
+						two = 0
+						bruhTwo.append(two)
+						three = 1
+						bruhTwo.append(three)
+					else:
+						zero = 1
+						bruhTwo.append(zero)
+						one = 0
+						bruhTwo.append(one)
+						two = 0
+						bruhTwo.append(two)
+						three = 0
+						bruhTwo.append(three)
+					toPassTwo.append(bruhTwo)
+			toPassThree = []
 			for x in range(10):
 				y = x + windowInd
 				if y < len(one_hot_bad_del_out):
-					toPassThree.append(one_hot_bad_del_out[y])
+					#toPassThree.append(one_hot_bad_del_out[y])
+					err = one_hot_bad_del_out[y][0]
+					clasF = one_hot_bad_del_out[y][4]
+					clasF = one_hot_bad_del_out[y][5]	
+					clasF = one_hot_bad_del_out[y][6]
+					bruhThree = []
+					if(err == 1):
+						zero = 0
+						bruhThree.append(zero)
+						one = 0
+						bruhThree.append(one)
+						two = 1
+						bruhThree.append(two)
+						three = 0
+						bruhThree.append(three)
+					else:
+						zero = 1
+						bruhThree.append(zero)
+						one = 0
+						bruhThree.append(one)
+						two = 0
+						bruhThree.append(two)
+						three = 0
+						bruhThree.append(three)
+					toPassThree.append(bruhThree)
 			toPassFour = []
 			for x in range(10):
 				y = x + windowInd
 				if y < len(one_hot_bad_sub_out):
-					toPassFour.append(one_hot_bad_sub_out[y])
+					#toPassFour.append(one_hot_bad_sub_out[y])
+					err = one_hot_bad_sub_out[y][0]
+					clasF = one_hot_bad_sub_out[y][4]
+					clasF = one_hot_bad_sub_out[y][5]	
+					clasF = one_hot_bad_sub_out[y][6]
+					bruhFour = []
+					if(err == 1):
+						zero = 0
+						bruhFour.append(zero)
+						one = 1
+						bruhFour.append(one)
+						two = 0
+						bruhFour.append(two)
+						three = 0
+						bruhFour.append(three)
+					else:
+						zero = 1
+						bruhFour.append(zero)
+						one = 0
+						bruhFour.append(one)
+						two = 0
+						bruhFour.append(two)
+						three = 0
+						bruhFour.append(three)
+					toPassFour.append(bruhFour)
+			#print "TEST OUT"
+			#print toPassOne[0]
 			#print len(toPass)
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
@@ -377,8 +560,11 @@ def getOutputValTen():
 					toPass = toPassThree[:]
 				elif(batchInd == 4):
 					toPass = toPassFour[:]
-				a = numpy.array(toPass).astype(int)
-				#print a.shape
+				#print len(toPass)
+				#print toPassOne[1]
+				a = numpy.array(toPass)
+				#a = b[None, :]
+				print a.shape
 				#count+=1
 				#print "COUNT"
 				#print count
@@ -389,15 +575,15 @@ def getOutputValTen():
 
 		#print "NEXT FILE"
 
-		old_one_hot_good_out = one_hot_good_out[:]
-		old_one_hot_bad_ins_out = one_hot_bad_ins_out[:]
-		old_one_hot_bad_del_out = one_hot_bad_del_out[:]
-		old_one_hot_bad_sub_out = one_hot_bad_sub_out[:]
+		#old_one_hot_good_out = one_hot_good_out[:]
+		#old_one_hot_bad_ins_out = one_hot_bad_ins_out[:]
+		#old_one_hot_bad_del_out = one_hot_bad_del_out[:]
+		#old_one_hot_bad_sub_out = one_hot_bad_sub_out[:]
 
-		numGoodOutLeft = len(one_hot_good_out) % 10
-		numBadInsOutLeft = len(one_hot_bad_ins_out) % 10
-		numBadDelOutLeft = len(one_hot_bad_del_out) % 10
-		numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
+		#numGoodOutLeft = len(one_hot_good_out) % 10
+		#numBadInsOutLeft = len(one_hot_bad_ins_out) % 10
+		#numBadDelOutLeft = len(one_hot_bad_del_out) % 10
+		#numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
 
 		fileInd += 1
 		windowInd = 0
@@ -406,14 +592,15 @@ def getOutputValTen():
 			fileInd+=1
 			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 
-		for p in range(numGoodOutLeft):
-			one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
-		for p in range(numBadInsOutLeft):
-			one_hot_bad_ins_out.insert(p, old_one_hot_bad_ins_out[len(old_one_hot_bad_ins_out)-numBadInsOutLeft+p])
-		for p in range(numBadDelOutLeft):
-			one_hot_bad_del_out.insert(p, old_one_hot_bad_del_out[len(old_one_hot_bad_del_out)-numBadDelOutLeft+p])
-		for p in range(numBadSubOutLeft):
-			one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
+		#for p in range(numGoodOutLeft):
+		#	one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
+		#for p in range(numBadInsOutLeft):
+		#	one_hot_bad_ins_out.insert(p, old_one_hot_bad_ins_out[len(old_one_hot_bad_ins_out)-numBadInsOutLeft+p])
+		#for p in range(numBadDelOutLeft):
+		#	one_hot_bad_del_out.insert(p, old_one_hot_bad_del_out[len(old_one_hot_bad_del_out)-numBadDelOutLeft+p])
+		#for p in range(numBadSubOutLeft):
+		#	one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
+
 
 def getInputTestTen():
 	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, passInsErrorInd = perform(4)
@@ -431,6 +618,7 @@ def getInputTestTen():
 					toPassOne.append(one_hot_good[y])
 			toPassTwo = []	
 			for x in range(10):
+			
 				y = passInsErrorInd - x
 				if y < len(one_hot_bad_ins):
 					toPassTwo.append(one_hot_bad_ins[y])
@@ -452,7 +640,7 @@ def getInputTestTen():
 			#print len(toPassFour)
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			toPass = toPassOne[:]
+			toPass = toPassTwo[:]
 			a = numpy.array(toPass).astype(int)
 			#print b.shape
 			return a
@@ -589,11 +777,11 @@ def initData():
 
 
 	model = Sequential()
-	model.add(Dense(102, activation='relu', input_shape=(88,)))
+	model.add(Dense(4, activation='relu', input_shape=(88,)))
 	model.add(Dropout(0.5))
-	model.add(Dense(102, activation='relu'))
+	model.add(Dense(4, activation='relu'))
 	model.add(Dropout(0.5))
-	model.add(Dense(102, activation='softmax'))
+	model.add(Dense(4, activation='softmax'))
 	
 
 	# For a binary classification problem
@@ -601,7 +789,7 @@ def initData():
         #      loss='binary_crossentropy',
         #      metrics=['accuracy'])
 
-	opt = optimizers.SGD(lr=0.0001)
+	opt = optimizers.SGD(lr=0.001)
 	#opt = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
 	#opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
 	model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
