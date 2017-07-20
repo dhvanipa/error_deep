@@ -71,10 +71,10 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 					
 	from py_mutations_hub import getRid
 	#print "OKAY"
-	print len(raw_tokens_pass)
+	#print len(raw_tokens_pass)
 	#test = getRid(raw_tokens_pass, True)
 	#print len(test)
-	print len(actual_token_len)
+	#print len(actual_token_len)
 	#print type(radha)
 	
 	num_lines = len(actual_token_len)
@@ -86,8 +86,8 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 	insToks = []
 	chosens = []
 
-	print numTokensNeeded
-	print "import num"
+	#print numTokensNeeded
+	#print "import num"
 	haha = -1
 	radOut = 0
 	while radOut < numTokensNeeded:
@@ -95,11 +95,11 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 
 		chosenInd = randint(0,84)
 		chosenToken = data["indexes_m"][chosenInd]
-		print "RAD S"
-		print radOut
-		print len(chosens)
-		print len(insToks)
-		print "RAD O"
+		#print "RAD S"
+		#print radOut
+		#print len(chosens)
+		#print len(insToks)
+		#print "RAD O"
 
 		global new_token
 		new_token = []
@@ -121,9 +121,9 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 			param_end = param_start + 9
 			haha = param_end
 		chosenLineInd = randint(param_start, param_end) #num_lines-1
-		print "inds"
-		print chosenLineInd
-		print "stop"
+		#print "inds"
+		#print chosenLineInd
+		#print "stop"
 		#chosen = raw_tokens_pass[chosenLineInd]
 		chosen = actual_token_len[chosenLineInd]
 		#chosen = Token(tokenize.tok_name[raw_tokens_pass[chosenLineInd][0]], raw_tokens_pass[chosenLineInd][1], raw_tokens_pass[chosenLineInd][2][0], raw_tokens_pass[chosenLineInd][2][1], raw_tokens_pass[chosenLineInd][3][0], raw_tokens_pass[chosenLineInd][3][1], raw_tokens_pass[chosenLineInd][4])
@@ -136,18 +136,18 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 		#print raw_tokens_pass[chosenLineInd][0]
 
 		#print all_tokens[chosenLineInd].value
-		print num_lines - 1
-		print len(raw_tokens_pass)
-		print len(actual_token_len)
+		#print num_lines - 1
+		#print len(raw_tokens_pass)
+		#print len(actual_token_len)
 		#print raw_tokens_pass[50][4]
-		print actual_token_len[chosenLineInd].line
+		#print actual_token_len[chosenLineInd].line
 		#print raw_text
 		toAddBeforeInd = source_code.index(actual_token_len[chosenLineInd].line)
-		print toAddBeforeInd
+		#print toAddBeforeInd
 	
 		temp = source_code[toAddBeforeInd:toAddBeforeInd+len(actual_token_len[chosenLineInd].line)]
-		print temp
-		print actual_token_len[chosenLineInd].value
+		#print temp
+		#print actual_token_len[chosenLineInd].value
 		#print "kobe"
 		#print raw_tokens_pass[chosenLineInd][1]
 
@@ -207,7 +207,7 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 			radOut = radOut
 			insToks.remove(insTok)
 			chosens.remove(chosen)
-			print "test_t"
+			#print "test_t"
 		else:
 			radOut = radOut + 1
 
@@ -223,10 +223,10 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 		'''
 		#print NAH
 		#print "NAH"
-	print ".___."	
-	print len(chosens)
-	print len(insToks)
-	print "NAH"
+	#print ".___."	
+	#print len(chosens)
+	#print len(insToks)
+	#print "NAH"
 
 	return new_text, NO_TOKEN, INSERTION, out_tokens_loc, chosens, insToks
 	
@@ -279,8 +279,8 @@ def insertTokMut(raw_tokens, raw_text):
 	insToks = []
 	chosens = []
 
-	print numTokensNeeded
-	print "import num"
+	#print numTokensNeeded
+	#print "import num"
 	for rad in range(numTokensNeeded):
 		
 		#chosen = raw_tokens_pass[chosenLineInd]
@@ -308,9 +308,9 @@ def insertTokMut(raw_tokens, raw_text):
 			param_end = param_start + 9
 		
 		chosenLineInd = randint(param_start, param_end) #num_lines-1
-		print "inds"
-		print chosenLineInd
-		print "stop"
+		#print "inds"
+		#print chosenLineInd
+		#print "stop"
 		chosen = Token(tokenize.tok_name[raw_tokens_pass[chosenLineInd][0]], raw_tokens_pass[chosenLineInd][1], raw_tokens_pass[chosenLineInd][2][0], raw_tokens_pass[chosenLineInd][2][1], raw_tokens_pass[chosenLineInd][3][0], raw_tokens_pass[chosenLineInd][3][1], raw_tokens_pass[chosenLineInd][4])
 		chosens.append(chosen)
 

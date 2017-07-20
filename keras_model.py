@@ -32,6 +32,8 @@ WINDOW_SIZE = 10
 
 def getInputTen():
 	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(0)
+	print type(one_hot_good)
+	print one_hot_good
 	windowInd = 0
 	fileInd = 0
 	batchInd = 1
@@ -141,6 +143,8 @@ def getInputTen():
 
 def getOutputTen():
 	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
+	print type(one_hot_good_out)
+	print one_hot_good_out
 	windowInd = 0
 	fileInd = 0
 	batchInd = 1
@@ -171,7 +175,7 @@ def getOutputTen():
 					else:
 						print "not here"
 					toPassOne.append(bruhOne)
-					print bruhOne
+					#print bruhOne
 					
 			toPassTwo = []
 			for x in range(10):
@@ -274,7 +278,7 @@ def getOutputTen():
 				#print toPassOne[1]
 				a = numpy.array(toPass)
 				#a = b[None, :]
-				print a.shape
+				#print a.shape
 				#count+=1
 				#print "COUNT"
 				#print count
@@ -313,9 +317,9 @@ def getOutputTen():
 
 
 def getInputValTen():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(1001)
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(1002)
 	windowInd = 0
-	fileInd = 1001
+	fileInd = 1002
 	batchInd = 1
 	#count = 0
 	while fileInd <= 2000: # 462540
@@ -422,9 +426,9 @@ def getInputValTen():
 			one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
 
 def getOutputValTen():
-	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(1001)
+	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(1002)
 	windowInd = 0
-	fileInd = 1001
+	fileInd = 1002
 	batchInd = 1
 	while fileInd <= 2000: # 462540
 	#while windowInd < int(len(insArr)/10):
@@ -453,7 +457,7 @@ def getOutputValTen():
 					else:
 						print "not here"
 					toPassOne.append(bruhOne)
-					print bruhOne
+					#print bruhOne
 					
 			toPassTwo = []
 			for x in range(10):
@@ -556,7 +560,7 @@ def getOutputValTen():
 				#print toPassOne[1]
 				a = numpy.array(toPass)
 				#a = b[None, :]
-				print a.shape
+				#print a.shape
 				#count+=1
 				#print "COUNT"
 				#print count
@@ -595,14 +599,15 @@ def getOutputValTen():
 
 
 def getInputTestTen():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, passInsErrorInd = perform(2077)
-	fileInd = 2077
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, passInsErrorInd = perform(2037)
+	fileInd = 2037
 	batchInd = 1
 
 	if True:
 		if True:	
-			print passInsErrorInd
+			#print passInsErrorInd
 			print "ERROR IND"
+			print one_hot_good
 			toPassOne = []
 			for x in range(10):
 				y = x
@@ -632,7 +637,7 @@ def getInputTestTen():
 			#print len(toPassFour)
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			toPass = toPassOne[:]
+			toPass = toPassTwo[:]
 			a = numpy.array(toPass).astype(int)
 			#print b.shape
 			return a
@@ -784,8 +789,8 @@ def initData():
 	opt = optimizers.SGD(lr=0.001, momentum=0.005)
 	#opt = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
 	#opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
-	model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
-	#model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+	#model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
+	model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 	#zipped = iter()
 	#print type(zipped)

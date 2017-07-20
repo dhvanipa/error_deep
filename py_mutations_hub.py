@@ -310,9 +310,9 @@ def perform(curr):
 			allGood = []
 			global all_tokens
 			allGood = all_tokens[:]
-			print "come on"
-			print len(all_tokens)
-			print len(allGood)
+			#print "come on"
+			#print len(all_tokens)
+			#print len(allGood)
 			one_hot_good = vocabularize_tokens(all_tokens, False)
 			one_hot_good_out = []
 			for x in range(len(all_tokens)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)):
@@ -345,9 +345,9 @@ def perform(curr):
 			#print len(passToks)
 			#print "come
 			global all_tokens
-			print "dhadha"
-			print len(all_tokens)
-			print len(allGood)
+			#print "dhadha"
+			#print len(all_tokens)
+			#print len(allGood)
 			passBall = allGood[:]
 			new_i_text, NO_TOKEN, INSERTION, out_tokens_loc, chosenTrueLineInds, insToks = insertTokMutS(raw_tokens, passBall, source_code)
 
@@ -357,8 +357,8 @@ def perform(curr):
 					break
 					
 			new_tokens_ins = allGood[:]
-			print "BOL BOL BOL"			
-			print len(new_tokens_ins)
+			#print "BOL BOL BOL"			
+			#print len(new_tokens_ins)
 			temp = insToks[:]
 			for insTok in temp:
 				if insTok.type == "NL":
@@ -369,8 +369,8 @@ def perform(curr):
 				vocab_entry = open_closed_tokens(chosenTrueLineInd)
 				chosenTrueLineInds[chosenTrueLineInds.index(chosenTrueLineInd)].value = vocab_entry
 				#print vocab_entry
-			print "OK ------------------------------"
-			print len(new_tokens_ins)
+			#print "OK ------------------------------"
+			#print len(new_tokens_ins)
 			#print len(chosenTrueLineInds)
 			#print len(all_tokens)
 			for wow in range(len(chosenTrueLineInds)):
@@ -390,14 +390,14 @@ def perform(curr):
 					#print bruhInd
 					#print "gotchu"
 					new_tokens_ins.insert(bruhInd+1, insTok)
-			print "START DEBUG"
-			print insTok.value
-			print len(new_tokens_ins)
-			print new_tokens_ins[bruhInd+1].value
+			#print "START DEBUG"
+			#print insTok.value
+			#print len(new_tokens_ins)
+			#print new_tokens_ins[bruhInd+1].value
 			
 			one_hot_bad_ins = vocabularize_tokens(new_tokens_ins, True)
 			#print one_hot_bad_ins[bruhInd+1+WINDOW_SIZE-1]
-			print "DONE DEBUG"
+			#print "DONE DEBUG"
 		
 			#print len(new_tokens_ins)
 			#print len(one_hot_bad_ins)
@@ -659,14 +659,16 @@ def perform(curr):
 			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out,passInsErrorInd
 			
 		else:
-			#print "Try again..."
+			print "Try again..."
 			print curr
 			#print all_rows[curr][0]
-			return 1, None, None, None, 1, None, None, None. None
+			return 1, None, None, None, 1, None, None, None, None
 	
 
 if __name__ == '__main__':
-    perform(77)
+    perform(0)
+    print "done one"
+    perform(0)
     sys.exit()
     for x in range(3):
 	  # 36, 80, 124, 126, 177
