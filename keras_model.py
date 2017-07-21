@@ -32,8 +32,8 @@ WINDOW_SIZE = 10
 
 def getInputTen():
 	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(0)
-	print type(one_hot_good)
-	print one_hot_good
+	#print type(one_hot_good)
+	#print one_hot_good
 	windowInd = 0
 	fileInd = 0
 	batchInd = 1
@@ -88,7 +88,7 @@ def getInputTen():
 			#print toPass.shape
 			#toPass = []
 			
-			while(batchInd % 5 != 0):
+			while(batchInd % 4 != 0):
 				toPass = []
 				#print "BATCH IND"
 				#print batchInd
@@ -97,8 +97,9 @@ def getInputTen():
 				elif(batchInd == 2):
 					toPass = toPassTwo[:]
 				elif(batchInd == 3):
-					toPass = toPassOne[:]
+					toPass = toPassThree[:]
 				elif(batchInd == 4):
+					print "here"
 					toPass = toPassTwo[:]
 				a = numpy.array(toPass).astype(int)
 				#print a.shape
@@ -106,6 +107,7 @@ def getInputTen():
 				#print "COUNT"
 				#print count
 				#print b.shape
+				#print a
 				yield a
 				batchInd += 1
 			#print numpy.array(toPass).shape
@@ -143,8 +145,8 @@ def getInputTen():
 
 def getOutputTen():
 	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
-	print type(one_hot_good_out)
-	print one_hot_good_out
+	#print type(one_hot_good_out)
+	#print one_hot_good_out
 	windowInd = 0
 	fileInd = 0
 	batchInd = 1
@@ -219,14 +221,8 @@ def getOutputTen():
 						three = 0
 						bruhThree.append(three)
 					else:
-						zero = 1
-						bruhThree.append(zero)
-						one = 0
-						bruhThree.append(one)
-						two = 0
-						bruhThree.append(two)
-						three = 0
-						bruhThree.append(three)
+						print "GET OUT OF HERE"
+						print type(radha)
 					toPassThree.append(bruhThree)
 			toPassFour = []
 			for x in range(10):
@@ -262,7 +258,7 @@ def getOutputTen():
 			#print len(toPass)
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			while(batchInd % 5 != 0):
+			while(batchInd % 4 != 0):
 				toPass = []
 				#print "BATCH IND"
 				#print batchInd
@@ -271,8 +267,9 @@ def getOutputTen():
 				elif(batchInd == 2):
 					toPass = toPassTwo[:]
 				elif(batchInd == 3):
-					toPass = toPassOne[:]
+					toPass = toPassThree[:]
 				elif(batchInd == 4):
+					print "here"
 					toPass = toPassTwo[:]
 				#print len(toPass)
 				#print toPassOne[1]
@@ -282,13 +279,14 @@ def getOutputTen():
 				#count+=1
 				#print "COUNT"
 				#print count
-				#print b.shape
+				#print b.shape	
+				#print a
 				yield a
 				batchInd += 1
 			windowInd += 1
 
 		#print "NEXT FILE"
-
+	
 		#old_one_hot_good_out = one_hot_good_out[:]
 		#old_one_hot_bad_ins_out = one_hot_bad_ins_out[:]
 		#old_one_hot_bad_del_out = one_hot_bad_del_out[:]
@@ -372,7 +370,7 @@ def getInputValTen():
 			#print toPass.shape
 			#toPass = []
 			
-			while(batchInd % 5 != 0):
+			while(batchInd % 4 != 0):
 				toPass = []
 				#print "BATCH IND"
 				#print batchInd
@@ -381,7 +379,7 @@ def getInputValTen():
 				elif(batchInd == 2):
 					toPass = toPassTwo[:]
 				elif(batchInd == 3):
-					toPass = toPassOne[:]
+					toPass = toPassThree[:]
 				elif(batchInd == 4):
 					toPass = toPassTwo[:]
 				a = numpy.array(toPass).astype(int)
@@ -544,7 +542,7 @@ def getOutputValTen():
 			#print len(toPass)
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
-			while(batchInd % 5 != 0):
+			while(batchInd % 4 != 0):
 				toPass = []
 				#print "BATCH IND"
 				#print batchInd
@@ -553,7 +551,7 @@ def getOutputValTen():
 				elif(batchInd == 2):
 					toPass = toPassTwo[:]
 				elif(batchInd == 3):
-					toPass = toPassOne[:]
+					toPass = toPassThree[:]
 				elif(batchInd == 4):
 					toPass = toPassTwo[:]
 				#print len(toPass)
@@ -786,20 +784,20 @@ def initData():
         #      loss='binary_crossentropy',
         #      metrics=['accuracy'])
 
-	opt = optimizers.SGD(lr=0.001, momentum=0.005)
+	opt = optimizers.SGD(lr=0.01, momentum=0.005)
 	#opt = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
 	#opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
-	#model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
-	model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+	model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
+	#model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 	#zipped = iter()
 	#print type(zipped)
 
 	history = model.fit_generator(
                	izip(getInputTen(), getOutputTen()),
-                steps_per_epoch=16,
+                steps_per_epoch=15,
 		validation_data=izip(getInputValTen(), getOutputValTen()),
-		validation_steps=16,
+		validation_steps=15,
                 epochs=200,    
                 verbose=2	
             )

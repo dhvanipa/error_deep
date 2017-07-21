@@ -14,7 +14,7 @@ import numpy as np
 from mutate_insert import insertMut
 from mutate_deletion import deleteMut
 from mutate_token_insert import insertTokMutS
-from mutate_token_delete import deleteTokMut
+from mutate_token_delete import deleteTokMutS
 from mutate_token_sub import subTokMut
 import sys
 
@@ -373,6 +373,7 @@ def perform(curr):
 			#print len(new_tokens_ins)
 			#print len(chosenTrueLineInds)
 			#print len(all_tokens)
+			bruhInd = 0
 			for wow in range(len(chosenTrueLineInds)):
 				bruhInd = -1
 				iterInd = 0
@@ -405,7 +406,7 @@ def perform(curr):
 			#if(bruhInd+1 < len(new_tokens_ins)):
 				
 				
-
+			
 			#print "NEXT STEP...C"
 			passInsErrorInd = (bruhInd+1)+(WINDOW_SIZE-1) 
 			
@@ -458,10 +459,11 @@ def perform(curr):
 			indexed_tokens = []
 			#print type(raw_tokens)
 			#print type(source_code)
-			new_d_text, YES_TOKEN, DELETION, out_tokens_loc_d, send = deleteTokMut(raw_tokens, source_code)
+			passBall = allGood[:]
+			new_d_text, YES_TOKEN, DELETION, chosens, fixToks = deleteTokMutS(raw_tokens,passBall, source_code)
 
 			while isinstance(new_d_text, int):
-				new_d_text, YES_TOKEN, DELETION, out_tokens_loc, send = deleteTokMut(YES_TOKEN, DELETION)
+				new_d_text, YES_TOKEN, DELETION, chosens, fixToks = deleteTokMutS(YES_TOKEN, DELETION)
 				if isinstance(new_d_text, str):
 					break
 			
@@ -470,21 +472,35 @@ def perform(curr):
 			
 			new_tokens_del = allGood[:]
 
-			vocab_entry = open_closed_tokens(send)
-			send.value = vocab_entry
-	
-			
-			bruhInd = -1
-			iterInd = 0
-			for a in allGood:
-				if a == send:
-					bruhInd = iterInd
-				iterInd = iterInd + 1
-			#print bruhInd
+			tempFix = fixToks[:]
+			for send in tempFix:
+				vocab_entry = open_closed_tokens(send)
+				fixToks[fixToks.index(send)].value = vocab_entry
+		
+			#print "len"
+			#print len(allGood)
+			#print len(fixToks)
 			#print len(new_tokens_del)
-			del new_tokens_del[bruhInd]	
+			removeInds = []
+			for wow in range(len(chosens)):
+				bruhInd = -1
+				iterInd = 0
+				send = fixToks[wow]	
+				#print send.value
+				for a in allGood:
+					if a == send:
+						bruhInd = iterInd
+					iterInd = iterInd + 1
+				#print bruhInd
+				#print "CHECK"
+				#print len(new_tokens_del)
+				removeInds.append(bruhInd)
+				#del new_tokens_del[bruhInd]	
+				#print len(new_tokens_del)
+				#print "DEL ROR"
+			for r in reversed(removeInds):
+				del new_tokens_del[r]
 			#print len(new_tokens_del)
-			#print "DEL ROR"
 
 			one_hot_bad_del = vocabularize_tokens(new_tokens_del, True)
 			
@@ -500,12 +516,12 @@ def perform(curr):
 			#print "delete"
 			#print send.type
 			#print send.value
-			oneH_ind_deleted = set_from_json_nonarr(send, True)
+			#oneH_ind_deleted = set_from_json_nonarr(send, True)
 			#print oneH_ind_deleted
 			#print "rad"
 			for x in range(iterNum):
 				#if x <= trueErrorInd <= (x+trueErrorInd):
-				if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
+				if True:
 					# DIFF - ACTUAL ERROR
 					#print x
 					toAdd = []
@@ -519,8 +535,8 @@ def perform(curr):
 						toAdd[4] = 0
 						toAdd[5] = 1
 						toAdd[6] = 0
-					toAdd[7+trueErrorInd-x] = 1
-					toAdd[17+oneH_ind_deleted] = 1
+					toAdd[7] = 1
+					toAdd[17] = 1
 					one_hot_bad_del_out.append(toAdd)
 				else:
 					toAdd = []
@@ -666,11 +682,13 @@ def perform(curr):
 	
 
 if __name__ == '__main__':
-    perform(0)
-    print "done one"
-    perform(0)
+    perform(56)
+    #print "done one"
+   # perform(0)
     sys.exit()
-    for x in range(3):
+    for x in range(10):
+	  print "CURR"
+	  print x
 	  # 36, 80, 124, 126, 177
 	  if x != 36 and x != 80 and x != 124 and x != 126 and x != 177:
   		  perform(x)

@@ -69,7 +69,7 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 	
 		raw_tokens_pass.append(token_use)
 					
-	from py_mutations_hub import getRid
+	#from py_mutations_hub import getRid
 	#print "OKAY"
 	#print len(raw_tokens_pass)
 	#test = getRid(raw_tokens_pass, True)
@@ -82,7 +82,7 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 	if (num_lines % 10 == 0):
 		numTokensNeeded = int((num_lines / 10))
 	else:
-		numTokensNeeded = int((num_lines / 10)) + 1
+		numTokensNeeded = int((num_lines / 10))
 	insToks = []
 	chosens = []
 
