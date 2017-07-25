@@ -9,6 +9,9 @@ from io import StringIO
 import keyword
 from Token import Token
 import json
+from pylab import imshow, show, get_cmap
+import numpy as np
+from PIL import Image
 
 global all_tokens
 
@@ -159,6 +162,7 @@ def create(numFile):
                 text = (all_rows[numFile][0]).decode('utf-8')
                 print (type(text))
                 tokenStream = tokenize.generate_tokens(StringIO(text).readline)
+                print (tokenize.tok_name)
                 for tok in tokenStream:
                     all_tokens.append([tok.exact_type, tokenize.tok_name[tok.exact_type], tok[2], tok[3], tok[4]])
                     #print (tok)
@@ -181,7 +185,25 @@ def create(numFile):
                 num_lines = len(set(lines))
                 print (num_lines)
                 print (maxCol)
+                
+                imageArrOne = [-1] * maxCol
+                a = []
+                for _ in range(num_lines):
+                    a.append(imageArrOne)  
 
+                
+                #a = np.column_stack((imageArrOne, imageArrTwo))
+                #print (a.shape)
+                #imshow([[0], [1], [0]], cmap=get_cmap("Spectral"), interpolation='none')
+                #show() 
+                im = Image.new("RGB", (maxCol, num_lines))
+                pix = im.load()
+                for x in range(maxCol):
+                    for y in range(num_lines):
+                        pix[x,y] = (255,255,255)
+                pix[5,6] = (255,0,0)
+                im.save("test.png", "PNG")
+       
                 #print all_text
 
                 #print one_hot_good
@@ -192,6 +214,6 @@ def create(numFile):
 
 
 if __name__ == '__main__':
-    create(2)
+    create(4)
     #for x in range(10):
         #create(x)
