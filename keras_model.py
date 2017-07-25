@@ -15,6 +15,8 @@ import numpy as np
 from itertools import izip_longest
 from itertools import izip
 
+import os
+
 import matplotlib.pyplot as plt
 
 # BATCH = 60
@@ -32,6 +34,8 @@ WINDOW_SIZE = 10
 
 def getInputTen():
 	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(0)
+	while(one_hot_good == 1):
+			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(0)
 	#print type(one_hot_good)
 	#print one_hot_good
 	windowInd = 0
@@ -84,7 +88,10 @@ def getInputTen():
 			#print len(toPassThree)
 			#print len(toPassFour)
 			
-			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
+			#toPass = np.array((,, ))
+
+			#toPass = np.concatenate((numpy.array(toPassOne).astype(int),  numpy.array(toPassTwo).astype(int), numpy.array(toPassThree).astype(int)), axis=0)
+			#a = numpy.array(toPass).astype(int)
 			#print toPass.shape
 			#toPass = []
 			
@@ -110,8 +117,12 @@ def getInputTen():
 				#print a
 				yield a
 				batchInd += 1
+			
 			#print numpy.array(toPass).shape
 			#print "mine too"
+			#a = numpy.array(toPass)
+			#print a.shape
+			#yield a
 			windowInd += 1
 		#else:
 		#print "NEXT FILE"
@@ -145,6 +156,8 @@ def getInputTen():
 
 def getOutputTen():
 	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
+	while(one_hot_good_out == 1):
+			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
 	#print type(one_hot_good_out)
 	#print one_hot_good_out
 	windowInd = 0
@@ -258,6 +271,7 @@ def getOutputTen():
 			#print len(toPass)
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
+			
 			while(batchInd % 4 != 0):
 				toPass = []
 				#print "BATCH IND"
@@ -283,6 +297,10 @@ def getOutputTen():
 				#print a
 				yield a
 				batchInd += 1
+			
+			#toPass = np.concatenate((numpy.array(toPassOne).astype(int),  numpy.array(toPassTwo).astype(int), numpy.array(toPassThree).astype(int)), axis=0)	
+			#a = numpy.array(toPass)
+			#yield a
 			windowInd += 1
 
 		#print "NEXT FILE"
@@ -316,6 +334,8 @@ def getOutputTen():
 
 def getInputValTen():
 	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(1002)
+	while(one_hot_good == 1):
+			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(1002)
 	windowInd = 0
 	fileInd = 1002
 	batchInd = 1
@@ -369,6 +389,7 @@ def getInputValTen():
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
 			#toPass = []
+			#toPass = np.concatenate((numpy.array(toPassOne).astype(int),  numpy.array(toPassTwo).astype(int), numpy.array(toPassThree).astype(int)), axis=0)
 			
 			while(batchInd % 4 != 0):
 				toPass = []
@@ -390,8 +411,11 @@ def getInputValTen():
 				#print b.shape
 				yield a
 				batchInd += 1
+			
 			#print numpy.array(toPass).shape
 			#print "mine too"
+			#a = numpy.array(toPass)
+			#yield a
 			windowInd += 1
 		#else:
 		#print "NEXT FILE"
@@ -425,6 +449,8 @@ def getInputValTen():
 
 def getOutputValTen():
 	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(1002)
+	while(one_hot_good_out == 1):
+		_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(1002)
 	windowInd = 0
 	fileInd = 1002
 	batchInd = 1
@@ -542,6 +568,8 @@ def getOutputValTen():
 			#print len(toPass)
 			#toPass = np.array((toPassOne, toPassTwo, toPassThree, toPassFour))
 			#print toPass.shape
+			#toPass = np.concatenate((numpy.array(toPassOne).astype(int),  numpy.array(toPassTwo).astype(int), numpy.array(toPassThree).astype(int)), axis=0)
+			
 			while(batchInd % 4 != 0):
 				toPass = []
 				#print "BATCH IND"
@@ -565,6 +593,9 @@ def getOutputValTen():
 				#print b.shape
 				yield a
 				batchInd += 1
+			
+			#a = numpy.array(toPass)
+			#yield a
 			windowInd += 1
 
 		#print "NEXT FILE"
@@ -777,16 +808,15 @@ def initData():
 	model.add(Dense(4, activation='relu'))
 	model.add(Dropout(0.5))
 	model.add(Dense(4, activation='softmax'))
-	
 
 	# For a binary classification problem
 	#model.compile(optimizer='rmsprop',
         #      loss='binary_crossentropy',
         #      metrics=['accuracy'])
 
-	#opt = optimizers.SGD(lr=0.001, momentum=0.005)
+	#opt = optimizers.SGD(lr=0.001, momentum=0.5)
 	#opt = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
-	opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
+	opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.9)
 	model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
 	#model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
@@ -801,8 +831,6 @@ def initData():
                 epochs=200,    
                 verbose=2	
             )
-	'''
-	'''
 
 	# list all data in history
 	print(history.history.keys())
@@ -829,8 +857,18 @@ def initData():
 	
 
 	print "MODEL FIT"	
+
+	print "SAVING"
 	
-	        
+	# serialize model to YAML
+	model_yaml = model.to_yaml()
+	with open("model_l.yaml", "w") as yaml_file:
+		yaml_file.write(model_yaml)
+	# serialize weights to HDF5
+	model.save_weights("model_l.h5")
+	print("Saved model to disk")
+	
+	
 	#scores = model.evaluate_generator(izip(getInputTestTen(), getOutputTestTen()), steps=10)
 	genIn = getInputTestTen()
 	print type(genIn)
