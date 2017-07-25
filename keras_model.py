@@ -5,6 +5,7 @@ from keras.layers import Dense, Dropout, Input, Embedding, LSTM
 from keras.models import Model
 from keras import optimizers
 from keras.callbacks import ModelCheckpoint, CSVLogger, EarlyStopping
+from keras import regularizers
 
 import numpy
 from Token import Token
@@ -804,9 +805,16 @@ def initData():
 
 	model = Sequential()
 	model.add(Dense(4, activation='relu', input_shape=(88,)))
-	model.add(Dropout(0.5))
+	#model.add(Dropout(0.5))
+	model.add(Dense(4, activation='relu'))
+	#model.add(Dropout(0.5))
 	model.add(Dense(4, activation='relu'))
 	model.add(Dropout(0.5))
+	model.add(Dense(4, activation='relu'))
+	model.add(Dense(4, activation='relu'))
+	model.add(Dense(4, activation='relu'))
+	model.add(Dropout(0.5))
+	model.add(Dense(4, activation='relu'))
 	model.add(Dense(4, activation='softmax'))
 
 	# For a binary classification problem
@@ -816,7 +824,7 @@ def initData():
 
 	#opt = optimizers.SGD(lr=0.001, momentum=0.5)
 	#opt = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
-	opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.9)
+	opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.5)
 	model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
 	#model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
@@ -887,7 +895,7 @@ def initData():
 	print a.shape
 
 	#outPredict = model.predict_generator(getInputTestTen(), steps=10, verbose=1)	
-	outPredict = model.predict(genIn, batch_size=4, verbose=1)
+	outPredict = model.predict(genIn, batch_size=15, verbose=1)
 
 	print "PREDICT"
 	print len(outPredict)

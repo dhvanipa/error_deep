@@ -37,7 +37,7 @@ def find_nth(haystack, needle, n):
 # Main method
 def checkPyPySyntax(src):
 		myFile = open("toCheck.py", "w")
-		myFile.write(src)
+		myFile.write(src.decode())
 		myFile.close()
 		proc = subprocess.Popen(['pypy', '-m', 'py_compile', 'toCheck.py'], stderr=subprocess.PIPE)
 		streamdata, err = proc.communicate()
