@@ -13,8 +13,23 @@ from pylab import imshow, show, get_cmap
 import numpy as np
 from PIL import Image
 
-global all_tokens
+# 87 VOCAB
 
+def set_col_from_json(all_tokens):
+    with open('vocabulary_color.json') as data_file:    
+        data = json.load(data_file)
+    #print (len(data["indexes"]))
+    indexed_tokens = []
+    for tok in all_tokens:
+        print (tok)
+        toCompare = tok.value
+        indexed_tokens.append(data["indexes"].index(toCompare))
+    print (len(data["colours"]))
+    print (len(data["indexes"]))
+    colours = []
+    for inds in indexed_tokens:
+        colours.append(data["colours"][inds])
+    return colours
 
 def open_closed_tokens(token):
     """
@@ -49,6 +64,7 @@ def open_closed_tokens(token):
     elif token.type in VERBATIM_CLASSES:
         # These tokens should be mapped verbatim to their names.
         assert ' ' not in token.value
+        #print (token.value)
         return token.value
     elif token.type in {'NUMBER', 'STRING'}:
         # These tokens should be abstracted.
@@ -137,6 +153,7 @@ def handle_token(all_tokens):
             val = repr(token)[2:len(repr(token))-1]
         else:
             val = repr(token)[1:len(repr(token))-1]
+        #print (val)
         send = Token(tokenize.tok_name[type], val, srow, scol, erow, ecol, line)
         allReturn.append(send)
         print ("%d,%d-%d,%d:\t%s\t%s" % \
@@ -160,11 +177,11 @@ def create(numFile):
                 #print all_rows[numFile][0]
                 all_tokens = []
                 text = (all_rows[numFile][0]).decode('utf-8')
-                print (type(text))
+                #print (type(text))
                 tokenStream = tokenize.generate_tokens(StringIO(text).readline)
-                print (tokenize.tok_name)
+                #print (tokenize.tok_name)
                 for tok in tokenStream:
-                    all_tokens.append([tok.exact_type, tokenize.tok_name[tok.exact_type], tok[2], tok[3], tok[4]])
+                    all_tokens.append([tok.exact_type, tok[1], tok[2], tok[3], tok[4]])
                     #print (tok)
                 allGood = handle_token(all_tokens[:])
                 #print (allGood[21].type)
@@ -172,36 +189,55 @@ def create(numFile):
                 lines = []
                 maxCol = -1
                 for tok in allGood:
-                    print (tok.value)
+                    #print (tok.value)
                     lines.append(tok.srow)
                     maxComp = tok.ecol
                     if maxComp > maxCol:
                          maxCol = maxComp
                 all_text = (all_rows[numFile][0]).decode()
                 #print gotWhat[0].value
-                print (len(all_tokens))
-                print (len(gotWhat))
-                print (lines)
+                #print (len(all_tokens))
+                #print (len(gotWhat))
+                #print (lines)
                 num_lines = len(set(lines))
-                print (num_lines)
-                print (maxCol)
+                #print (num_lines)
+                #print (maxCol)
                 
-                imageArrOne = [-1] * maxCol
-                a = []
-                for _ in range(num_lines):
-                    a.append(imageArrOne)  
-
-                
-                #a = np.column_stack((imageArrOne, imageArrTwo))
-                #print (a.shape)
-                #imshow([[0], [1], [0]], cmap=get_cmap("Spectral"), interpolation='none')
-                #show() 
+                cols = set_col_from_json(gotWhat)
+                #print (cols)
                 im = Image.new("RGB", (maxCol, num_lines))
                 pix = im.load()
                 for x in range(maxCol):
                     for y in range(num_lines):
                         pix[x,y] = (255,255,255)
-                pix[5,6] = (255,0,0)
+                at = lines[0]
+                colsComb = []
+                allCols = []
+                iterInd = 0
+                for ind in lines:
+                    if ind == at:
+                        colsComb.append(cols[iterInd])
+                        if iterInd == len(lines)-1:
+                            #print ("HERE")
+                            allCols.append(colsComb)
+                    else:
+                        at = ind
+                        allCols.append(colsComb)
+                        #print (allCols)
+                        #print ("first")
+                        colsComb = []
+                        colsComb.append(cols[iterInd])
+                        #print (iterInd)
+                        #print (ind)
+                        #print (len(lines))
+                        if iterInd == len(lines)-1:
+                            #print ("HERE")
+                            allCols.append(colsComb)
+                    iterInd += 1
+                print (num_lines)
+                print (len(allCols))
+                #print (allCols)
+                #pix[5,6] = (255,0,0)
                 im.save("test.png", "PNG")
        
                 #print all_text
@@ -214,6 +250,6 @@ def create(numFile):
 
 
 if __name__ == '__main__':
-    create(4)
+    create(2)
     #for x in range(10):
         #create(x)
