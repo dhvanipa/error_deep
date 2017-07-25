@@ -12,14 +12,26 @@ import json
 from pylab import imshow, show, get_cmap
 import numpy as np
 from PIL import Image
+from itertools import groupby
+import random
+from random import randint
 
 # 87 VOCAB
+
+def random_color():
+    rgbl=[randint(0, 255),randint(0, 9),randint(0, 9)]
+    random.shuffle(rgbl)
+    return tuple(rgbl)
 
 def set_col_from_json(all_tokens):
     with open('vocabulary_color.json') as data_file:    
         data = json.load(data_file)
     #print (len(data["indexes"]))
     indexed_tokens = []
+    newCols = []
+    for num in range(len(data["indexes"])):
+        add = random_color()
+        newCols.append(add)
     for tok in all_tokens:
         print (tok)
         toCompare = tok.value
@@ -28,7 +40,7 @@ def set_col_from_json(all_tokens):
     print (len(data["indexes"]))
     colours = []
     for inds in indexed_tokens:
-        colours.append(data["colours"][inds])
+        colours.append(newCols[inds])
     return colours
 
 def open_closed_tokens(token):
@@ -187,13 +199,13 @@ def create(numFile):
                 #print (allGood[21].type)
                 gotWhat = vocabularize_tokens(allGood, False)
                 lines = []
-                maxCol = -1
+                #maxCol = -1
                 for tok in allGood:
                     #print (tok.value)
                     lines.append(tok.srow)
-                    maxComp = tok.ecol
-                    if maxComp > maxCol:
-                         maxCol = maxComp
+                    #maxComp = tok.ecol
+                    #if maxComp > maxCol:
+                    #     maxCol = maxComp
                 all_text = (all_rows[numFile][0]).decode()
                 #print gotWhat[0].value
                 #print (len(all_tokens))
@@ -202,7 +214,10 @@ def create(numFile):
                 num_lines = len(set(lines))
                 #print (num_lines)
                 #print (maxCol)
-                
+                maxCol = max([len(list(group)) for key, group in groupby(lines)])
+                #print ([len(list(group)) for key, group in groupby(lines)])
+                #print ("dhvani")
+                #print (lines)
                 cols = set_col_from_json(gotWhat)
                 #print (cols)
                 im = Image.new("RGB", (maxCol, num_lines))
@@ -234,9 +249,17 @@ def create(numFile):
                             #print ("HERE")
                             allCols.append(colsComb)
                     iterInd += 1
-                print (num_lines)
-                print (len(allCols))
+                #print (num_lines)
+                #print (len(allCols))
                 #print (allCols)
+                iterInd = 0
+                for lines in allCols:
+                    getCols = lines
+                    #inIterInd = 0
+                    for cols in range(len(getCols)):
+                        pix[cols, iterInd] = (getCols[cols][0], getCols[cols][1], getCols[cols][2])
+                        #inInterInd += 1
+                    iterInd += 1      
                 #pix[5,6] = (255,0,0)
                 im.save("test.png", "PNG")
        
@@ -250,6 +273,6 @@ def create(numFile):
 
 
 if __name__ == '__main__':
-    create(2)
+    create(4)
     #for x in range(10):
         #create(x)
