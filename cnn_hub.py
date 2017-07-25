@@ -74,6 +74,8 @@ def vocabularize_tokens(every_token, flag):
             # Insignificant newline; not to be confused with NEWLINE
             'NL',
 
+            'NEWLINE',
+
             # Discard comments
             'COMMENT',
 
@@ -159,17 +161,27 @@ def create(numFile):
                 tokenStream = tokenize.generate_tokens(StringIO(text).readline)
                 for tok in tokenStream:
                     all_tokens.append([tok.exact_type, tokenize.tok_name[tok.exact_type], tok[2], tok[3], tok[4]])
-                    print (tok)
+                    #print (tok)
                 allGood = handle_token(all_tokens[:])
                 #print (allGood[21].type)
                 gotWhat = vocabularize_tokens(allGood, False)
-                all_text = str(all_rows[numFile][0])
+                lines = []
+                maxCol = -1
+                for tok in allGood:
+                    print (tok.value)
+                    lines.append(tok.srow)
+                    maxComp = tok.ecol
+                    if maxComp > maxCol:
+                         maxCol = maxComp
+                all_text = (all_rows[numFile][0]).decode()
                 #print gotWhat[0].value
                 print (len(all_tokens))
                 print (len(gotWhat))
+                print (lines)
+                num_lines = len(set(lines))
+                print (num_lines)
+                print (maxCol)
 
-        
-        
                 #print all_text
 
                 #print one_hot_good
@@ -181,3 +193,5 @@ def create(numFile):
 
 if __name__ == '__main__':
     create(2)
+    #for x in range(10):
+        #create(x)
