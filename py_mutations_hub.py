@@ -655,10 +655,10 @@ def perform(curr):
 			
 			#print "----------INPUT-------------"
 
-			#print len(one_hot_good)
-			#print len(one_hot_bad_ins)
-			#print len(one_hot_bad_del)
-			#print len(one_hot_bad_sub)
+			print len(one_hot_good)
+			print len(one_hot_bad_ins)
+			print len(one_hot_bad_del)
+			print len(one_hot_bad_sub)
 
 			#print "----------OUTPUT-------------"
 
@@ -673,17 +673,30 @@ def perform(curr):
 			#one_hot_all = np.concatenate((one_hot_good, one_hot_bad), axis=0)
 
 			#print "SUCCESS"
+			
+			#sizes = [len(one_hot_good), len(one_hot_bad_ins),len(one_hot_bad_del),len(one_hot_bad_sub)]
+			#minSize = int(min(float(siz) for siz in sizes)) # min of a generator
+			#return minSize
+
 			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out,passInsErrorInd
 			
 		else:
 			print "Try again..."
 			print curr
 			#print all_rows[curr][0]
+			#return -1
+
+
 			return 1, None, None, None, 1, None, None, None, None
 	
 
 if __name__ == '__main__':
-    perform(2337)
+    sumTot = 0
+    for x in range(1000):
+	print x
+	if x != -1:
+		sumTot += perform(x)
+    print sumTot
     #print "done one"
    # perform(0)
     sys.exit()
