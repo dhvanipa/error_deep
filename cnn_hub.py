@@ -1,6 +1,6 @@
 # Copyright 2017 Dhvani Patel
 
-from check_pypy_syntax import checkPyPySyntax
+from check_pypy_syntax import checkPyPySyntaxT
 from compile_error import CompileError
 import sqlite3
 import tokenize
@@ -18,29 +18,26 @@ from random import randint
 
 # 87 VOCAB
 
-def random_color():
-    rgbl=[randint(0, 255),randint(0, 9),randint(0, 9)]
-    random.shuffle(rgbl)
-    return tuple(rgbl)
 
 def set_col_from_json(all_tokens):
     with open('vocabulary_color.json') as data_file:    
         data = json.load(data_file)
     #print (len(data["indexes"]))
     indexed_tokens = []
-    newCols = []
-    for num in range(len(data["indexes"])):
-        add = random_color()
-        newCols.append(add)
+    newCols = random.sample(range(len(data["indexes"])), len(data["indexes"]))
+    print (newCols)
     for tok in all_tokens:
-        print (tok)
+        #print (tok)
         toCompare = tok.value
         indexed_tokens.append(data["indexes"].index(toCompare))
     print (len(data["colours"]))
     print (len(data["indexes"]))
+    print (data["indexes"].index("INDENT"))
     colours = []
+    print (indexed_tokens)
     for inds in indexed_tokens:
         colours.append(newCols[inds])
+    print (colours)
     return colours
 
 def open_closed_tokens(token):
@@ -183,10 +180,10 @@ def create(numFile):
         #print "Fetching all rows..."
         all_rows = c.fetchmany(size=2100)
         conn.close()
-        toTest = checkPyPySyntax(all_rows[numFile][0])
+        toTest = checkPyPySyntaxT(all_rows[numFile][0])
                 
         if toTest == None:
-                #print all_rows[numFile][0]
+                print ((all_rows[numFile][0]).decode())
                 all_tokens = []
                 text = (all_rows[numFile][0]).decode('utf-8')
                 #print (type(text))
@@ -253,14 +250,26 @@ def create(numFile):
                 #print (len(allCols))
                 #print (allCols)
                 iterInd = 0
+                pixels = []
+                print (allCols)
+                for row in allCols:
+                    for elem in row:
+                        print(elem, end=' ')
+                    print()
                 for lines in allCols:
                     getCols = lines
                     #inIterInd = 0
+                    new = []
                     for cols in range(len(getCols)):
-                        pix[cols, iterInd] = (getCols[cols][0], getCols[cols][1], getCols[cols][2])
+                        pix[cols, iterInd] = getCols[cols]
+                        new[cols] = getCols[cols]
                         #inInterInd += 1
+                    pixels.append(new)
                     iterInd += 1      
                 #pix[5,6] = (255,0,0)
+
+                print (pix[0, 0])
+
                 im.save("test.png", "PNG")
        
                 #print all_text
@@ -273,6 +282,6 @@ def create(numFile):
 
 
 if __name__ == '__main__':
-    create(4)
+    create(2)
     #for x in range(10):
         #create(x)

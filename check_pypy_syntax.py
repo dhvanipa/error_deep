@@ -37,7 +37,7 @@ def find_nth(haystack, needle, n):
 # Main method
 def checkPyPySyntax(src):
 		myFile = open("toCheck.py", "w")
-		myFile.write(src.decode())
+		myFile.write(src)
 		myFile.close()
 		proc = subprocess.Popen(['pypy', '-m', 'py_compile', 'toCheck.py'], stderr=subprocess.PIPE)
 		streamdata, err = proc.communicate()
@@ -88,4 +88,61 @@ def checkPyPySyntax(src):
 			if os.path.isfile("toCheck.py") == True:
 				os.remove("toCheck.py")
 			return [errorObj]
+
+
+# Main method
+def checkPyPySyntaxT(src):
+		myFile = open("toCheck.py", "w")
+		myFile.write(src.decode())
+		myFile.close()
+		proc = subprocess.Popen(['pypy', '-m', 'py_compile', 'toCheck.py'], stderr=subprocess.PIPE)
+		streamdata, err = proc.communicate()
+		rc = proc.returncode
+		if rc == 0:
+			# No errors, all good
+			if os.path.isfile("toCheck.py") == True:
+				os.remove("toCheck.py")
+			return None
+		else:
+			# Error, disect data for constructor		
+			fileBegInd = find_nth(err, 'File ', 1)
+			fileEndInd = find_nth(err, ',', 1)
+			lineInd = find_nth(err, 'line ', 1)
+
+			nextLineInd = find_nth(err, '\n', 1)
+		
+		
+			add = err[lineInd+5:nextLineInd]
+			add = re.sub("[^0-9]", "", add.decode())
+			if(add == ''):
+				add = '-1'
+			line = int(add)
+
+			textInd = find_nth(err, '    ', 1)
+			temp2 = err[textInd+4:]
+			
+		
+			nextLineIndTemp = find_nth(temp2, '    ', 1)
+			textAfter = err[textInd+4:nextLineIndTemp+textInd+3]
+			
+			fileName = err[fileBegInd+6:fileEndInd-1]
+
+			colon = ':'
+
+			textBeforeInd = err.rfind(colon.encode())
+			textBefore = err[textBeforeInd+2:]
+			textBefore = textBefore.strip()
+	
+			colonTwo = ':'
+
+			text = textBefore + colon.encode() + textAfter
+
+			cutoffInd = find_nth(err, '^', 1)
+			errorname = err[cutoffInd+2:textBeforeInd]
+			
+			errorObj = CompileError(fileName, line, None, None, text, errorname)
+			if os.path.isfile("toCheck.py") == True:
+				os.remove("toCheck.py")
+			return [errorObj]
+
 

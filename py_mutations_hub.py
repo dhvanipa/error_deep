@@ -284,9 +284,10 @@ def perform(curr):
 	c.execute("SELECT source FROM source_file INNER JOIN eligible_source ON source_file.hash = eligible_source.hash")
 	#print "Executed SELECT..."
 	#print "Fetching all rows..."
-	all_rows = c.fetchmany(size=2100)
+	all_rows = c.fetchmany(size=2600)
 	conn.close() # Close the connection to SQL
 	#for curr in range(2):
+	#print all_rows[curr][0]
 	if True:
 		
 		#curr = 13
@@ -682,7 +683,7 @@ def perform(curr):
 	
 
 if __name__ == '__main__':
-    perform(56)
+    perform(2337)
     #print "done one"
    # perform(0)
     sys.exit()
