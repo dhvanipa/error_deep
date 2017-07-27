@@ -17,6 +17,7 @@ from mutate_token_insert import insertTokMutS
 from mutate_token_delete import deleteTokMutS
 from mutate_token_sub import subTokMut
 import sys
+import cPickle
 
 # NUM TOTAL: 462 563
 # ACTUAl: 462 540
@@ -655,10 +656,10 @@ def perform(curr):
 			
 			#print "----------INPUT-------------"
 
-			print len(one_hot_good)
-			print len(one_hot_bad_ins)
-			print len(one_hot_bad_del)
-			print len(one_hot_bad_sub)
+			#print len(one_hot_good)
+			#print len(one_hot_bad_ins)
+			#print len(one_hot_bad_del)
+			#print len(one_hot_bad_sub)
 
 			#print "----------OUTPUT-------------"
 
@@ -678,27 +679,50 @@ def perform(curr):
 			#minSize = int(min(float(siz) for siz in sizes)) # min of a generator
 			#return minSize
 
-			return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out,passInsErrorInd
+			
+
+			toPass = [one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, passInsErrorInd]
+
+			
+			#cPickle.dump(one_hot_bad_ins, fileStore)
+			#cPickle.dump(one_hot_bad_del, fileStore)
+			#cPickle.dump(one_hot_bad_sub, fileStore)
+			#cPickle.dump(one_hot_good_out, fileStore)
+			#cPickle.dump(one_hot_bad_ins_out, fileStore)
+			#cPickle.dump(one_hot_bad_del_out, fileStore)
+			#cPickle.dump(one_hot_bad_sub_out, fileStore)
+			#cPickle.dump(passInsErrorInd, fileStore)
+			
+			return toPass
+			
+		
+			#return one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out,passInsErrorInd
 			
 		else:
 			print "Try again..."
 			print curr
 			#print all_rows[curr][0]
-			#return -1
+			return -1
 
 
-			return 1, None, None, None, 1, None, None, None, None
-	
+			#return 1, None, None, None, 1, None, None, None, None
+
+def giveItems():
+	allData = cPickle.load( open( "all_pre_data.txt", "rb" ) )
+	#print allData[3][8]
 
 if __name__ == '__main__':
-    sumTot = 0
-    for x in range(1000):
+    all_data_to_pass = []
+    for x in range(2001):
 	print x
 	if x != -1:
-		sumTot += perform(x)
-    print sumTot
-    #print "done one"
-   # perform(0)
+		toP = perform(x)
+		all_data_to_pass.append(toP)
+    fileStore = open("all_pre_data.txt", 'w')
+    cPickle.dump(all_data_to_pass, fileStore)
+    fileStore.close()
+    giveItems()
+ 
     sys.exit()
     for x in range(10):
 	  print "CURR"

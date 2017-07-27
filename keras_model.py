@@ -133,6 +133,8 @@ def getInputTen():
 				#print a.shape
 				#yield a
 				windowInd += 1
+				#print loopInd
+				loopInd += 1
 			else:
 				old_one_hot_good = one_hot_good[:]
 				old_one_hot_bad_ins = one_hot_bad_ins[:]
@@ -146,7 +148,7 @@ def getInputTen():
 
 				fileInd += 1
 				#print "FILE IND"
-				#print fileInd
+				print fileInd
 				windowInd = 0
 				one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
 				while(one_hot_good == 1):
@@ -163,12 +165,11 @@ def getInputTen():
 				for p in range(numBadSubLeft):
 					one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
 
-			#print loopInd
-			loopInd += 1
 		#print numpy.array(batchArr).shape
 		#print len(batchArr)
 		#print "dhvani"
 		b = numpy.array(batchArr)
+		#print b.shape
 		yield b
 			
 				
@@ -363,6 +364,8 @@ def getOutputTen():
 					#a = numpy.array(toPass)
 					#yield a
 				windowInd += 1
+				#print loopInd
+				loopInd += 1
 			else:
 
 				#print "NEXT FILE"
@@ -393,11 +396,12 @@ def getOutputTen():
 				#for p in range(numBadSubOutLeft):
 				#	one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
 			#print loopInd
-			loopInd += 1
+			#loopInd += 1
 		#print numpy.array(batchArr).shape
 		#print len(batchArr)
 		#print "dhvani"
 		b = numpy.array(batchArr)
+		#print b.shape
 		yield b
 
 
@@ -985,7 +989,7 @@ def initData():
                	izip(getInputTen(), getOutputTen()),
                 steps_per_epoch=16521,
 		validation_data=izip(getInputValTen(), getOutputValTen()),
-		validation_steps=20514,
+		validation_steps=20513,
                 epochs=5,  
                 verbose=2	
             )
