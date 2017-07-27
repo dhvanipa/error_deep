@@ -39,6 +39,212 @@ def find_nth(haystack, needle, n):
         n -= 1
     return start
 
+def subTokMutS(raw_tokens, all_tokens, raw_text):
+	new_text = raw_text
+	with open('vocabulary_mutate.json') as data_file:    
+    		data = json.load(data_file)
+		#pprint(data)
+		#print "HI"
+
+	out_tokens_loc = []
+	raw_tokens_pass = []
+	actual_token_len = []
+	orig = []
+	for token in all_tokens:
+		token_use = token		
+		#orig.append(token_use)
+		actual_token_len.append(token_use)
+
+	for token in raw_tokens:
+		token_use = token		
+		orig.append(token_use)
+	
+		raw_tokens_pass.append(token_use)
+
+	num_lines = len(actual_token_len)
+	num_encode = len(orig)	
+	if (num_lines % 10 == 0):
+		numTokensNeeded = int((num_lines / 10))
+	else:
+		numTokensNeeded = int((num_lines / 10))
+	insToks = []
+	fixToks = []
+	chosens = []
+
+	#print numTokensNeeded
+	#print "import num"
+
+	inds = []
+	for i in actual_token_len:
+		if i.type != 'COMMENT':
+			if i.type != 'INDENT':
+				if i.type != 'DEDENT':
+					if i.type != 'NEWLINE':
+						if i.type != 'NL':			
+							if i.type != 'ENDMARKER':
+								inds.append(actual_token_len.index(i))	
+
+	
+	allInds = []
+	for nah in range(numTokensNeeded+1):
+		temp = []
+		#print nah
+		for nahHoi in range(len(inds)):
+			if nah != 0:
+				flag = nah * 10
+				pastFlag = (nah-1)*10
+				#print "inds"
+				#print inds[nahHoi]
+				#print "indsSSS"
+				if pastFlag < inds[nahHoi] <= flag:	
+					temp.append(inds[nahHoi])
+		if len(temp) != 0:
+			allInds.append(temp)
+
+	
+	curr = 0
+	new_text = ''
+	haha = -1
+	radOut = 0
+	while radOut < len(allInds):
+
+		if radOut == (numTokensNeeded-1):
+			param_start = haha
+			param_end = num_lines-1
+		else:
+			param_start = radOut * 10
+			param_end = param_start + 9
+			haha = param_end
+
+		toChooseArr = allInds[radOut]
+		
+		chosenLineIndTemp = randint(0, len(toChooseArr)-1) #num_lines-1
+
+		chosenLineInd = toChooseArr[chosenLineIndTemp]
+		#print "ok"
+		#print chosenLineInd
+		chosens.append(chosenLineInd)
+		#print radOut
+
+		source_code = raw_text
+
+		send = actual_token_len[chosenLineInd]
+		
+		fixToks.append(send)
+
+		chosenInd = randint(0,84)
+		chosenToken = data["indexes_m"][chosenInd]
+
+		global new_token
+		new_token = []
+		try:
+			toksG = tokenize.tokenize(StringIO.StringIO(chosenToken).readline, handle_token)
+		except tokenize.TokenError:
+			pass	
+		
+		insEdTok = new_token[0]
+		insTok = insEdTok
+		insToks.append(insTok)
+
+		indexToRemove = source_code.index(actual_token_len[chosenLineInd].line)
+
+		temp = source_code[indexToRemove:indexToRemove+len(actual_token_len[chosenLineInd].line)+1]
+
+		change = temp.strip()
+	
+		check = change.find(raw_tokens_pass[chosenLineInd][1])
+
+		shotInd = temp.index(raw_tokens_pass[chosenLineInd][1])
+
+		change = temp.strip()
+		check = temp.index(change)
+		#print "WHAT"
+		#print change
+	
+
+		#print "TEMP"
+		#print temp
+
+		#print shotInd
+	
+		actual_target_ind = indexToRemove + shotInd
+	
+		#print raw_tokens_pass[chosenLineInd][1]
+	
+		#print len(raw_tokens_pass[chosenLineInd][1])
+		#print len(change)
+	
+		if check == 0 and len(raw_tokens_pass[chosenLineInd][1]) == len(change):
+			before = source_code[:indexToRemove]
+		else:
+			before = source_code[:actual_target_ind]
+		#print "B"
+		#print before
+		
+	
+		after = source_code[actual_target_ind+len(raw_tokens_pass[chosenLineInd][1]):]
+		#print "A"
+		#print after	
+		#print chosenToken.encode()
+		if check == 0:
+			#print "GOT EM"
+			if len(after) > 0:
+				if after[0] == ' ':
+					new_text = before + chosenToken.encode() + after
+				else:
+					new_text = before + chosenToken.encode() + after
+			else:
+				new_text = before + chosenToken.encode() + after
+		else:	
+		
+			if chosenInd == data["indexes_m"].index('\n'): 
+				#print "shiz"
+				if after[0] == ' ':
+					space = ' ' * (check-1)
+				else:
+					space = ' ' * (check)
+				new_text = before + chosenToken.encode() + space + after
+			else:	
+				#print "WAS HERE"
+				new_text = before + chosenToken.encode() + after
+
+
+		#print actual_target_ind
+
+		#print '-------------------------------'
+		#print new_text
+		toTest = checkPyPySyntax(new_text)
+		if toTest == None:
+			#print radOut
+			#if radOut != 0:
+			#	radOut = radOut-1
+			#else:
+			#	radOut = 0
+			#print radOut	
+			curr = curr + 1
+			if curr > 10:
+				radOut = radOut + 1
+			else:
+				radOut = radOut
+				fixToks.remove(send)
+				chosens.remove(chosenLineInd)
+				insToks.remove(insTok)
+			#print "test_t"
+		else:
+			curr = 0
+			radOut = radOut + 1
+	
+
+	return new_text, YES_TOKEN, SUBSTITUTION, chosens, fixToks, insToks
+	
+	#print "-----------FINISHED-------------------"
+	#print chosenLineInd+1
+	#print out_tokens_loc
+	#print len(raw_tokens_pass)
+	#print len(out_tokens_loc)
+	#print lenD
+
+
 def subTokMut(raw_tokens, raw_text):
 
 	with open('vocabulary_mutate.json') as data_file:    

@@ -15,7 +15,7 @@ from mutate_insert import insertMut
 from mutate_deletion import deleteMut
 from mutate_token_insert import insertTokMutS
 from mutate_token_delete import deleteTokMutS
-from mutate_token_sub import subTokMut
+from mutate_token_sub import subTokMutS
 import sys
 import cPickle
 
@@ -558,11 +558,11 @@ def perform(curr):
 			global indexed_tokens
 			indexed_tokens = []
 			#print type(raw_tokens)
-			
-			new_s_text, YES_TOKEN, SUBSTITUTION, out_tokens_loc_s, sendS, insTokS = subTokMut(raw_tokens, source_code)
+			passBall = allGood[:]
+			new_s_text, YES_TOKEN, SUBSTITUTION, chosensS, fixToksS, insToksS = subTokMutS(raw_tokens, passBall, source_code)
 
 			while isinstance(new_s_text, int):
-				new_s_text, YES_TOKEN, SUBSTITUTION, out_tokens_loc_s, sendS, insTokS = subTokMut(YES_TOKEN, SUBSTITUTION)
+				new_s_text, YES_TOKEN, SUBSTITUTION, chosensS, fixToksS, insToksS = subTokMutS(YES_TOKEN, SUBSTITUTION)
 				if isinstance(new_s_text, str):
 					break
 			
@@ -572,31 +572,53 @@ def perform(curr):
 
 			new_tokens_sub = allGood[:]
 
-			vocab_entry = open_closed_tokens(sendS)
-			sendS.value = vocab_entry
+			temp = insToksS[:]
+			for insTok in temp:
+				if insTok.type == "NL":
+					insToks[insToksS.index(insTok)].type = "NEWLINE"
+
 			
-			bruhInd = -1
-			iterInd = 0
-			for a in allGood:
-				if a == sendS:
-					bruhInd = iterInd
-				iterInd = iterInd + 1
-			#print bruhInd
-			#print len(new_tokens_del)
-			del new_tokens_sub[bruhInd]	
-			
-			# SUB INSERT
+			tempFix = fixToksS[:]
+			for send in tempFix:
+				vocab_entry = open_closed_tokens(send)
+				fixToksS[fixToksS.index(send)].value = vocab_entry
+
+			removeInds = []
+			for wow in range(len(chosensS)):
+				bruhInd = -1
+				iterInd = 0
+				send = fixToksS[wow]	
+				#print send.value
+				for a in allGood:
+					if a == send:
+						bruhInd = iterInd
+					iterInd = iterInd + 1
+				#print bruhInd
+				#print "CHECK"
+				#print len(new_tokens_del)
+				removeInds.append(bruhInd)
+				#del new_tokens_del[bruhInd]	
+				#print len(new_tokens_del)
+				#print "DEL ROR"
 		
-			if insTokS.type == "NL":
-				insTokS.type = "NEWLINE"
-			if insTokS.type == "ENDMARKER":
-				insTokS.type = "INDENT"
+			# SUB INSERT
+			#print len(removeInds)
+			#print len(insToksS)
+			comeIter = len(insToksS)-1
+			for r in reversed(removeInds):
+				del new_tokens_sub[r]
+				#print insToksS[comeIter].value
+				new_tokens_sub.insert(r, insToksS[comeIter])
+				comeIter -= 1
+			#for x in new_tokens_sub:
+				#print x.value
+			#print len(new_tokens_del)
+		
 
 			#print insTokS.type
 			#print insTokS.value
 			#print "LUNCH"
 
-			new_tokens_sub.insert(bruhInd, insTokS)
 
 			one_hot_bad_sub = vocabularize_tokens(new_tokens_sub, True)
 
@@ -611,12 +633,13 @@ def perform(curr):
 			#print "sub"
 			#print sendS.type
 			#print sendS.value
-			oneH_sub_switch = set_from_json_nonarr(sendS, True)
+			#oneH_sub_switch = set_from_json_nonarr(sendS, True)
 			#print oneH_sub_switch
 			#print "rad"
 			for x in range(iterNum):
 				#if x <= trueErrorInd <= (x+trueErrorInd):
-				if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
+				#if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
+				if True:
 					# DIFF - ACTUAL ERROR
 					#print x
 					toAdd = []
@@ -630,8 +653,9 @@ def perform(curr):
 					toAdd[4] = 1
 					toAdd[5] = 0
 					toAdd[6] = 0
-					toAdd[7+trueErrorInd-x] = 1
-					toAdd[17+oneH_sub_switch] = 1
+
+					toAdd[7] = 1
+					toAdd[17] = 1
 					one_hot_bad_sub_out.append(toAdd)
 				else:
 					toAdd = []
