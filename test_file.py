@@ -13,7 +13,7 @@ info = {
     "entity_id": "%s/idp.xml" % BASE,
     "interaction": [
         {
-            "matches":
+            "matches": 
                 "url": "%s/login" % BASE,
                 "title": 'IDP test login'
             },

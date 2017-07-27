@@ -15,9 +15,11 @@ import StringIO
 import keyword
 import json
 import numpy as np
+from numpy import newaxis
 
 global all_tokens
 global indexed_tokens
+global check_tokens
 
 START_TOKEN = '<s>'
 END_TOKEN = '</s>'
@@ -183,8 +185,8 @@ def handle_token(type, token, (srow, scol), (erow, ecol), line):
     send = Token(tokenize.tok_name[type], val, srow, scol, erow, ecol, line)
     global all_tokens
     all_tokens.append(send)
-    #print "%d,%d-%d,%d:\t%s\t%s" % \
-    #    (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
+    print "%d,%d-%d,%d:\t%s\t%s" % \
+        (srow, scol, erow, ecol, tokenize.tok_name[type], repr(token))
 
 def getFileTokens(fileName):
 	with open(fileName, 'r') as myfile:
@@ -199,20 +201,31 @@ def getFileTokens(fileName):
 	except tokenize.TokenError:
    		pass
 	one_hot_file = vocabularize_tokens(all_tokens, False)
+	global check_tokens
+	check_tokens = []
 
+	
+	#print len(one_hot_file)-10
+	#print "GOTCH U"
 	windowInd = 0
 	while windowInd <= int((int(len(one_hot_file)) - 10)):
 		toPass = []
 		for x in range(10):
 			y = x + windowInd
-			print y
-			print len(one_hot_file)
+			#print y
+			#print len(one_hot_file)
 			toPass.append(one_hot_file[y])
+		assert len(toPass) > 0
 		a = np.array(toPass).astype(int)
-		assert len(a) == 10
-		print a
-		yield a
+		b = a[newaxis, :]
+		#print b
+		check_tokens.append(toPass)
+		assert len(b[0]) == 10
+		#print a
+		yield b
 		windowInd += 1
+		#print "WINDOW"
+		#print windowInd
 	print "done radha"
 	#print len(one_hot_file)
 
@@ -232,8 +245,17 @@ def predict(fileName):
 	opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.5)
 	loaded_model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
-	outPredict = loaded_model.predict_generator(getFileTokens(fileName), 225, 3, verbose=1)
+	'''
+	gen = getFileTokens(fileName)
+	arrs = []	
+	for x in gen:
+		arrs.append(x)
+	print len(arrs)
+	print type(radha)
+	'''
 
+	outPredict = loaded_model.predict_generator(getFileTokens(fileName), 227, 1, verbose=1)
+	print "HERE"
 	print outPredict
 	print len(outPredict)	
 
@@ -246,26 +268,65 @@ def predict(fileName):
         countGood = -1
         countIns = -1
 	countDel = -1
+	countWhat = -1
 	iterInd = 0
+	print inds
+	print zip(*(iter(inds),) * 10)
+
+
+	global check_tokens
+	check = check_tokens[:]
+	print len(check)
+	#print check[225]
+	iterInd = 0
+	with open('vocabulary.json') as data_file:    
+    		data = json.load(data_file)
+	print "-------------------------------"
+	for window in check:
+		errType = inds[iterInd]
+		if errType == 0:
+			msg = "NO ERROR: "
+		elif errType == 2:
+			msg = "DELETION: "
+		elif errType == 3:
+			msg = "INSERTION: "
+		else:
+			msg = "IDEK: "
+		errLine = ""
+		for toks in window:
+			getInd = toks.index(1.0)
+			actualToken = data["indexes"][getInd]
+			errLine = errLine + ' ' + actualToken
+		print msg + errLine
+		#print c	
+		#print type(radha)
+		iterInd += 1
+	print "-------------------------------"
+	sys.exit()
+	#print type(radha)
 	for b in inds:
-		if iterInd == 3:
-			iterInd = 0
+		#if iterInd == 3:
+		#	iterInd = 0
 		
-		if iterInd == 0:
-               		if b == 0:
-				countGood += 1
-		if iterInd == 1: 		
-			if b == 3:
-				countIns += 1
-		if iterInd == 2:
-			if b == 2:
-				countDel += 1
+		#if iterInd == 0:
+               	if b == 0:
+			countGood += 1
+		if b == 1:
+			countWhat += 1
+		#if iterInd == 1: 		
+		if b == 3:
+			countIns += 1
+		#if iterInd == 2:
+		if b == 2:
+			countDel += 1
+		#print b
 		iterInd += 1
 		#print b
         print len(inds)
 	print countGood
 	print countIns
 	print countDel	
+	print countWhat
 
 if __name__ == '__main__':
 	fileName = sys.argv[1]
