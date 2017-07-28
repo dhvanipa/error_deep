@@ -87,7 +87,8 @@ def set_from_json(all_tokens, flag):
 		#print "Broke..."
 		#print token.line
 		global indexed_tokens
-		indexed_tokens.append(data["indexes"].index(toCompare))
+		if len(toCompare) > 0:
+			indexed_tokens.append(data["indexes"].index(toCompare))
 	for r in range(9):
 		indexed_tokens.insert(r, data["indexes"].index(START_TOKEN))
 		indexed_tokens.append(data["indexes"].index(END_TOKEN))
@@ -106,7 +107,8 @@ def set_from_json_nonarr(token, flag):
 	#print token.type
 	#print "Broke..."
 	#print token.line
-	ind_token_nonarr = data["indexes"].index(toCompare)
+	if len(toCompare) > 0:
+		ind_token_nonarr = data["indexes"].index(toCompare)
 	#print indexed_tokens
 	return ind_token_nonarr
 

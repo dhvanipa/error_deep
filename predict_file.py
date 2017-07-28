@@ -1,3 +1,5 @@
+# Copyright 2017 Dhvani Patel
+
 import sys
 
 from keras.models import Sequential
