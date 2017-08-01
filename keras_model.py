@@ -33,12 +33,28 @@ WINDOW_SIZE = 10
 # WINDOW = 10, SO BATCH = 40 INPUT, 40 OUTPUT
 BATCH_SIZE = 66
 
+def one_hot(indexed_tokens):
+	one_hot = []
+	nb_classes = 88
+	one_hot_targets = np.eye(nb_classes)[indexed_tokens]
+	one_hot = one_hot_targets.tolist()
+	#print "fort"
+	#bruhTemp = one_hot[:]
+	for x in range(len(one_hot)):
+		#one_hot[x].astype(int)
+		[int(i) for i in one_hot[x]]
+	#one_hot.astype(int)
+	#print type(one_hot[0][0])
+	return one_hot
 
 def getInputTen(allTrainData):
 	#one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(0)
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = allTrainData[0][0],allTrainData[0][1], allTrainData[0][2], allTrainData[0][3]
+	
+
+
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allTrainData[0][0]),one_hot(allTrainData[0][1]), one_hot(allTrainData[0][2]), one_hot(allTrainData[0][3])
 	while(one_hot_good == 1):
-			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = allTrainData[0][0],allTrainData[0][1], allTrainData[0][2], allTrainData[0][3]
+			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allTrainData[0][0]),one_hot(allTrainData[0][1]), one_hot(allTrainData[0][2]), one_hot(allTrainData[0][3])
 	#print type(one_hot_good)
 	#print one_hot_good
 	windowInd = 0
@@ -149,13 +165,15 @@ def getInputTen(allTrainData):
 
 				fileInd += 1
 				#print "FILE IND"
-				print fileInd
+				#print fileInd
 				windowInd = 0
 				#one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
-				one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = allTrainData[fileInd][0],allTrainData[fileInd][1], allTrainData[fileInd][2], allTrainData[fileInd][3]
-				while(one_hot_good == 1):
+				one_hot_good = allTrainData[fileInd]
+				while(one_hot_good == -1):
 					fileInd+=1
-					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = allTrainData[fileInd][0],allTrainData[fileInd][1], allTrainData[fileInd][2], allTrainData[fileInd][3]
+					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allTrainData[fileInd][0]),one_hot(allTrainData[fileInd][1]), one_hot(allTrainData[fileInd][2]), one_hot(allTrainData[fileInd][3])
+				if one_hot_good != -1:
+					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allTrainData[fileInd][0]),one_hot(allTrainData[fileInd][1]), one_hot(allTrainData[fileInd][2]), one_hot(allTrainData[fileInd][3])
 	
 			
 				for p in range(numGoodLeft):
@@ -212,11 +230,11 @@ def getInputTen(allTrainData):
 
 def getOutputTen(allTrainData):
 	#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
-	one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = allTrainData[0][4],allTrainData[0][5], allTrainData[0][6], allTrainData[0][7]
+	one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = one_hot(allTrainData[0][0]),one_hot(allTrainData[0][1]), one_hot(allTrainData[0][2]), one_hot(allTrainData[0][3])
 	
 	while(one_hot_good_out == 1):
 			#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
-			one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = allTrainData[0][4],allTrainData[0][5], allTrainData[0][6], allTrainData[0][7]
+			one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = one_hot(allTrainData[0][0]),one_hot(allTrainData[0][1]), one_hot(allTrainData[0][2]), one_hot(allTrainData[0][3])
 	#print type(one_hot_good_out)
 	#print one_hot_good_out
 	windowInd = 0
@@ -242,7 +260,7 @@ def getOutputTen(allTrainData):
 					clasF = one_hot_good_out[y][5]	
 					clasF = one_hot_good_out[y][6]
 					#bruhOne = []
-					if(err == 0):
+					if True:
 						zero = 1
 						toPassOne.append(zero)
 						one = 0
@@ -266,7 +284,7 @@ def getOutputTen(allTrainData):
 					clasF = one_hot_bad_ins_out[y][5]	
 					clasF = one_hot_bad_ins_out[y][6]
 					#bruhTwo = []
-					if(err == 1):
+					if True:
 						zero = 0
 						toPassTwo.append(zero)
 						one = 0
@@ -289,7 +307,7 @@ def getOutputTen(allTrainData):
 					clasF = one_hot_bad_del_out[y][5]	
 					clasF = one_hot_bad_del_out[y][6]
 					#bruhThree = []
-					if(err == 1):
+					if True:
 						zero = 0
 						toPassThree.append(zero)
 						one = 0
@@ -312,7 +330,7 @@ def getOutputTen(allTrainData):
 					clasF = one_hot_bad_sub_out[y][5]	
 					clasF = one_hot_bad_sub_out[y][6]
 					#bruhFour = []
-					if(err == 1):
+					if True:
 						zero = 0
 						toPassFour.append(zero)
 						one = 1
@@ -388,11 +406,22 @@ def getOutputTen(allTrainData):
 				fileInd += 1
 				windowInd = 0
 				#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
-				one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = allTrainData[fileInd][4],allTrainData[fileInd][5], allTrainData[fileInd][6], allTrainData[fileInd][7]
-				while(one_hot_good_out == 1):
+				print fileInd
+				#print allTrainData[37]
+				#print type(allTrainData[fileInd][1])
+				#print type(allTrainData[fileInd][2])
+				#print type(allTrainData[fileInd][3])
+
+
+				one_hot_good_out = allTrainData[fileInd]
+				while(one_hot_good_out == -1):
 					fileInd+=1
 					#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
-					one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = allTrainData[fileInd][4],allTrainData[fileInd][5], allTrainData[fileInd][6], allTrainData[fileInd][7]
+					one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = one_hot(allTrainData[fileInd][0]),one_hot(allTrainData[fileInd][1]), one_hot(allTrainData[fileInd][2]), one_hot(allTrainData[fileInd][3])
+
+
+				if one_hot_good_out != -1:
+					one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = one_hot(allTrainData[fileInd][0]),one_hot(allTrainData[fileInd][1]), one_hot(allTrainData[fileInd][2]), one_hot(allTrainData[fileInd][3])
 
 				#for p in range(numGoodOutLeft):
 				#	one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
@@ -955,11 +984,11 @@ def initData():
 	allTrainData = cPickle.load( open( "train_pre_data.txt", "rb" ) )
 	print "GOT DATA"
 
-	sum = 0
-	for x in allTrainData:
-		sum += len(x[2])
-	print sum
-	print "SUM"
+	#sum = 0
+	#for x in allTrainData:
+	#	sum += len(x[2])
+	#print sum
+	#print "SUM"
 	model = Sequential()
 	model.add(Dense(4, activation='relu', input_shape=(10, 88), batch_size=66))
 	model.add(Dropout(0.5))
