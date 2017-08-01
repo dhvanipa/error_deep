@@ -17,7 +17,7 @@ from itertools import izip_longest
 from itertools import izip
 
 import os
-
+import cPickle
 import matplotlib.pyplot as plt
 
 # BATCH = 60
@@ -34,10 +34,11 @@ WINDOW_SIZE = 10
 BATCH_SIZE = 66
 
 
-def getInputTen():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(0)
+def getInputTen(allTrainData):
+	#one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(0)
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = allTrainData[0][0],allTrainData[0][1], allTrainData[0][2], allTrainData[0][3]
 	while(one_hot_good == 1):
-			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(0)
+			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = allTrainData[0][0],allTrainData[0][1], allTrainData[0][2], allTrainData[0][3]
 	#print type(one_hot_good)
 	#print one_hot_good
 	windowInd = 0
@@ -150,10 +151,11 @@ def getInputTen():
 				#print "FILE IND"
 				print fileInd
 				windowInd = 0
-				one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
+				#one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
+				one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = allTrainData[fileInd][0],allTrainData[fileInd][1], allTrainData[fileInd][2], allTrainData[fileInd][3]
 				while(one_hot_good == 1):
 					fileInd+=1
-					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
+					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = allTrainData[fileInd][0],allTrainData[fileInd][1], allTrainData[fileInd][2], allTrainData[fileInd][3]
 	
 			
 				for p in range(numGoodLeft):
@@ -208,10 +210,13 @@ def getInputTen():
 			one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
 		'''
 
-def getOutputTen():
-	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
+def getOutputTen(allTrainData):
+	#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
+	one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = allTrainData[0][4],allTrainData[0][5], allTrainData[0][6], allTrainData[0][7]
+	
 	while(one_hot_good_out == 1):
-			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
+			#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
+			one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = allTrainData[0][4],allTrainData[0][5], allTrainData[0][6], allTrainData[0][7]
 	#print type(one_hot_good_out)
 	#print one_hot_good_out
 	windowInd = 0
@@ -382,10 +387,12 @@ def getOutputTen():
 
 				fileInd += 1
 				windowInd = 0
-				_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
+				#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
+				one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = allTrainData[fileInd][4],allTrainData[fileInd][5], allTrainData[fileInd][6], allTrainData[fileInd][7]
 				while(one_hot_good_out == 1):
 					fileInd+=1
-					_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
+					#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
+					one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = allTrainData[fileInd][4],allTrainData[fileInd][5], allTrainData[fileInd][6], allTrainData[fileInd][7]
 
 				#for p in range(numGoodOutLeft):
 				#	one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
@@ -945,8 +952,14 @@ def initData():
 	print "Start..."
 
 	#main_input = Input(shape=(10,87), dtype='int32', name='main_input')
+	allTrainData = cPickle.load( open( "train_pre_data.txt", "rb" ) )
+	print "GOT DATA"
 
-
+	sum = 0
+	for x in allTrainData:
+		sum += len(x[2])
+	print sum
+	print "SUM"
 	model = Sequential()
 	model.add(Dense(4, activation='relu', input_shape=(10, 88), batch_size=66))
 	model.add(Dropout(0.5))
@@ -986,10 +999,10 @@ def initData():
 	# SECOnD THOUSAND TOKENS: 1353925
 
 	history = model.fit_generator(
-               	izip(getInputTen(), getOutputTen()),
+               	izip(getInputTen(allTrainData), getOutputTen(allTrainData)),
                 steps_per_epoch=16521,
-		validation_data=izip(getInputValTen(), getOutputValTen()),
-		validation_steps=20513,
+		#validation_data=izip(getInputValTen(), getOutputValTen()),
+		#validation_steps=20513,
                 epochs=5,  
                 verbose=2	
             )

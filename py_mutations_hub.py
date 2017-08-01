@@ -18,6 +18,7 @@ from mutate_token_delete import deleteTokMutS
 from mutate_token_sub import subTokMutS
 import sys
 import cPickle
+from scipy import sparse
 
 # NUM TOTAL: 462 563
 # ACTUAl: 462 540
@@ -49,7 +50,9 @@ NO_ERROR = 0b01
 START_TOKEN = '<s>'
 END_TOKEN = '</s>'
 
-def one_hot(indexed_tokens):
+def one_hot_a(indexed_tokens):
+	print indexed_tokens
+	print len(indexed_tokens)
 	one_hot = []
 	nb_classes = 88
 	one_hot_targets = np.eye(nb_classes)[indexed_tokens]
@@ -62,6 +65,9 @@ def one_hot(indexed_tokens):
 	#one_hot.astype(int)
 	#print type(one_hot[0][0])
 	return one_hot
+
+def one_hot(indexed_tokens):
+	return indexed_tokens
 	
 
 def set_from_json(all_tokens, flag):
@@ -318,13 +324,14 @@ def perform(curr):
 			#print len(all_tokens)
 			#print len(allGood)
 			one_hot_good = vocabularize_tokens(all_tokens, False)
-			one_hot_good_out = []
-			for x in range(len(all_tokens)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)):
-				toAdd = []
-				toAdd = [0] * NUM_BITS_OUTPUT
-				toAdd[0] = 0
-				toAdd[1] = 1 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
-				one_hot_good_out.append(toAdd)
+			#one_hot_good_out = []
+			#for x in range(len(all_tokens)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)):
+				#toAdd = []
+				#toAdd = [0] * NUM_BITS_OUTPUT
+				#toAdd[0] = 0
+				#toAdd[1] = 1 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
+				#toAdd = [1]
+			#one_hot_good_out.append(1)
 			
 
 			#print "DHVANI"
@@ -412,35 +419,37 @@ def perform(curr):
 				
 			
 			#print "NEXT STEP...C"
-			passInsErrorInd = (bruhInd+1)+(WINDOW_SIZE-1) 
+			#passInsErrorInd = (bruhInd+1)+(WINDOW_SIZE-1) 
 			
-			one_hot_bad_ins_out = []
-			trueErrorInd = (bruhInd+1)+(WINDOW_SIZE-1) 
+			#one_hot_bad_ins_out = []
+			#trueErrorInd = (bruhInd+1)+(WINDOW_SIZE-1) 
 		
 			# INSERT OUT_PUT
 
-			iterNum = len(new_tokens_ins)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
+			#iterNum = len(new_tokens_ins)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
 			#print "divide"
 			#print trueErrorInd
 			#print iterNum
+			'''
 			for x in range(iterNum):
 				#if x <= trueErrorInd <= (x+trueErrorInd):
 				#if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
 				if True:
 					# DIFF - ACTUAL ERROR
 					#print x
-					toAdd = []
-					toAdd = [0] * NUM_BITS_OUTPUT
-					toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
-					toAdd[1] = 0
-					if NO_TOKEN != None:
-						toAdd[2] = 0
-						toAdd[3] = 1
-					if INSERTION != None:
-						toAdd[4] = 0
-						toAdd[5] = 0
-						toAdd[6] = 1
-					toAdd[7] = 1
+					#toAdd = []
+					#toAdd = [0] * NUM_BITS_OUTPUT
+					#toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
+					#toAdd[1] = 0
+					#if NO_TOKEN != None:
+					#	toAdd[2] = 0
+					#	toAdd[3] = 1
+					#if INSERTION != None:
+					#	toAdd[4] = 0
+					#	toAdd[5] = 0
+					#	toAdd[6] = 1
+					#toAdd[7] = 1
+					toAdd = [0,3,6,7]
 					one_hot_bad_ins_out.append(toAdd)
 				else:
 					toAdd = []
@@ -448,6 +457,7 @@ def perform(curr):
 					toAdd[0] = 1
 					toAdd[1] = 0 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
 					one_hot_bad_ins_out.append(toAdd)
+			'''
 			#print "Morning"	
 			#print len(new_tokens_ins)
 			#print len(one_hot_bad_ins_out)
@@ -508,11 +518,11 @@ def perform(curr):
 
 			one_hot_bad_del = vocabularize_tokens(new_tokens_del, True)
 			
-			one_hot_bad_del_out = []
-			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1)
+			#one_hot_bad_del_out = []
+			#trueErrorInd = (bruhInd)+(WINDOW_SIZE-1)
  
 			# DELETE OUT_PUT
-			iterNum = len(new_tokens_del)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
+			#iterNum = len(new_tokens_del)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
 			#print "divide"
 			#print len(send)
 			#print trueErrorInd
@@ -523,24 +533,26 @@ def perform(curr):
 			#oneH_ind_deleted = set_from_json_nonarr(send, True)
 			#print oneH_ind_deleted
 			#print "rad"
+			'''
 			for x in range(iterNum):
 				#if x <= trueErrorInd <= (x+trueErrorInd):
 				if True:
 					# DIFF - ACTUAL ERROR
 					#print x
-					toAdd = []
-					toAdd = [0] * NUM_BITS_OUTPUT
-					toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
-					toAdd[1] = 0
-					if YES_TOKEN != None:
-						toAdd[2] = 1
-						toAdd[3] = 0
-					if DELETION != None:
-						toAdd[4] = 0
-						toAdd[5] = 1
-						toAdd[6] = 0
-					toAdd[7] = 1
-					toAdd[17] = 1
+					#toAdd = []
+					#toAdd = [0] * NUM_BITS_OUTPUT
+					#toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
+					#toAdd[1] = 0
+					#if YES_TOKEN != None:
+					#	toAdd[2] = 1
+					#	toAdd[3] = 0
+					#if DELETION != None:
+					#	toAdd[4] = 0
+					#	toAdd[5] = 1
+					#	toAdd[6] = 0
+					#toAdd[7] = 1
+					#toAdd[17] = 1
+					toAdd = [0,2,5,7,17]
 					one_hot_bad_del_out.append(toAdd)
 				else:
 					toAdd = []
@@ -548,6 +560,7 @@ def perform(curr):
 					toAdd[0] = 0
 					toAdd[1] = 1 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
 					one_hot_bad_del_out.append(toAdd)
+			'''
 			#print "Morning"	
 			#print len(allGood)
 			#print len(one_hot_bad_del_out)
@@ -624,10 +637,10 @@ def perform(curr):
 
 			one_hot_bad_sub = vocabularize_tokens(new_tokens_sub, True)
 
-			one_hot_bad_sub_out = []
-			trueErrorInd = (bruhInd)+(WINDOW_SIZE-1) 
+			#one_hot_bad_sub_out = []
+			#trueErrorInd = (bruhInd)+(WINDOW_SIZE-1) 
 			# SUB OUT_PUT
-			iterNum = len(new_tokens_sub)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
+			#iterNum = len(new_tokens_sub)+(WINDOW_SIZE-1)+(WINDOW_SIZE-1)
 			#print "divide"
 			#print len(send)
 			#print trueErrorInd
@@ -638,26 +651,29 @@ def perform(curr):
 			#oneH_sub_switch = set_from_json_nonarr(sendS, True)
 			#print oneH_sub_switch
 			#print "rad"
+
+			'''
 			for x in range(iterNum):
 				#if x <= trueErrorInd <= (x+trueErrorInd):
 				#if x <= trueErrorInd <= x+(WINDOW_SIZE-1):
 				if True:
 					# DIFF - ACTUAL ERROR
 					#print x
-					toAdd = []
-					toAdd = [0] * NUM_BITS_OUTPUT
-					toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
-					toAdd[1] = 0
+					#toAdd = []
+					#toAdd = [0] * NUM_BITS_OUTPUT
+					#toAdd[0] = 1 # FIRST BIT (10) - INDICATE ERROR 
+					#toAdd[1] = 0
 					
-					toAdd[2] = 1
-					toAdd[3] = 0
+					#toAdd[2] = 1
+					#toAdd[3] = 0
 					
-					toAdd[4] = 1
-					toAdd[5] = 0
-					toAdd[6] = 0
+					#toAdd[4] = 1
+					#toAdd[5] = 0
+					#toAdd[6] = 0
 
-					toAdd[7] = 1
-					toAdd[17] = 1
+					#toAdd[7] = 1
+					#toAdd[17] = 1
+					toAdd = [0,2,4,7,17]
 					one_hot_bad_sub_out.append(toAdd)
 				else:
 					toAdd = []
@@ -665,6 +681,8 @@ def perform(curr):
 					toAdd[0] = 0
 					toAdd[1] = 1 # FIRST BIT (01) - INDICATE NO ERROR (1 because rest are 0 and so add up to 1)
 					one_hot_bad_sub_out.append(toAdd)
+
+			'''
 			#print "Morning"	
 			#print len(allGood)
 			#print len(all_tokens)
@@ -704,11 +722,20 @@ def perform(curr):
 			#sizes = [len(one_hot_good), len(one_hot_bad_ins),len(one_hot_bad_del),len(one_hot_bad_sub)]
 			#minSize = int(min(float(siz) for siz in sizes)) # min of a generator
 			#return minSize
-
 			
+			#toPassGood = []
+			#print len(one_hot_good)
+			#for good in one_hot_good:
+			#	ind = good.index(1.0)
+			#	toPassGood.append(ind)
+			#print len(toPassGood)
+			#print one_hot_bad_sub_out
+			#print type(radha)	
 
-			toPass = [one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, passInsErrorInd]
-
+			toPass = [one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub]
+			#toPass = sparse.csr_matrix(toPassMatrix)
+			#print toPass
+			#print type(radha)
 			
 			#cPickle.dump(one_hot_bad_ins, fileStore)
 			#cPickle.dump(one_hot_bad_del, fileStore)
@@ -738,16 +765,26 @@ def giveItems():
 	#print allData[3][8]
 
 if __name__ == '__main__':
-    all_data_to_pass = []
-    for x in range(2001):
+    all_train_to_pass = []
+    for x in range(1000):
 	print x
 	if x != -1:
 		toP = perform(x)
-		all_data_to_pass.append(toP)
-    fileStore = open("all_pre_data.txt", 'w')
-    cPickle.dump(all_data_to_pass, fileStore)
+		all_train_to_pass.append(toP)
+    fileStore = open("train_pre_data.txt", 'w')
+    cPickle.dump(all_train_to_pass, fileStore)
     fileStore.close()
-    giveItems()
+    all_val_to_pass = []
+    for x in range(1000):
+	print x
+	if x != -1:
+		toPV = perform(x+1001)
+		all_val_to_pass.append(toPV)
+    fileStoreV = open("val_pre_data.txt", 'w')
+    cPickle.dump(all_val_to_pass, fileStoreV)
+    fileStoreV.close()
+    print "FINISHED"
+    #giveItems()
  
     sys.exit()
     for x in range(10):
