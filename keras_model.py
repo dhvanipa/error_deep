@@ -49,9 +49,6 @@ def one_hot(indexed_tokens):
 
 def getInputTen(allTrainData):
 	#one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(0)
-	
-
-
 	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allTrainData[0][0]),one_hot(allTrainData[0][1]), one_hot(allTrainData[0][2]), one_hot(allTrainData[0][3])
 	while(one_hot_good == 1):
 			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allTrainData[0][0]),one_hot(allTrainData[0][1]), one_hot(allTrainData[0][2]), one_hot(allTrainData[0][3])
@@ -441,17 +438,18 @@ def getOutputTen(allTrainData):
 		yield b
 
 
-def getInputValTen():
-	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(1002)
+def getInputValTen(allValData):
+	#one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(0)
+	one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allValData[0][0]),one_hot(allValData[0][1]), one_hot(allValData[0][2]), one_hot(allValData[0][3])
 	while(one_hot_good == 1):
-			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(1002)
+			one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allValData[0][0]),one_hot(allValData[0][1]), one_hot(allValData[0][2]), one_hot(allValData[0][3])
 	#print type(one_hot_good)
 	#print one_hot_good
 	windowInd = 0
-	fileInd = 1002
+	fileInd = 0
 	batchInd = 1
 	#count = 0
-	while fileInd <= 2000: # 462540
+	while fileInd <= 1000: # 462540
 	#while windowInd < int(len(insArr)/10):
 		
 		#print "file"
@@ -540,6 +538,8 @@ def getInputValTen():
 				#print a.shape
 				#yield a
 				windowInd += 1
+				#print loopInd
+				loopInd += 1
 			else:
 				old_one_hot_good = one_hot_good[:]
 				old_one_hot_bad_ins = one_hot_bad_ins[:]
@@ -555,10 +555,13 @@ def getInputValTen():
 				#print "FILE IND"
 				#print fileInd
 				windowInd = 0
-				one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
-				while(one_hot_good == 1):
+				#one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
+				one_hot_good = allValData[fileInd]
+				while(one_hot_good == -1):
 					fileInd+=1
-					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub, _, _, _, _, _ = perform(fileInd)
+					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allValData[fileInd][0]),one_hot(allValData[fileInd][1]), one_hot(allValData[fileInd][2]), one_hot(allValData[fileInd][3])
+				if one_hot_good != -1:
+					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allValData[fileInd][0]),one_hot(allValData[fileInd][1]), one_hot(allValData[fileInd][2]), one_hot(allValData[fileInd][3])
 	
 			
 				for p in range(numGoodLeft):
@@ -570,12 +573,11 @@ def getInputValTen():
 				for p in range(numBadSubLeft):
 					one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
 
-			#print loopInd
-			loopInd += 1
 		#print numpy.array(batchArr).shape
 		#print len(batchArr)
 		#print "dhvani"
 		b = numpy.array(batchArr)
+		#print b.shape
 		yield b
 			
 				
@@ -614,16 +616,19 @@ def getInputValTen():
 			one_hot_bad_sub.insert(p, old_one_hot_bad_sub[len(old_one_hot_bad_sub)-numBadSubLeft+p])
 		'''
 
-def getOutputValTen():
-	_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(1002)
+def getOutputValTen(allValData):
+	#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
+	one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = one_hot(allValData[0][0]),one_hot(allValData[0][1]), one_hot(allValData[0][2]), one_hot(allValData[0][3])
+	
 	while(one_hot_good_out == 1):
-			_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(1002)
+			#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(0)
+			one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = one_hot(allValData[0][0]),one_hot(allValData[0][1]), one_hot(allValData[0][2]), one_hot(allValData[0][3])
 	#print type(one_hot_good_out)
 	#print one_hot_good_out
 	windowInd = 0
-	fileInd = 1002
+	fileInd = 0
 	batchInd = 1
-	while fileInd <= 2000: # 462540
+	while fileInd <= 1000: # 462540
 	#while windowInd < int(len(insArr)/10):
 
 
@@ -643,7 +648,7 @@ def getOutputValTen():
 					clasF = one_hot_good_out[y][5]	
 					clasF = one_hot_good_out[y][6]
 					#bruhOne = []
-					if(err == 0):
+					if True:
 						zero = 1
 						toPassOne.append(zero)
 						one = 0
@@ -667,7 +672,7 @@ def getOutputValTen():
 					clasF = one_hot_bad_ins_out[y][5]	
 					clasF = one_hot_bad_ins_out[y][6]
 					#bruhTwo = []
-					if(err == 1):
+					if True:
 						zero = 0
 						toPassTwo.append(zero)
 						one = 0
@@ -690,7 +695,7 @@ def getOutputValTen():
 					clasF = one_hot_bad_del_out[y][5]	
 					clasF = one_hot_bad_del_out[y][6]
 					#bruhThree = []
-					if(err == 1):
+					if True:
 						zero = 0
 						toPassThree.append(zero)
 						one = 0
@@ -713,7 +718,7 @@ def getOutputValTen():
 					clasF = one_hot_bad_sub_out[y][5]	
 					clasF = one_hot_bad_sub_out[y][6]
 					#bruhFour = []
-					if(err == 1):
+					if True:
 						zero = 0
 						toPassFour.append(zero)
 						one = 1
@@ -770,6 +775,8 @@ def getOutputValTen():
 					#a = numpy.array(toPass)
 					#yield a
 				windowInd += 1
+				#print loopInd
+				loopInd += 1
 			else:
 
 				#print "NEXT FILE"
@@ -786,10 +793,23 @@ def getOutputValTen():
 
 				fileInd += 1
 				windowInd = 0
-				_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
-				while(one_hot_good_out == 1):
+				#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
+				print fileInd
+				#print allValData[37]
+				#print type(allValData[fileInd][1])
+				#print type(allValData[fileInd][2])
+				#print type(allValData[fileInd][3])
+
+
+				one_hot_good_out = allValData[fileInd]
+				while(one_hot_good_out == -1):
 					fileInd+=1
-					_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
+					#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
+					one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = one_hot(allValData[fileInd][0]),one_hot(allValData[fileInd][1]), one_hot(allValData[fileInd][2]), one_hot(allValData[fileInd][3])
+
+
+				if one_hot_good_out != -1:
+					one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = one_hot(allValData[fileInd][0]),one_hot(allValData[fileInd][1]), one_hot(allValData[fileInd][2]), one_hot(allValData[fileInd][3])
 
 				#for p in range(numGoodOutLeft):
 				#	one_hot_good_out.insert(p, old_one_hot_good_out[len(old_one_hot_good_out)-numGoodOutLeft+p])
@@ -800,11 +820,12 @@ def getOutputValTen():
 				#for p in range(numBadSubOutLeft):
 				#	one_hot_bad_sub_out.insert(p, old_one_hot_bad_sub_out[len(old_one_hot_bad_sub_out)-numBadSubOutLeft+p])
 			#print loopInd
-			loopInd += 1
+			#loopInd += 1
 		#print numpy.array(batchArr).shape
 		#print len(batchArr)
 		#print "dhvani"
 		b = numpy.array(batchArr)
+		#print b.shape
 		yield b
 
 
@@ -982,16 +1003,25 @@ def initData():
 
 	#main_input = Input(shape=(10,87), dtype='int32', name='main_input')
 	allTrainData = cPickle.load( open( "train_pre_data.txt", "rb" ) )
+	allValData = cPickle.load( open( "val_pre_data.txt", "rb" ) )
 	print "GOT DATA"
 
-	sum = 0
+	# Other Purposes
+	sumOne = 0
+	sumTwo = 0
 	fileInd = 0
 	for x in allTrainData:
 		if x != -1:
-			sum += len(x[1])
+			sumOne += len(x[1])
 		fileInd += 1
-	print sum
+	for y in allValData:
+		if y != -1:
+			sumTwo += len(y[1])
+	print sumOne
+	print sumTwo
 	print "SUM"
+
+
 	model = Sequential()
 	model.add(Dense(4, activation='relu', input_shape=(10, 88), batch_size=66))
 	model.add(Dropout(0.5))
@@ -1031,12 +1061,15 @@ def initData():
 	# FIRST THOUSAND TOKENS:  948676 ( / 31 )
 	# SECOnD THOUSAND TOKENS: 1353925
 
+	# TRAIN: 1171580
+	# VAL: 1462613
+
 	history = model.fit_generator(
                	izip(getInputTen(allTrainData), getOutputTen(allTrainData)),
-                steps_per_epoch=39500,
-		#validation_data=izip(getInputValTen(), getOutputValTen()),
-		#validation_steps=20513,
-                epochs=10,  
+                steps_per_epoch=39250,
+		validation_data=izip(getInputValTen(allValData), getOutputValTen(allValData)),
+		validation_steps=47700,
+                epochs=5,  
                 verbose=2	
             )
 
@@ -1077,7 +1110,7 @@ def initData():
 	model.save_weights("model_l.h5")
 	print("Saved model to disk")
 	
-	
+	sys.exit()
 	#scores = model.evaluate_generator(izip(getInputTestTen(), getOutputTestTen()), steps=10)
 	genIn = getInputTestTen()
 	print type(genIn)
