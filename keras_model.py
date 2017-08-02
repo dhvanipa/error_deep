@@ -58,9 +58,10 @@ def getInputTen(allTrainData):
 	fileInd = 0
 	batchInd = 1
 	#count = 0
-	while fileInd <= 1000: # 462540
+	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-		
+		if fileInd >= 930:
+			fileInd = 0
 		#print "file"
 		#print fileInd
 		#print minSize
@@ -161,6 +162,8 @@ def getInputTen(allTrainData):
 				numBadSubLeft = len(one_hot_bad_sub) % 10
 
 				fileInd += 1
+				if fileInd >= 930:
+					fileInd = 0
 				#print "FILE IND"
 				#print fileInd
 				windowInd = 0
@@ -237,9 +240,10 @@ def getOutputTen(allTrainData):
 	windowInd = 0
 	fileInd = 0
 	batchInd = 1
-	while fileInd <= 1000: # 462540
+	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-
+		if fileInd >= 930:
+			fileInd = 0
 
 		loopInd = 0
 		batchArr = []
@@ -401,6 +405,8 @@ def getOutputTen(allTrainData):
 				#numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
 
 				fileInd += 1
+				if fileInd >= 930:
+					fileInd = 0
 				windowInd = 0
 				#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 				print fileInd
@@ -449,9 +455,10 @@ def getInputValTen(allValData):
 	fileInd = 0
 	batchInd = 1
 	#count = 0
-	while fileInd <= 1000: # 462540
+	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-		
+		if fileInd >= 905:
+			fileInd = 0
 		#print "file"
 		#print fileInd
 		#print minSize
@@ -552,6 +559,8 @@ def getInputValTen(allValData):
 				numBadSubLeft = len(one_hot_bad_sub) % 10
 
 				fileInd += 1
+				if fileInd >= 905:
+					fileInd = 0
 				#print "FILE IND"
 				#print fileInd
 				windowInd = 0
@@ -628,9 +637,10 @@ def getOutputValTen(allValData):
 	windowInd = 0
 	fileInd = 0
 	batchInd = 1
-	while fileInd <= 1000: # 462540
+	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-
+		if fileInd >= 905:
+			fileInd = 0
 
 		loopInd = 0
 		batchArr = []
@@ -792,6 +802,8 @@ def getOutputValTen(allValData):
 				#numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
 
 				fileInd += 1
+				if fileInd >= 905:
+					fileInd = 0
 				windowInd = 0
 				#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 				print fileInd
@@ -1064,12 +1076,14 @@ def initData():
 	# TRAIN: 1171580
 	# VAL: 1462613
 
+	# VAL: 889
+
 	history = model.fit_generator(
                	izip(getInputTen(allTrainData), getOutputTen(allTrainData)),
-                steps_per_epoch=39250,
+                steps_per_epoch=39400,
 		validation_data=izip(getInputValTen(allValData), getOutputValTen(allValData)),
-		validation_steps=47700,
-                epochs=5,  
+		validation_steps=49000,
+                epochs=1,  
                 verbose=2	
             )
 

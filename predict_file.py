@@ -26,6 +26,8 @@ global check_tokens
 START_TOKEN = '<s>'
 END_TOKEN = '</s>'
 
+BATCH_SIZE = 66
+
 def one_hot(indexed_tokens):
 	one_hot = []
 	nb_classes = 88
@@ -207,27 +209,52 @@ def getFileTokens(fileName):
 	check_tokens = []
 
 	
-	#print len(one_hot_file)-10
-	#print "GOTCH U"
+	print len(one_hot_file)
+	print "GOTCH U"
 	windowInd = 0
-	while windowInd <= int((int(len(one_hot_file)) - 10)):
-		toPass = []
-		for x in range(10):
-			y = x + windowInd
-			#print y
-			#print len(one_hot_file)
-			toPass.append(one_hot_file[y])
-		assert len(toPass) > 0
-		a = np.array(toPass).astype(int)
-		b = a[newaxis, :]
-		#print b
-		check_tokens.append(toPass)
-		assert len(b[0]) == 10
-		#print a
+	loopInd = 0
+	batchArr = []
+	while True:
+		print "here"
+		loopInd = 0
+		batchArr = []
+		while loopInd < (BATCH_SIZE):
+			print windowInd+1
+			print "window"
+			if windowInd <= int((int(len(one_hot_file)) - 10)):
+				toPass = []
+				for x in range(10):
+					y = x + windowInd
+					#print y
+					#print len(one_hot_file)
+					toPass.append(one_hot_file[y])
+				assert len(toPass) > 0
+				a = np.array(toPass).astype(int)
+				#b = a[newaxis, :]
+				#print b
+				check_tokens.append(toPass)
+				#print len(a[1])
+				assert a.shape == (10,88)
+				print a
+				batchArr.append(a)
+				windowInd += 1
+				loopInd += 1
+			else:
+				toPassEnd = []
+				for x in range(10):
+					giveEnd = []
+					giveEnd = [0] * 88
+					giveEnd[87] = 1
+					toPassEnd.append(giveEnd)
+				#print giveEnd
+				batchArr.append(np.array(toPassEnd).astype(int))
+				loopInd += 1
+		b = np.array(batchArr)
+		print b.shape
 		yield b
-		windowInd += 1
-		#print "WINDOW"
-		#print windowInd
+				
+			#print "WINDOW"
+			#print windowInd
 	print "done radha"
 	#print len(one_hot_file)
 
@@ -256,10 +283,13 @@ def predict(fileName):
 	print type(radha)
 	'''
 
-	outPredict = loaded_model.predict_generator(getFileTokens(fileName), 227, 1, verbose=1)
+	
+
+	outPredict = loaded_model.predict_generator(getFileTokens(fileName), 4, 1, verbose=1)
 	print "HERE"
 	print outPredict
-	print len(outPredict)	
+	print len(outPredict)
+	#print type(radha)	
 
 	inds = []
 	for x in range(len(list(outPredict))):
@@ -267,10 +297,10 @@ def predict(fileName):
 	print max(outPredict[0])
 	print list(outPredict[0]).index(max(outPredict[0]))
 	print "MAX"
-        countGood = -1
-        countIns = -1
-	countDel = -1
-	countWhat = -1
+        countGood = 0
+        countIns = 0
+	countDel = 0
+	countWhat = 0
 	iterInd = 0
 	print inds
 	print zip(*(iter(inds),) * 10)
@@ -288,12 +318,16 @@ def predict(fileName):
 		errType = inds[iterInd]
 		if errType == 0:
 			msg = "NO ERROR: "
+			countGood += 1
 		elif errType == 2:
 			msg = "DELETION: "
+			countDel += 1
 		elif errType == 3:
 			msg = "INSERTION: "
+			countIns += 1
 		else:
 			msg = "IDEK: "
+			countWhat += 1
 		errLine = ""
 		for toks in window:
 			getInd = toks.index(1.0)
@@ -304,6 +338,10 @@ def predict(fileName):
 		#print type(radha)
 		iterInd += 1
 	print "-------------------------------"
+	print countGood
+	print countDel
+	print countIns
+	print countWhat
 	sys.exit()
 	#print type(radha)
 	for b in inds:
