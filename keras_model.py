@@ -62,8 +62,8 @@ def getInputTen(allTrainData):
 	#count = 0
 	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-		if fileInd >= 1000:
-			fileInd = 0
+		#if fileInd >= 1000:
+		#	fileInd = 0
 		#print "file"
 		#print fileInd
 		#print minSize
@@ -164,8 +164,8 @@ def getInputTen(allTrainData):
 				numBadSubLeft = len(one_hot_bad_sub) % 10
 
 				fileInd += 1
-				if fileInd >= 1000:
-					fileInd = 0
+				#if fileInd >= 1000:
+				#	fileInd = 0
 				#print "FILE IND"
 				#print fileInd
 				windowInd = 0
@@ -244,8 +244,8 @@ def getOutputTen(allTrainData):
 	batchInd = 1
 	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-		if fileInd >= 1000:
-			fileInd = 0
+		#if fileInd >= 1000:
+		#	fileInd = 0
 
 		loopInd = 0
 		batchArr = []
@@ -407,8 +407,8 @@ def getOutputTen(allTrainData):
 				#numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
 
 				fileInd += 1
-				if fileInd >= 1000:
-					fileInd = 0
+				#if fileInd >= 1000:
+				#	fileInd = 0
 				windowInd = 0
 				#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 				print fileInd
@@ -459,8 +459,8 @@ def getInputValTen(allValData):
 	#count = 0
 	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-		if fileInd >= 1000:
-			fileInd = 0
+		#if fileInd >= 1000:
+		#	fileInd = 0
 		#print "file"
 		#print fileInd
 		#print minSize
@@ -561,8 +561,8 @@ def getInputValTen(allValData):
 				numBadSubLeft = len(one_hot_bad_sub) % 10
 
 				fileInd += 1
-				if fileInd >= 1000:
-					fileInd = 0
+				#if fileInd >= 1000:
+				#	fileInd = 0
 				#print "FILE IND"
 				#print fileInd
 				windowInd = 0
@@ -641,8 +641,8 @@ def getOutputValTen(allValData):
 	batchInd = 1
 	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-		if fileInd >= 1000:
-			fileInd = 0
+		#if fileInd >= 1000:
+		#	fileInd = 0
 
 		loopInd = 0
 		batchArr = []
@@ -804,8 +804,8 @@ def getOutputValTen(allValData):
 				#numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
 
 				fileInd += 1
-				if fileInd >= 1000:
-					fileInd = 0
+				#if fileInd >= 1000:
+				#	fileInd = 0
 				windowInd = 0
 				#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 				print fileInd
@@ -1020,7 +1020,9 @@ def initData():
 	allValData = cPickle.load( open( "val_pre_data.txt", "rb" ) )
 	print "GOT DATA"
 
+
 	# Other Purposes
+	'''
 	sumOne = 0
 	sumTwo = 0
 	fileInd = 0
@@ -1034,7 +1036,7 @@ def initData():
 	print sumOne
 	print sumTwo
 	print "SUM"
-
+	'''
 
 	model = Sequential()
 	model.add(Dense(4, activation='relu', input_shape=(10, 88), batch_size=66))
@@ -1078,25 +1080,25 @@ def initData():
 	# TRAIN: 1171580
 	# VAL: 1462613
 
-	# Train: 994
+	# Train: 999
 	# Val: 999
 
 	history = model.fit_generator(
                	izip(getInputTen(allTrainData), getOutputTen(allTrainData)),
-                steps_per_epoch=42600, #Before: 42 500
+                steps_per_epoch=42630, #Before: 42 630
 		validation_data=izip(getInputValTen(allValData), getOutputValTen(allValData)),
 		validation_steps=53300, #Before: 53 300
-                epochs=3000,  
-		callbacks=[
+                epochs=3000, # Any large number cuz early stopping  
+		 callbacks=[
                     ModelCheckpoint(
-                        str(self.weight_path_pattern),
+                        str(weight_path_pattern),
                         save_best_only=False,
                         save_weights_only=False,
                         mode='auto'
                     ),
-                    CSVLogger(str(self.log_path), append=True),
+                    CSVLogger(str(log_path), append=True),
                     EarlyStopping(patience=3, mode='auto')
-                ]
+                ],
                 verbose=1	
             )
 
