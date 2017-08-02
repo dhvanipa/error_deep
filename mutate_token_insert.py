@@ -90,6 +90,7 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 	#print "import num"
 	haha = -1
 	radOut = 0
+	curr = 0
 	while radOut < numTokensNeeded:
 		#chosen = raw_tokens_pass[chosenLineInd]
 
@@ -197,6 +198,7 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 			else:
 				new_text = before + ' ' + chosenToken.encode() + ' ' + after
 		toTest = checkPyPySyntax(new_text)
+		print radOut
 		if toTest == None:
 			#print radOut
 			#if radOut != 0:
@@ -204,11 +206,16 @@ def insertTokMutS(raw_tokens, all_tokens, raw_text):
 			#else:
 			#	radOut = 0
 			#print radOut	
-			radOut = radOut
-			insToks.remove(insTok)
-			chosens.remove(chosen)
+			curr = curr + 1
+			if curr > 10:
+				radOut = radOut + 1
+			else:
+				radOut = radOut
+				insToks.remove(insTok)
+				chosens.remove(chosen)
 			#print "test_t"
 		else:
+			curr = 0
 			radOut = radOut + 1
 
 		'''

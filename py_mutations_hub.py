@@ -320,6 +320,7 @@ def perform(curr):
 			allGood = []
 			global all_tokens
 			allGood = all_tokens[:]
+			print len(allGood)
 			#print "come on"
 			#print len(all_tokens)
 			#print len(allGood)
@@ -356,7 +357,7 @@ def perform(curr):
 			#print len(passToks)
 			#print "come
 			global all_tokens
-			#print "dhadha"
+			print "dhadha"
 			#print len(all_tokens)
 			#print len(allGood)
 			passBall = allGood[:]
@@ -366,7 +367,7 @@ def perform(curr):
 				new_i_text, NO_TOKEN, INSERTION, out_tokens_loc, chosenTrueLineInds, insToks = insertTokMutS(NO_TOKEN, out_tokens_loc, INSERTION)
 				if isinstance(new_i_text, str):
 					break
-					
+			print "here"
 			new_tokens_ins = allGood[:]
 			#print "BOL BOL BOL"			
 			#print len(new_tokens_ins)
@@ -482,7 +483,7 @@ def perform(curr):
 					break
 			
 
-			#print "NEXT STEP..."
+			print "NEXT STEP..."
 			
 			new_tokens_del = allGood[:]
 
@@ -765,6 +766,11 @@ def giveItems():
 	#print allData[3][8]
 
 if __name__ == '__main__':
+    count = perform(1086)
+    print type(radha)
+	
+
+
     all_train_to_pass = []
     for x in range(1000):
 	print x

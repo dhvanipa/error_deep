@@ -984,11 +984,14 @@ def initData():
 	allTrainData = cPickle.load( open( "train_pre_data.txt", "rb" ) )
 	print "GOT DATA"
 
-	#sum = 0
-	#for x in allTrainData:
-	#	sum += len(x[2])
-	#print sum
-	#print "SUM"
+	sum = 0
+	fileInd = 0
+	for x in allTrainData:
+		if x != -1:
+			sum += len(x[1])
+		fileInd += 1
+	print sum
+	print "SUM"
 	model = Sequential()
 	model.add(Dense(4, activation='relu', input_shape=(10, 88), batch_size=66))
 	model.add(Dropout(0.5))
@@ -1025,16 +1028,18 @@ def initData():
 	'''
 
 	# FIRST THOUSAND TOKENS: 1090392
+	# FIRST THOUSAND TOKENS:  948676 ( / 31 )
 	# SECOnD THOUSAND TOKENS: 1353925
 
 	history = model.fit_generator(
                	izip(getInputTen(allTrainData), getOutputTen(allTrainData)),
-                steps_per_epoch=16521,
+                steps_per_epoch=39500,
 		#validation_data=izip(getInputValTen(), getOutputValTen()),
 		#validation_steps=20513,
-                epochs=5,  
+                epochs=10,  
                 verbose=2	
             )
+
 
 	# list all data in history
 	print(history.history.keys())
