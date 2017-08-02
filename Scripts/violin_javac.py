@@ -29,9 +29,14 @@ def create_plot(file_name):
 		countRank = -1
 		all_ranks = []
 		for row in check_reader:
+			check = row[4]
+			#print type(row[1])
+			if int(check) == 0:
+				print "STOP"
+				print row
         		sfid = row[1]
 			meid = row[2]
-			print row
+			#print row
 			if sfid == beforeS and meid == beforeM:
 				countRank += 1
 				toCompLine = row[5]

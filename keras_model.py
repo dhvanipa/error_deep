@@ -1078,16 +1078,26 @@ def initData():
 	# TRAIN: 1171580
 	# VAL: 1462613
 
-	# Train: 976
-	# Val: 943
+	# Train: 994
+	# Val: 999
 
 	history = model.fit_generator(
                	izip(getInputTen(allTrainData), getOutputTen(allTrainData)),
-                steps_per_epoch=41700, #Before: 41 000
+                steps_per_epoch=42600, #Before: 42 500
 		validation_data=izip(getInputValTen(allValData), getOutputValTen(allValData)),
-		validation_steps=52000, #Before: 51 000
-                epochs=1,  
-                verbose=2	
+		validation_steps=53300, #Before: 53 300
+                epochs=3000,  
+		callbacks=[
+                    ModelCheckpoint(
+                        str(self.weight_path_pattern),
+                        save_best_only=False,
+                        save_weights_only=False,
+                        mode='auto'
+                    ),
+                    CSVLogger(str(self.log_path), append=True),
+                    EarlyStopping(patience=3, mode='auto')
+                ]
+                verbose=1	
             )
 
 	'''
