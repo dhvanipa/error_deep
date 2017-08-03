@@ -7,9 +7,10 @@ import os
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
+import javalang
 
 
-def create_plot(file_name):
+def create_plot_fix(file_name):
 
 	ref_lines = []
 	with open("/home/dhvani/java-mistakes-data/mistakes.csv", 'rb') as reffile:
@@ -17,7 +18,7 @@ def create_plot(file_name):
 		count = 0
 		for line in ref_reader:
 			if count != 0:
-				ref_lines.append([line[0], line[1], line[4]])
+				ref_lines.append([line[0], line[1], line[5], line[8]])
 			count +=1
 			
 
@@ -28,44 +29,62 @@ def create_plot(file_name):
 		actual_line = -1
 		countRank = -1
 		all_ranks = []
+		flagIsDel = False
 		for row in check_reader:
-			check = row[4]
-			#print type(row[1])
-			if int(check) == 0:
-				print "STOP"
-				print row
+			checkType = row[6]
+			if checkType == 'd':
+				flagIsDel = True
+			else:
+				flagIsDel = False
+			
         		sfid = row[1]
 			meid = row[2]
 			#print row
 			if sfid == beforeS and meid == beforeM:
 				countRank += 1
-				toCompLine = row[5]
-				if toCompLine == actual_line:
+				toCompTok = row[7]
+				print toCompTokD
+				tokToCompTok = list(javalang.tokenizer.tokenize(toCompTokD))
+				print tokToCompTok[0]
+				if toCompTok == actual_tok:
 					all_ranks.append(countRank)
-					actual_line = -1
+					actual_tok = ''
 
 			else:
 				if actual_line != -1:
 					all_ranks.append(0)
-				actual_line = -1
+				actual_tok = ''
 				countRank = 1
 				for line in ref_lines:
 					if line[0] == sfid and line[1] == meid:
 						# Files matched
-						actual_line = line[2]
+						if flagIsDel == True:
+							actual_tok = line[2]
+						else:
+							actual_tok = line[3]
+						#print actual_tok
 						break
 				#print count
-				assert actual_line != -1
+				#assert actual_tok != ''
 				beforeS = sfid
 				beforeM = meid
-				toCompLineD = row[5]
-				if toCompLineD == actual_line:
+				toCompTokD = row[7]
+				# TOKENIZE TOKEN:
+				print "HERE"
+				print type(toCompTokD)
+				tokToCompTok = list(javalang.tokenizer.tokenize("pass"))
+				print tokToCompTok[0]
+				#print type(radha)
+		
+	
+				if toCompTokD == actual_line:
 					all_ranks.append(countRank)
-					actual_line = -1
+					actual_tok = ''
 			#print row
 			#print actual_line
 		#print all_ranks
 		mean_ranks = []
+		from math import log
 		for score in all_ranks:
 			if score == 0:
 				mean_ranks.append(0)
@@ -91,4 +110,4 @@ def create_plot(file_name):
 
 if __name__ == '__main__':
 	file_name = sys.argv[1]
-	create_plot(file_name)
+	create_plot_fix(file_name)
