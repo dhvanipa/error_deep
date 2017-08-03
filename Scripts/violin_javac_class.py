@@ -10,7 +10,7 @@ import numpy as np
 import javalang
 
 
-def create_plot_fix(file_name):
+def create_plot_class(file_name):
 
 	ref_lines = []
 	with open("/home/dhvani/java-mistakes-data/mistakes.csv", 'rb') as reffile:
@@ -18,72 +18,59 @@ def create_plot_fix(file_name):
 		count = 0
 		for line in ref_reader:
 			if count != 0:
-				ref_lines.append([line[0], line[1], line[5], line[8]])
+				ref_lines.append([line[0], line[1], line[6]])
 			count +=1
-			
 
 	with open(file_name, 'rb') as csvfile:
    		check_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
 		beforeS = -1
 		beforeM = -1
-		actual_line = -1
+		actual_class = '-1'
 		countRank = -1
 		all_ranks = []
-		flagIsDel = False
+		count = 0
 		for row in check_reader:
 			#print row
-			checkType = row[6]
-			if checkType == 'd':
-				flagIsDel = True
-			else:
-				flagIsDel = False
 			
         		sfid = row[1]
 			meid = row[2]
 			#print row
 			if sfid == beforeS and meid == beforeM:
 				countRank += 1
-				toCompTok = row[7]
-				#print toCompTokD
-				#tokToCompTok = list(javalang.tokenizer.tokenize(toCompTokD))
-				#print tokToCompTok[0]
-				if toCompTok == actual_tok:
+				toCompClass = row[6]
+				if toCompClass == actual_class:
 					all_ranks.append(countRank)
-					actual_tok = ''
+					actual_class = '-1'
 
 			else:
-				if actual_line != -1:
+				if actual_class != '-1':
 					all_ranks.append(0)
-				actual_tok = ''
+				actual_class = '-1'
 				countRank = 1
 				for line in ref_lines:
 					if line[0] == sfid and line[1] == meid:
 						# Files matched
-						if flagIsDel == True:
-							actual_tok = line[2]
-						else:
-							actual_tok = line[3]
+						
+						actual_class = line[2]
+						if actual_class == 'x':
+							actual_class = 'd'
 						#print actual_tok
 						break
 				#print count
-				#assert actual_tok != ''
+				assert actual_class != ''
 				beforeS = sfid
 				beforeM = meid
-				toCompTokD = row[7]
-				# TOKENIZE TOKEN:
+				toCompClassD = row[6]
 				print row
-				#print type(toCompTokD)
-				#tokToCompTok = list(javalang.tokenizer.tokenize("pass"))
-				#print tokToCompTok[0]
-				#print type(radha)
-		
-	
-				if toCompTokD == actual_line:
+				if toCompClassD == actual_class:
 					all_ranks.append(countRank)
-					actual_tok = ''
+					actual_class = '-1'
 			#print row
 			#print actual_line
 		#print all_ranks
+		print count
+		print len(all_ranks)
+		#print type(radha)
 		mean_ranks = []
 		from math import log
 		for score in all_ranks:
@@ -111,4 +98,4 @@ def create_plot_fix(file_name):
 
 if __name__ == '__main__':
 	file_name = sys.argv[1]
-	create_plot_fix(file_name)
+	create_plot_class(file_name)
