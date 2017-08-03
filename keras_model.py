@@ -62,8 +62,8 @@ def getInputTen(allTrainData):
 	#count = 0
 	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-		#if fileInd >= 1000:
-		#	fileInd = 0
+		if fileInd >= 1000:
+			fileInd = 0
 		#print "file"
 		#print fileInd
 		#print minSize
@@ -164,8 +164,8 @@ def getInputTen(allTrainData):
 				numBadSubLeft = len(one_hot_bad_sub) % 10
 
 				fileInd += 1
-				#if fileInd >= 1000:
-				#	fileInd = 0
+				if fileInd >= 1000:
+					fileInd = 0
 				#print "FILE IND"
 				#print fileInd
 				windowInd = 0
@@ -173,6 +173,8 @@ def getInputTen(allTrainData):
 				one_hot_good = allTrainData[fileInd]
 				while(one_hot_good == -1):
 					fileInd+=1
+					if fileInd >= 1000:
+						fileInd = 0
 					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allTrainData[fileInd][0]),one_hot(allTrainData[fileInd][1]), one_hot(allTrainData[fileInd][2]), one_hot(allTrainData[fileInd][3])
 				if one_hot_good != -1:
 					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allTrainData[fileInd][0]),one_hot(allTrainData[fileInd][1]), one_hot(allTrainData[fileInd][2]), one_hot(allTrainData[fileInd][3])
@@ -244,8 +246,8 @@ def getOutputTen(allTrainData):
 	batchInd = 1
 	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-		#if fileInd >= 1000:
-		#	fileInd = 0
+		if fileInd >= 1000:
+			fileInd = 0
 
 		loopInd = 0
 		batchArr = []
@@ -407,8 +409,8 @@ def getOutputTen(allTrainData):
 				#numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
 
 				fileInd += 1
-				#if fileInd >= 1000:
-				#	fileInd = 0
+				if fileInd >= 1000:
+					fileInd = 0
 				windowInd = 0
 				#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 				print fileInd
@@ -421,6 +423,8 @@ def getOutputTen(allTrainData):
 				one_hot_good_out = allTrainData[fileInd]
 				while(one_hot_good_out == -1):
 					fileInd+=1
+					if fileInd >= 1000:
+						fileInd = 0
 					#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 					one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = one_hot(allTrainData[fileInd][0]),one_hot(allTrainData[fileInd][1]), one_hot(allTrainData[fileInd][2]), one_hot(allTrainData[fileInd][3])
 
@@ -459,8 +463,8 @@ def getInputValTen(allValData):
 	#count = 0
 	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-		#if fileInd >= 1000:
-		#	fileInd = 0
+		if fileInd >= 1000:
+			fileInd = 0
 		#print "file"
 		#print fileInd
 		#print minSize
@@ -561,8 +565,8 @@ def getInputValTen(allValData):
 				numBadSubLeft = len(one_hot_bad_sub) % 10
 
 				fileInd += 1
-				#if fileInd >= 1000:
-				#	fileInd = 0
+				if fileInd >= 1000:
+					fileInd = 0
 				#print "FILE IND"
 				#print fileInd
 				windowInd = 0
@@ -570,6 +574,8 @@ def getInputValTen(allValData):
 				one_hot_good = allValData[fileInd]
 				while(one_hot_good == -1):
 					fileInd+=1
+					if fileInd >= 1000:
+						fileInd = 0
 					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allValData[fileInd][0]),one_hot(allValData[fileInd][1]), one_hot(allValData[fileInd][2]), one_hot(allValData[fileInd][3])
 				if one_hot_good != -1:
 					one_hot_good, one_hot_bad_ins, one_hot_bad_del, one_hot_bad_sub = one_hot(allValData[fileInd][0]),one_hot(allValData[fileInd][1]), one_hot(allValData[fileInd][2]), one_hot(allValData[fileInd][3])
@@ -641,8 +647,8 @@ def getOutputValTen(allValData):
 	batchInd = 1
 	while True: # 462540
 	#while windowInd < int(len(insArr)/10):
-		#if fileInd >= 1000:
-		#	fileInd = 0
+		if fileInd >= 1000:
+			fileInd = 0
 
 		loopInd = 0
 		batchArr = []
@@ -804,8 +810,8 @@ def getOutputValTen(allValData):
 				#numBadSubOutLeft = len(one_hot_bad_sub_out) % 10
 
 				fileInd += 1
-				#if fileInd >= 1000:
-				#	fileInd = 0
+				if fileInd >= 1000:
+					fileInd = 0
 				windowInd = 0
 				#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 				print fileInd
@@ -818,6 +824,8 @@ def getOutputValTen(allValData):
 				one_hot_good_out = allValData[fileInd]
 				while(one_hot_good_out == -1):
 					fileInd+=1
+					if fileInd >= 1000:
+						fileInd = 0
 					#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
 					one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out = one_hot(allValData[fileInd][0]),one_hot(allValData[fileInd][1]), one_hot(allValData[fileInd][2]), one_hot(allValData[fileInd][3])
 
