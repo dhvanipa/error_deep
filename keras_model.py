@@ -1059,9 +1059,9 @@ def initData():
         #      loss='binary_crossentropy',
         #      metrics=['accuracy'])
 
-	opt = optimizers.SGD(lr=0.01, momentum=0.2)
+	#opt = optimizers.SGD(lr=0.01, momentum=0.2)
 	#opt = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
-	#opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.5)
+	opt = optimizers.RMSprop(lr=0.01, rho=0.9, epsilon=1e-08, decay=0.5)
 	model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
 	
 	# NOT USING:
@@ -1096,7 +1096,17 @@ def initData():
                 steps_per_epoch=42630, #Before: 42 630
 		validation_data=izip(getInputValTen(allValData), getOutputValTen(allValData)),
 		validation_steps=53300, #Before: 53 300
-                epochs=15, # Any large number cuz early stopping  
+                epochs=3000, # Any large number cuz early stopping  
+		callbacks=[
+                    ModelCheckpoint(
+                        str(weight_path_pattern),
+                        save_best_only=False,
+                        save_weights_only=False,
+                        mode='auto'
+                    ),
+                    CSVLogger(str(log_path), append=True),
+                    EarlyStopping(patience=3, mode='auto')
+                ],
                 verbose=1	
             )
 

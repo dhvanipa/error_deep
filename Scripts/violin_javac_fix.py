@@ -8,6 +8,12 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 import javalang
+from javalang.tokenizer import LexerError
+
+def tokenize(get):
+	tokGen = javalang.tokenizer.tokenize(get + ' ')
+	for tok in tokGen:
+		print tok
 
 
 def create_plot_fix(file_name):
@@ -44,9 +50,10 @@ def create_plot_fix(file_name):
 			if sfid == beforeS and meid == beforeM:
 				countRank += 1
 				toCompTok = row[7]
-				#print toCompTokD
-				#tokToCompTok = list(javalang.tokenizer.tokenize(toCompTokD))
-				#print tokToCompTok[0]
+				if toCompTok != '':
+					tokGet = list(javalang.tokenizer.tokenize(toCompTok + ' '))
+					toCompTok = tokGet
+					print tokGet
 				if toCompTok == actual_tok:
 					all_ranks.append(countRank)
 					actual_tok = ''
@@ -71,17 +78,17 @@ def create_plot_fix(file_name):
 				beforeM = meid
 				toCompTokD = row[7]
 				# TOKENIZE TOKEN:
-				print row
-				#print type(toCompTokD)
-				#tokToCompTok = list(javalang.tokenizer.tokenize("pass"))
-				#print tokToCompTok[0]
-				#print type(radha)
-		
+				#print row
+				if toCompTokD != '':
+					tokGetD = list(javalang.tokenizer.tokenize(toCompTokD + ' '))
+					toCompTokD = tokGetD
+					print tokGetD
+			
 	
 				if toCompTokD == actual_line:
 					all_ranks.append(countRank)
 					actual_tok = ''
-			#print row
+			print row
 			#print actual_line
 		#print all_ranks
 		mean_ranks = []
@@ -111,4 +118,5 @@ def create_plot_fix(file_name):
 
 if __name__ == '__main__':
 	file_name = sys.argv[1]
+	#tokenize(file_name)
 	create_plot_fix(file_name)
