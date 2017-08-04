@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import javalang
 from javalang.tokenizer import LexerError
+from io import open
 
 def tokenize(get):
 	tokGen = javalang.tokenizer.tokenize(get + ' ')
@@ -19,7 +20,7 @@ def tokenize(get):
 def create_plot_fix(file_name):
 
 	ref_lines = []
-	with open("/home/dhvani/java-mistakes-data/mistakes.csv", 'rb') as reffile:
+	with open("/home/dhvani/java-mistakes-data/mistakes.csv", 'r') as reffile:
 		ref_reader = csv.reader(reffile, delimiter=',')
 		count = 0
 		for line in ref_reader:
@@ -28,8 +29,8 @@ def create_plot_fix(file_name):
 			count +=1
 			
 
-	with open(file_name, 'rb') as csvfile:
-   		check_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+	with open(file_name, 'r', encoding='utf8') as csvfile:
+   		check_reader = csv.reader(csvfile, delimiter=',')
 		beforeS = -1
 		beforeM = -1
 		actual_line = -1
@@ -51,7 +52,10 @@ def create_plot_fix(file_name):
 				countRank += 1
 				toCompTok = row[7]
 				if toCompTok != '':
-					tokGet = list(javalang.tokenizer.tokenize(toCompTok + ' '))
+					try:
+						tokGet = list(javalang.tokenizer.tokenize(toCompTok))
+					except:
+						tokGet = list(javalang.tokenizer.tokenize(toCompTok + ' '))
 					toCompTok = tokGet
 					print tokGet
 				if toCompTok == actual_tok:
@@ -76,19 +80,28 @@ def create_plot_fix(file_name):
 				#assert actual_tok != ''
 				beforeS = sfid
 				beforeM = meid
+				print row
 				toCompTokD = row[7]
 				# TOKENIZE TOKEN:
 				#print row
+			
 				if toCompTokD != '':
-					tokGetD = list(javalang.tokenizer.tokenize(toCompTokD + ' '))
+					print toCompTokD
+					if toCompTokD[0] == "\"" and toCompTokD[len(toCompTokD)-1:] == "\"":
+						toCompTokD = "\"okay\""
+					try:
+						tokGetD = list(javalang.tokenizer.tokenize(toCompTokD))
+					except:
+						tokGetD = list(javalang.tokenizer.tokenize(toCompTokD + ' '))
 					toCompTokD = tokGetD
+					
 					print tokGetD
 			
 	
 				if toCompTokD == actual_line:
 					all_ranks.append(countRank)
 					actual_tok = ''
-			print row
+			
 			#print actual_line
 		#print all_ranks
 		mean_ranks = []
