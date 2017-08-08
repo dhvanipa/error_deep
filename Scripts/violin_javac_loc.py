@@ -80,16 +80,29 @@ def create_plot_loc(file_name):
 		print len(mean_ranks)
 		print sumTot/len(mean_ranks)
 
-
-		#ax1 = plt.plot(nrows=1, ncols=1, figsize=(4, 4), sharey=True)
-
-		#ax1.set_title('Default violin plot')
-		#ax1.set_ylabel('Observed values')
-		plt.violinplot(mean_ranks)
-		#plt.subplots_adjust(bottom=0.15, wspace=0.05)
-		plt.show()
+		return mean_ranks
 		
 
 if __name__ == '__main__':
 	file_name = sys.argv[1]
-	create_plot_loc(file_name)
+	file_name_two = sys.argv[2]
+	javac = create_plot_loc(file_name)
+	eclipse = create_plot_loc(file_name_two)
+	fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(12, 7), sharey=True)
+
+	ax1.set_title('MRR For JavaC: Error Location')
+	ax1.set_ylabel('Reciprocal Rank')		
+	ax1.violinplot(javac)
+	ax1.set_xticklabels([])
+  	ax1.set_xlabel('JavaC')
+	#ax1.violinplot(eclipse)
+	
+	ax2.set_title('MRR For Eclipse: Error Location')
+	#ax2.set_ylabel('Reciprocal Rank')		
+	ax2.violinplot(eclipse)
+	ax2.set_xticklabels([])
+  	ax2.set_xlabel('Eclipse')
+
+	plt.show()
+
+

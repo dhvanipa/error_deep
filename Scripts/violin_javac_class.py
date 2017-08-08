@@ -8,7 +8,13 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 import javalang
-
+def set_axis_style(ax, labels):
+    ax.get_xaxis().set_tick_params(direction='out')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.set_xticks(np.arange(1, len(labels) + 1))
+    ax.set_xticklabels(labels)
+    ax.set_xlim(0.25, len(labels) + 0.75)
+    ax.set_xlabel('Compiler')
 
 def create_plot_class(file_name):
 
@@ -22,22 +28,31 @@ def create_plot_class(file_name):
 			count +=1
 
 	with open(file_name, 'rb') as csvfile:
-   		check_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+   		check_reader = csv.reader(csvfile, delimiter=',')
 		beforeS = -1
 		beforeM = -1
 		actual_class = '-1'
 		countRank = -1
 		all_ranks = []
 		count = 0
+		valid = {'', 'x', 'i', 's'}
 		for row in check_reader:
 			#print row
-			
-        		sfid = row[1]
-			meid = row[2]
+			fileName = row[2]
+			if fileName == 'file':
+				continue
+        		sfid = fileName[:fileName.index('/')]
+			meid = fileName[fileName.index('/')+1:]
+			#print sfid
+			#print meid
 			#print row
 			if sfid == beforeS and meid == beforeM:
 				countRank += 1
-				toCompClass = row[6]
+				if row[14] == 'f.kind':
+					continue
+				toCompClass = row[14]
+				assert toCompClass in valid
+				print toCompClass
 				if toCompClass == actual_class:
 					all_ranks.append(countRank)
 					actual_class = '-1'
@@ -50,18 +65,19 @@ def create_plot_class(file_name):
 				for line in ref_lines:
 					if line[0] == sfid and line[1] == meid:
 						# Files matched
-						
 						actual_class = line[2]
 						if actual_class == 'x':
 							actual_class = 'd'
 						#print actual_tok
 						break
 				#print count
-				assert actual_class != ''
+				assert actual_class != '-1'
 				beforeS = sfid
 				beforeM = meid
-				toCompClassD = row[6]
-				print row
+				toCompClassD = row[14]
+				assert toCompClassD in valid
+				print toCompClassD
+				#print row
 				if toCompClassD == actual_class:
 					all_ranks.append(countRank)
 					actual_class = '-1'
@@ -87,12 +103,27 @@ def create_plot_class(file_name):
 		print sumTot/len(mean_ranks)
 
 
-		#ax1 = plt.plot(nrows=1, ncols=1, figsize=(4, 4), sharey=True)
+		fig, (ax1) = plt.subplots(nrows=1, ncols=1, figsize=(7, 7), sharey=True)
 
-		#ax1.set_title('Default violin plot')
+		ax1.set_title('MRR For LSTM: Class')
+		ax1.set_ylabel('Reciprocal Rank')
+
+		
+			
+		ax1.violinplot(mean_ranks)
+		#plax1t.set_xticks([0, 1, 2])
+		#plt.set_xticklabels(['A', 'B', 'C'])
 		#ax1.set_ylabel('Observed values')
-		plt.violinplot(mean_ranks)
 		#plt.subplots_adjust(bottom=0.15, wspace=0.05)
+	
+		#ax1.get_xaxis().set_tick_params(direction='out')
+   		#ax1.xaxis.set_ticks_position('bottom')
+   		#ax1.set_xticks(np.arange(1, 1 + 1))
+   		#ax1.set_xticklabels(" ")
+  		#ax1.set_xlim(0.25, 1 + 0.75)	
+		ax1.set_xticklabels([])
+  		ax1.set_xlabel('LSTM')
+
 		plt.show()
 		
 

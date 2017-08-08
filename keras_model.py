@@ -1049,8 +1049,8 @@ def initData():
 	model = Sequential()
 	model.add(Dense(4, activation='relu', input_shape=(10, 88), batch_size=66))
 	model.add(Flatten())	
-	model.add(Dense(128, activation='relu'))
-	model.add(Dense(128, activation='relu'))
+	model.add(Dense(256, activation='relu'))
+	model.add(Dense(256, activation='relu'))
 	model.add(Dropout(0.5))
 	model.add(Dense(4, activation='relu'))
 	model.add(Dropout(0.5))
@@ -1061,9 +1061,9 @@ def initData():
         #      loss='binary_crossentropy',
         #      metrics=['accuracy'])
 
-	opt = optimizers.SGD(lr=0.01, momentum=0.3)
+	#opt = optimizers.SGD(lr=0.01, momentum=0.3)
 	#opt = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
-	#opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.5)
+	opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.5)
 	model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
 	
 	# NOT USING:
@@ -1158,10 +1158,10 @@ def initData():
 	
 	# serialize model to YAML
 	model_yaml = model.to_yaml()
-	with open("model.yaml", "w") as yaml_file:
+	with open("model_rms.yaml", "w") as yaml_file:
 		yaml_file.write(model_yaml)
 	# serialize weights to HDF5
-	model.save_weights("model.h5")
+	model.save_weights("model_rms.h5")
 	print("Saved model to disk")
 	print history.history['acc']
 	print history.history['val_acc']

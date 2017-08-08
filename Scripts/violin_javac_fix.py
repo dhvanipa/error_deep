@@ -8,17 +8,19 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 import javalang
-from javalang.tokenizer import LexerError
+from javac_parser import Java
 from io import open
 
 def tokenize(get):
+	get = '\'\''
+	print get
 	tokGen = javalang.tokenizer.tokenize(get + ' ')
 	for tok in tokGen:
 		print tok
 
 
 def create_plot_fix(file_name):
-
+	java = Java()
 	ref_lines = []
 	with open("/home/dhvani/java-mistakes-data/mistakes.csv", 'r') as reffile:
 		ref_reader = csv.reader(reffile, delimiter=',')
@@ -33,7 +35,7 @@ def create_plot_fix(file_name):
    		check_reader = csv.reader(csvfile, delimiter=',')
 		beforeS = -1
 		beforeM = -1
-		actual_line = -1
+		actual_tok = ''
 		countRank = -1
 		all_ranks = []
 		flagIsDel = False
@@ -52,18 +54,20 @@ def create_plot_fix(file_name):
 				countRank += 1
 				toCompTok = row[7]
 				if toCompTok != '':
-					try:
-						tokGet = list(javalang.tokenizer.tokenize(toCompTok))
-					except:
-						tokGet = list(javalang.tokenizer.tokenize(toCompTok + ' '))
-					toCompTok = tokGet
-					print tokGet
+					print "----------------------------------"
+					print toCompTok
+					getToks = java.lex(toCompTok)
+					print getToks
+					#assert len(getToks) <= 3
+					toCompTok = getToks[0][0]
+					
+					print toCompTok
 				if toCompTok == actual_tok:
 					all_ranks.append(countRank)
 					actual_tok = ''
 
 			else:
-				if actual_line != -1:
+				if actual_tok != '':
 					all_ranks.append(0)
 				actual_tok = ''
 				countRank = 1
@@ -80,25 +84,25 @@ def create_plot_fix(file_name):
 				#assert actual_tok != ''
 				beforeS = sfid
 				beforeM = meid
+				print "ROW"
 				print row
+				
 				toCompTokD = row[7]
 				# TOKENIZE TOKEN:
 				#print row
-			
+				
 				if toCompTokD != '':
+					print "----------------------------------"
 					print toCompTokD
-					if toCompTokD[0] == "\"" and toCompTokD[len(toCompTokD)-1:] == "\"":
-						toCompTokD = "\"okay\""
-					try:
-						tokGetD = list(javalang.tokenizer.tokenize(toCompTokD))
-					except:
-						tokGetD = list(javalang.tokenizer.tokenize(toCompTokD + ' '))
-					toCompTokD = tokGetD
+					getToks = java.lex(toCompTokD)
+					print getToks
+					assert len(getToks) <= 3
+					toCompTokD = getToks[0][0]
 					
-					print tokGetD
-			
-	
-				if toCompTokD == actual_line:
+					print toCompTokD
+				
+				
+				if toCompTokD == actual_tok:
 					all_ranks.append(countRank)
 					actual_tok = ''
 			
@@ -120,12 +124,27 @@ def create_plot_fix(file_name):
 		print sumTot/len(mean_ranks)
 
 
-		#ax1 = plt.plot(nrows=1, ncols=1, figsize=(4, 4), sharey=True)
+		fig, (ax1) = plt.subplots(nrows=1, ncols=1, figsize=(7, 7), sharey=True)
 
-		#ax1.set_title('Default violin plot')
+		ax1.set_title('MRR For JavaC: Fix Token')
+		ax1.set_ylabel('Reciprocal Rank')
+
+		
+			
+		ax1.violinplot(mean_ranks)
+		#plax1t.set_xticks([0, 1, 2])
+		#plt.set_xticklabels(['A', 'B', 'C'])
 		#ax1.set_ylabel('Observed values')
-		plt.violinplot(mean_ranks)
 		#plt.subplots_adjust(bottom=0.15, wspace=0.05)
+	
+		#ax1.get_xaxis().set_tick_params(direction='out')
+   		#ax1.xaxis.set_ticks_position('bottom')
+   		#ax1.set_xticks(np.arange(1, 1 + 1))
+   		#ax1.set_xticklabels(" ")
+  		#ax1.set_xlim(0.25, 1 + 0.75)	
+		ax1.set_xticklabels([])
+  		ax1.set_xlabel('JavaC')
+
 		plt.show()
 		
 
