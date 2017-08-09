@@ -46,7 +46,7 @@ def checkJavaCSyntax(src):
 		myFile = open("ToCheck.java", "w")
 		myFile.write(data)
 		myFile.close()
-		proc = subprocess.Popen(['javac', 'ToCheck.java'], stderr=subprocess.PIPE)
+		proc = subprocess.Popen(['javac', 'ToCheck.java', '-nowarn'], stderr=subprocess.PIPE)
 		streamdata, err = proc.communicate()
 		rc = proc.returncode
 		if rc == 0:
@@ -64,7 +64,7 @@ def checkJavaCSyntax(src):
 			#print "split"
 			#print len(err)
 			lastErrorNum = err[lastLine:]
-
+			#print lastErrorNum
 			lastError = lastErrorNum[:lastErrorNum.index('error')-1]
 			numError = int(lastError)
 			
@@ -72,9 +72,13 @@ def checkJavaCSyntax(src):
 			lineNums = []
 			insToks = []
 			indRepeats = []
+			indRepeatsB = []
 			typeErrors = []
-			origLineNums = []
+			origLineNums = []	
+			origLineNumsB = []
 			flag = False
+			flagB = False
+			ind = 0
 			for ind in range(numError):
 				fileInd = find_nth(err, "ToCheck.java:", ind+1)
 				temp = err[fileInd:]
@@ -98,16 +102,26 @@ def checkJavaCSyntax(src):
 						insTok = firstLine[errorColInd+7:expectInd-1]
 					if insTok == "class, interface, or enum":
 						flag = True
+						flagB = False
 						insToks.append("class")
 						insToks.append("interface")
 						insToks.append("enum")
 						typeErrors.append('i')
 						typeErrors.append('i')
+					elif insTok == "(\' or \'[":
+						flagB = True
+						flag = False
+						insToks.append("(")
+						insToks.append("[")
+						typeErrors.append('i')
 					else:
 						flag = False
+						flagB = False
 						insToks.append(insTok)
 			
 				else:
+					flag = False
+					flagB = False
 					typeErrors.append('')
 					insToks.append('')
 				cutColInd = find_nth(temp, ":", 2)
@@ -117,16 +131,23 @@ def checkJavaCSyntax(src):
 					#print int(line)
 					lineNums.append(int(line))
 					origLineNums.append(int(line))
-					indRepeats.append(origLineNums.index(int(line)))
+					#indRepeats.append(origLineNums.index(int(line)))
+					indRepeats.append(ind)
 					lineNums.append(int(line))
+				if flagB == True:
+					lineNums.append(int(line))
+					origLineNumsB.append(int(line))
+					indRepeatsB.append(ind)
+					#indRepeatsB.append(origLineNumsB.index(int(line)))
 				else:
-					origLineNums.append(int(line))
+					origLineNums.append(int(line))	
+					origLineNumsB.append(int(line))
 				lineNums.append(int(line))
-				
+				ind += 1
 			#print lineNums	
 			#print origLineNums
 			#print "RADHA"	
-
+			#print indRepeatsB
 			#print "----OUT----"
 			checkInd = err.find("is public, should be declared in a file named")
 			#print msgNo
@@ -143,13 +164,26 @@ def checkJavaCSyntax(src):
 					if x == rid:
 						lineNums.remove(rid)
 			msgNo = []
-			#print indRepeats
-			for x in range(len(lineNums) - (len(indRepeats)*2)):
+			#print indRepeatsB
+			msgNoInd = 0
+			#print 
+			for x in range(len(lineNums) - (( (len(indRepeats)*2) + (len(indRepeatsB)) ) )):
+				#print x
 				if x in indRepeats:
 					#print "TRUE"
-					msgNo.append(x+1)
-					msgNo.append(x+1)
-				msgNo.append(x+1)
+					msgNo.append(msgNoInd+1)
+					msgNo.append(msgNoInd+2)	
+					msgNo.append(msgNoInd+3)
+					msgNoInd += 3
+				elif x in indRepeatsB:
+					msgNo.append(msgNoInd+1)			
+					msgNo.append(msgNoInd+2)
+					msgNoInd += 2
+				else:
+					msgNo.append(msgNoInd+1)
+					msgNoInd += 1
+				#print msgNo
+				
 
 			#print msgNo
 			#print lineNums
@@ -160,11 +194,11 @@ def checkJavaCSyntax(src):
 				return None
 			else:
 				#errorObj = CompileError(fileName, line, column, None, text, errorname)
-				#print err
-				#print msgNo
-				#print lineNums
-				#print insToks
-				#print typeErrors
+				print err
+				print msgNo
+				print lineNums
+				print insToks
+				print typeErrors
 				#print len(msgNo)
 				#print len(lineNums)
 				#print len(insToks)

@@ -30,7 +30,7 @@ def createEclipseCSV():
 	#print len(strPaths)
 	csvfile = open('eclipse_fixes.csv', 'wb')
 	datWriter = csv.writer(csvfile, delimiter=',',
-                        	    quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                        	   quoting=csv.QUOTE_MINIMAL)
 
 	print "START"
 	fileNum = 0
@@ -42,7 +42,7 @@ def createEclipseCSV():
 			tool = "eclipse"
 			sfid = path[find_nth(path, "/", 4)+1:find_nth(path, "/", 5)]
 			meid = path[find_nth(path, "/", 5)+1:find_nth(path, "/", 6)]
-			numTotLines, msgNo, lineNums, insToks, typeErrors = checkEclipseSyntax(path)
+			numTotLines, msgNo, lineNums, insToks, typeErrors = checkEclipseSyntax(path, False)
 			#print numTotLines, msgNo, lineNums, insToks, typeErrors
 			for ind in range(len(msgNo)):
 				toPut = [tool, sfid, meid, numTotLines, msgNo[ind], lineNums[ind], typeErrors[ind], insToks[ind]]
