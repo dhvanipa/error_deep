@@ -41,14 +41,17 @@ def create_plot_class(file_name):
 			fileName = row[2]
 			if fileName == 'file':
 				continue
-        		sfid = row[1]
-			meid = row[2]
+        		sfid = fileName[:fileName.index('/')]
+			meid = fileName[fileName.index('/')+1:]
+			#print sfid
+			#print meid
+			#print row
 			if sfid == beforeS and meid == beforeM:
 				countRank += 1
-				if row[6] == 'f.kind':
+				if row[14] == 'f.kind':
 					continue
-				toCompClass = row[6]
-				#assert toCompClass in valid
+				toCompClass = row[14]
+				assert toCompClass in valid
 				print toCompClass
 				if toCompClass == actual_class:
 					all_ranks.append(countRank)
@@ -71,8 +74,8 @@ def create_plot_class(file_name):
 				assert actual_class != '-1'
 				beforeS = sfid
 				beforeM = meid
-				toCompClassD = row[6]
-				#assert toCompClassD in valid
+				toCompClassD = row[14]
+				assert toCompClassD in valid
 				print toCompClassD
 				#print row
 				if toCompClassD == actual_class:

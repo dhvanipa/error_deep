@@ -41,7 +41,7 @@ def create_plot_fix(file_name):
 		flagIsDel = False
 		for row in check_reader:
 			#print row
-			checkType = row[6]
+			checkType = row[7]
 			if checkType == 'd':
 				flagIsDel = True
 			else:
@@ -53,6 +53,7 @@ def create_plot_fix(file_name):
 			if sfid == beforeS and meid == beforeM:
 				countRank += 1
 				toCompTok = row[7]
+				
 				if toCompTok != '':
 					print "----------------------------------"
 					print toCompTok
@@ -62,6 +63,7 @@ def create_plot_fix(file_name):
 					toCompTok = getToks[0][0]
 					
 					print toCompTok
+				
 				if toCompTok == actual_tok:
 					all_ranks.append(countRank)
 					actual_tok = ''
@@ -88,6 +90,7 @@ def create_plot_fix(file_name):
 				print row
 				
 				toCompTokD = row[7]
+				print toCompTokD
 				# TOKENIZE TOKEN:
 				#print row
 				
@@ -96,11 +99,11 @@ def create_plot_fix(file_name):
 					print toCompTokD
 					getToks = java.lex(toCompTokD)
 					print getToks
-					assert len(getToks) <= 3
+					#assert len(getToks) <= 3
 					toCompTokD = getToks[0][0]
 					
 					print toCompTokD
-				
+				print type(radha)
 				
 				if toCompTokD == actual_tok:
 					all_ranks.append(countRank)
