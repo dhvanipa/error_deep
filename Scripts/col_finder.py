@@ -27,7 +27,13 @@ def getCol():
 	# print strPaths
 	assert len(strPathsBef) == len(strPathsAft)
 
-	for loopInd in range(len(strPathsBef)):		
+	skip = 3530
+	for loopInd in range(len(strPathsBef)):	
+		#print loopInd
+		if loopInd+skip == 2785:
+			continue
+		loopInd += skip	
+		print loopInd
 		beforeStrList = []
 		afterStrList = []
 		beforeF = strPathsBef[loopInd]
@@ -39,7 +45,7 @@ def getCol():
     			dataBefore=myfile.read()
 			beforeToks = java.lex(dataBefore)
 			for token in beforeToks:
-				if token[0] == "DOUBLELITERAL":
+				if token[0] in ["DOUBLELITERAL", "FLOATLITERAL"]:
 					beforeStrList.append("INTLITERAL")
 				else:
 					beforeStrList.append(token[0])
@@ -50,7 +56,7 @@ def getCol():
     			dataAfter=myfile.read()
 			afterToks = java.lex(dataAfter)
 			for token in afterToks:
-				if token[0] == "DOUBLELITERAL":
+				if token[0] in ["DOUBLELITERAL", "FLOATLITERAL"]:
 					afterStrList.append("INTLITERAL")
 				else:
 					afterStrList.append(token[0])
@@ -73,7 +79,7 @@ def getCol():
 				print "-----------"
 			
 			print type(radha)
-		print loopInd
+		
 	
 
 		#sys.exit()
