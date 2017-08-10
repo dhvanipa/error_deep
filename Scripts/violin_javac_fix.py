@@ -32,7 +32,7 @@ def create_plot_fix(file_name):
 			
 
 	with open(file_name, 'r', encoding='utf8') as csvfile:
-   		check_reader = csv.reader(csvfile, delimiter=',')
+   		check_reader = csv.reader(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
 		beforeS = -1
 		beforeM = -1
 		actual_tok = ''
@@ -103,7 +103,7 @@ def create_plot_fix(file_name):
 					toCompTokD = getToks[0][0]
 					
 					print toCompTokD
-				print type(radha)
+				#print type(radha)
 				
 				if toCompTokD == actual_tok:
 					all_ranks.append(countRank)
