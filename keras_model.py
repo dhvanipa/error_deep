@@ -386,6 +386,7 @@ def getOutputTen(allTrainData):
 					#print b.shape	
 					#print a
 					#yield a
+					#print a.shape
 					batchArr.append(a)
 					batchInd += 1
 					#toPass = np.concatenate((numpy.array(toPassOne).astype(int),  numpy.array(toPassTwo).astype(int), numpy.array(toPassThree).astype(int)), axis=0)	
@@ -1110,6 +1111,26 @@ def initData():
                     CSVLogger(str(log_path), append=True),
                     EarlyStopping(patience=3, mode='auto')
                 ],
+                verbose=1	
+            )
+
+	istory = model.fit(
+               	x=izip(getInputTen(allTrainData), getOutputTen(allTrainData)),
+                #steps_per_epoch=42630, #Before: 42 630
+		y=izip(getInputValTen(allValData), getOutputValTen(allValData)),
+		#validation_steps=53300, #Before: 53 300
+                epochs=3000, # Any large number cuz early stopping  
+		callbacks=[
+                    ModelCheckpoint(
+                        str(weight_path_pattern),
+                        save_best_only=False,
+                        save_weights_only=False,
+                        mode='auto'
+                    ),
+                    CSVLogger(str(log_path), append=True),
+                    EarlyStopping(patience=3, mode='auto')
+                ],
+		batch_size=66,
                 verbose=1	
             )
 
