@@ -34,8 +34,17 @@ It should look like this:
 
 The backend parameter should be set to theano.
 
+To run col_finder.py:
+
 Requires:
+  - javac_parser
+  - py4j
 
-PyPy
+You can pip install both
 
+The path to the directory where all the java corpus files are must be set.
+
+The variables sfid and meid number for cutting and getting the id's must be adjusted to your path.
+
+The script will output a csv called java_fixes_col.csv
 
