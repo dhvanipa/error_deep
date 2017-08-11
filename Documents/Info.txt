@@ -1,0 +1,14 @@
+
+Set the Path for the following compilers:
+
+Babel
+V8
+EsLint
+JavaScriptCore
+
+export PATH=/YOUR_LOCATION_OF_FILE/:$PATH
+
+Example: 
+
+export PATH=/home/dhvani/node_modules/.bin:$PATH
+
