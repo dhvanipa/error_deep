@@ -1,0 +1,4 @@
+{"indexes_javac": ["=", "EOF", "<IDENTIFIER>", ")", ";", "}", "...", "::", "<NUMBER>", "+", "catch", "*", "<STRING>", "interface", "volatile", "public", "enum", "(", "import", "else", "if", "<NUMBER>", "{", ",", ".", "++", "%", "final", "while", "super", ">", ":", "class", "!", "^", "private", "]", "<", "/", "package", "@", "float", "--", "static", "return", "<NUMBER>", "_", "byte", "throws", "[", "this", "==", "-", "char", "new", "true", "<NUMBER>", "for", "->", "double", "!=", "<=", "<STRING>", "do", "extends", "?", "null", "strictfp", "&", "try", "&&", "protected", "throw", "switch", "case", "long", "instanceof", "assert", "false", "default", ">="]
+}
+
+

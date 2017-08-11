@@ -1063,7 +1063,7 @@ def initData():
 
 	#opt = optimizers.SGD(lr=0.01, momentum=0.3)
 	#opt = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
-	opt = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.5)
+	opt = optimizers.RMSprop(lr=0.01, rho=0.9, epsilon=1e-08, decay=0.5)
 	model.compile(loss = "categorical_crossentropy", optimizer = opt, metrics=['accuracy'])
 	
 	# NOT USING:
