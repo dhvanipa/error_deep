@@ -48,3 +48,8 @@ The variables sfid and meid number for cutting and getting the id's must be adju
 
 The script will output a csv called java_fixes_col.csv
 
+Checking syntax:
+	python check_javac_syntax.py SOURCE_FILE_NAME
+	python check_eclipse_syntax.py SOURCE_FILE_NAME
+
+

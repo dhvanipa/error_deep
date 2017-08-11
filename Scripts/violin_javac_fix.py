@@ -7,17 +7,9 @@ import os
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
-import javalang
 from javac_parser import Java
 import codecs
 import cStringIO
-
-def tokenize(get):
-	get = '\'\''
-	print get
-	tokGen = javalang.tokenizer.tokenize(get + ' ')
-	for tok in tokGen:
-		print tok
 
 class UTF8Recoder:
     """
@@ -121,7 +113,7 @@ def create_plot_fix(file_name):
 				for token in toCompTok:
 					getInd = vocab_javac.index(token[0])
 					actual_vToken = actual_mapped[getInd]
-					if actual_vToken == actual_tok and row[5] == actual_line and row[8] == actual_class:
+					if actual_vToken == actual_tok and row[5] == actual_line  and row[8] == actual_class:
 						all_ranks.append(countRank)
 						actual_tok = ''
 

@@ -413,7 +413,7 @@ def getOutputTen(allTrainData):
 					fileInd = 0
 				windowInd = 0
 				#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
-				print fileInd
+				#print fileInd
 				#print allTrainData[37]
 				#print type(allTrainData[fileInd][1])
 				#print type(allTrainData[fileInd][2])
@@ -814,6 +814,7 @@ def getOutputValTen(allValData):
 					fileInd = 0
 				windowInd = 0
 				#_, _, _, _, one_hot_good_out, one_hot_bad_ins_out, one_hot_bad_del_out, one_hot_bad_sub_out, _ = perform(fileInd)
+				print "val"
 				print fileInd
 				#print allValData[37]
 				#print type(allValData[fileInd][1])
