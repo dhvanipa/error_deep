@@ -53,17 +53,29 @@ class UnicodeReader:
 def create_plot_fix(file_name):
 	java = Java()
 	ref_lines = []
+	ref_col_lines = []
+	with open("/home/dhvani/Documents/java_fixes_col.csv", 'r') as reffileCol:
+			ref_reader_col = csv.reader(reffileCol, delimiter=',')
+			for col in ref_reader_col:
+				ref_col_lines.append(col)
+
 	with open("/home/dhvani/java-mistakes-data/mistakes.csv", 'r') as reffile:
 		ref_reader = csv.reader(reffile, delimiter=',')
-		with open("/home/dhvani/Documents/java_fixes_col.csv", 'r') as reffileCol:
-			ref_reader_col = csv.reader(reffileCol, delimiter=',')
-			count = 0
-			for line in ref_reader:
-				for col in ref_reader_col:
-						if col[0] == line[0] and col[1] == line[1]:
-							ref_lines.append([line[0], line[1], line[4], col[3], col[5], line[6], line[5], line[8]])
+		count = 0
+		for line in ref_reader:
+			#print line
+			#print count
+			for col in ref_col_lines:
+					#print "here"
+					#print col
+					#print line[0]
+					if col[0] == line[0] and col[1] == line[1]:
+						ref_lines.append([line[0], line[1], line[4], col[3], col[5], line[6], line[5], line[8]])
 			count +=1	
-			
+	#print len(ref_lines)
+	del ref_lines[0]
+	#print len(ref_lines)
+	#sys.exit()
 	vocab_javac = ["EQ", "EOF", "IDENTIFIER", "RPAREN", "SEMI", "RBRACE", "ELLIPSIS", "COLCOL", "INT", "PLUS", "CATCH", "STAR", "STRINGLITERAL", "INTERFACE", "VOLATILE", "PUBLIC", "ENUM", "LPAREN", "IMPORT", "ELSE", "IF", "INTLITERAL", "LBRACE", "COMMA", "DOT", "PLUSPLUS", "PERCENT", "FINAL", "WHILE", "SUPER", "GT", "COLON", "CLASS", "BANG", "CARET", "PRIVATE", "RBRACKET", "LT", "SLASH", "PACKAGE", "MONKEYS_AT", "FLOAT", "SUBSUB", "STATIC", "RETURN", "DOUBLELITERAL", "UNDERSCORE", "BYTE", "THROWS", "LBRACKET", "THIS", "EQEQ", "SUB", "CHAR", "NEW", "TRUE", "FLOATLITERAL", "FOR", "ARROW", "DOUBLE", "BANGEQ", "LTEQ", "CHARLITERAL", "DO", "EXTENDS", "QUES", "NULL", "STRICTFP", "AMP", "TRY", "AMPAMP", "PROTECTED", "THROW", "SWITCH", "CASE", "LONG", "INSTANCEOF", "ASSERT", "FALSE", "DEFAULT", "GTEQ"]
 	actual_mapped = ["=", "EOF", "<IDENTIFIER>", ")", ";", "}", "...", "::", "<NUMBER>", "+", "catch", "*", "<STRING>", "interface", "volatile", "public", "enum", "(", "import", "else", "if", "<NUMBER>", "{", ",", ".", "++", "%", "final", "while", "super", ">", ":", "class", "!", "^", "private", "]", "<", "/", "package", "@", "float", "--", "static", "return", "<NUMBER>", "_", "byte", "throws", "[", "this", "==", "-", "char", "new", "true", "<NUMBER>", "for", "->", "double", "!=", "<=", "<STRING>", "do", "extends", "?", "null", "strictfp", "&", "try", "&&", "protected", "throw", "switch", "case", "long", "instanceof", "assert", "false", "default", ">="]
 
@@ -109,7 +121,7 @@ def create_plot_fix(file_name):
 				for token in toCompTok:
 					getInd = vocab_javac.index(token[0])
 					actual_vToken = actual_mapped[getInd]
-					if actual_vToken == actual_tok and row[5] == actual_line and row[6] >= actual_col_start and row[7] <= actual_col_end and row[8] == actual_class:
+					if actual_vToken == actual_tok and row[5] == actual_line and row[8] == actual_class:
 						all_ranks.append(countRank)
 						actual_tok = ''
 
@@ -164,9 +176,28 @@ def create_plot_fix(file_name):
 				for token in toCompTokD:
 					getInd = vocab_javac.index(token[0])
 					actual_vToken = actual_mapped[getInd]
-					if actual_vToken == actual_tok and row[5] == actual_line and row[6] >= actual_col_start and row[7] <= actual_col_end and row[8] == actual_class:
+					'''
+					print "GO"
+					print actual_vToken
+					print actual_tok
+					print "---"
+					print row[5]
+					print actual_line
+					print "---"
+					print row[6]
+					print actual_col_start
+					print row[7]
+					print actual_col_end
+					print "---"
+					print row[8]
+					print actual_class
+					print "STOP"
+					'''
+					# and row[6] >= actual_col_start and row[7] <= actual_col_end 
+					if actual_vToken == actual_tok and row[5] == actual_line and row[8] == actual_class:
 						all_ranks.append(countRank)
 						actual_tok = ''
+					#print type(radha)
 			
 			#print actual_line
 		#print all_ranks
